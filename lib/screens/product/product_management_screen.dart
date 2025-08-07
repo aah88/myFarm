@@ -53,7 +53,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('إدارة المنتجات')),
+      appBar: AppBar(title: const Text('22 إدارة المنتجات')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
