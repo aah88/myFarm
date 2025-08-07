@@ -73,7 +73,11 @@ class MainScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 onPressed: () {
-                  () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  ChooseCategoryScreen()));
+                  Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ChooseCategoryScreen())
+                                        );
+                 //() => Navigator.push(context, MaterialPageRoute(builder: (_) =>  ChooseCategoryScreen()));
                 },
                 child: const Text('إضافة منتج'),
               ),

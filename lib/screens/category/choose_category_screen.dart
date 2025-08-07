@@ -29,7 +29,7 @@ class ChooseCategoryScreen extends StatelessWidget {
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
-                      'أهلاً بك!\nادخل منتجاتك وابدأ البيع',
+                      'NEW',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
