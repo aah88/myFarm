@@ -70,15 +70,16 @@ class CategoryCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: Colors.transparent,
+          border: Border.all(),
           borderRadius: BorderRadius.circular(16),
         ),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.network(imageUrl, height: 90, errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported)),
-            const SizedBox(height: 90),
+             Image.asset(imageUrl, height: 120, fit: BoxFit.cover),
+          const SizedBox(height: 8),
             Text(
               title,
               textAlign: TextAlign.center,
