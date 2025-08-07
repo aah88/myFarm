@@ -3,11 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ProductCategory {
   final String id;
   final String name;
+  final String imageUrl;
 
 
   
 ProductCategory({required this.id,
     required this.name,
+    required this.imageUrl,
     });
 
   factory ProductCategory.fromMap(Map<String, dynamic> data, String id) {
@@ -15,6 +17,8 @@ ProductCategory({required this.id,
 ProductCategory(
       id: id,
       name: data['name'] ?? '',
+      imageUrl: data['imageUrl'] ?? '',
+      
     );
   }
 
@@ -23,12 +27,15 @@ ProductCategory(
     return ProductCategory(
       id: doc.id,
       name: data['name'] ?? '',
+      imageUrl: data['imageUrl'] ?? '',
+
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'imageUrl':imageUrl
     };
   }
 }

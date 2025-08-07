@@ -14,6 +14,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
   final FirebaseService _firebaseService = FirebaseService();
 
   final _nameController = TextEditingController();
+  final _imageUrlController = TextEditingController();
 
 
   late Future<List<ProductCategory>> _categoriesFuture;
@@ -28,7 +29,8 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
     if (_nameController.text.isNotEmpty) {
       final newCategory = ProductCategory(
         id: '',
-        name: _nameController.text
+        name: _nameController.text,
+        imageUrl: _imageUrlController.text
       );
 
       await _firebaseService.addCategory(newCategory);
@@ -36,6 +38,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
         _categoriesFuture = _firebaseService.getCategory();
       });
       _nameController.clear();
+      _imageUrlController.clear();
     }
   }
 
@@ -54,6 +57,11 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
               ElevatedButton(
               onPressed: _addCategory,
               child: const Text('إضافة الفئة'),
+            ),
+            TextField(
+              controller: _imageUrlController,
+              decoration: const InputDecoration(labelText: 'صورة'),
+              keyboardType: TextInputType.url,
             ),
          
             const Divider(),
