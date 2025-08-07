@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../models/product_model.dart';
-import '../category/choose_category_screen.dart';
+import '../../models/category_model.dart';
 import '../../services/firebase_service.dart';
 
-class MainScreen extends StatelessWidget {
+class ChooseCategoryScreen extends StatelessWidget {
   final FirebaseService _firebaseService = FirebaseService();
 
   final String farmerImage =
@@ -73,7 +72,7 @@ class MainScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 onPressed: () {
-                  () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  ChooseCategoryScreen()));
+                  // Navigate or open product addition screen
                 },
                 child: const Text('إضافة منتج'),
               ),
@@ -103,8 +102,8 @@ class MainScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
              // المنتجات
-            FutureBuilder<List<Product>>(
-              future: _firebaseService.getProducts(),
+            FutureBuilder<List<ProductCategory>>(
+              future: _firebaseService.getCategory(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -121,10 +120,9 @@ class MainScreen extends StatelessWidget {
                     children: products.map((product) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 12.0),
-                        child: ProductCard(
+                        child: CategoryCard(
                           imageUrl: product.imageUrl,// 'lib/assets/images/cucumber.jpg',
                           title: product.name,
-                
                         ),
                       );
                     }).toList(),
@@ -172,14 +170,13 @@ class StatCard extends StatelessWidget {
   }
 }
 
-class ProductCard extends StatelessWidget {
+class CategoryCard extends StatelessWidget {
   final String imageUrl;
   final String title;
 
-  const ProductCard({
+  const CategoryCard({
     required this.imageUrl,
     required this.title,
-
   });
 
   @override
