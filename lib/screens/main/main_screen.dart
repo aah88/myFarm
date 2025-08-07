@@ -51,12 +51,15 @@ class MainScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(
-                      child: Image.network(
-                        //product.imageUrl,
-                        'https://cdn-ilbieip.nitrocdn.com/xqwDdPehmVtcySpgjQnaFLFbBZtNqOso/assets/images/optimized/rev-1562a4e/www.harvst.co.uk/wp-content/uploads/2022/04/cucumbers-scaled.jpeg',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
+                      child: Image.asset(product.imageUrl)
+                      //'lib/assets/images/tomato.jpg'
+                      // Image.network(
+                      //   //product.imageUrl,
+                      //   ,
+                      //   fit: BoxFit.cover,
+                      //   width: double.infinity,
+                      // )
+                      // ,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),

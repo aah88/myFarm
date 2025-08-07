@@ -38,7 +38,6 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         category: selectedCategory!,
         imageUrl: _imageUrlController.text,
       );
-      print('AHMAD'+ newProduct.category.name);
       await _firebaseService.addProduct(newProduct);
       setState(() {
         _productsFuture = _firebaseService.getProducts();
