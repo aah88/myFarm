@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../models/product_model.dart';
+import '../../services/firebase_service.dart';
 
 class MainScreen extends StatelessWidget {
-  // روابط صور من الإنترنت
+  final FirebaseService _firebaseService = FirebaseService();
+
   final String farmerImage =
       'https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
-  final String tomatoImage =
-      'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg';
-  final String orangeImage =
-      'https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.jpg';
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +71,9 @@ class MainScreen extends StatelessWidget {
                   backgroundColor: Colors.green[700],
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  // Navigate or open product addition screen
+                },
                 child: const Text('إضافة منتج'),
               ),
             ),
@@ -100,24 +101,36 @@ class MainScreen extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // المنتجات
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ProductCard(
-                  imageUrl: tomatoImage,
-                  title: 'بندورة',
-                  rating: 4.7,
-                  price: '10000 ليرة',
-                ),
-                ProductCard(
-                  imageUrl: orangeImage,
-                  title: 'برتقال',
-                  rating: 4.4,
-                  price: '12000 ليرة',
-                ),
-              ],
-            )
+             // المنتجات
+            FutureBuilder<List<Product>>(
+              future: _firebaseService.getProducts(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text('حدث خطأ: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Text('لا توجد منتجات متاحة');
+                }
+
+                final products = snapshot.data!;
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: products.map((product) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 12.0),
+                        child: ProductCard(
+                          imageUrl: product.imageUrl,// 'lib/assets/images/cucumber.jpg',
+                          title: product.name,
+                
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -161,14 +174,11 @@ class StatCard extends StatelessWidget {
 class ProductCard extends StatelessWidget {
   final String imageUrl;
   final String title;
-  final double rating;
-  final String price;
 
   const ProductCard({
     required this.imageUrl,
     required this.title,
-    required this.rating,
-    required this.price,
+
   });
 
   @override
@@ -182,22 +192,11 @@ class ProductCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Image.network(imageUrl, height: 60, fit: BoxFit.cover),
+          Image.asset(imageUrl, height: 60, fit: BoxFit.cover),
           const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.star, color: Colors.orange, size: 16),
-              const SizedBox(width: 4),
-              Text(rating.toString()),
-            ],
-          ),
-          const SizedBox(height: 4),
+  
           Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 4),
-          Text(price),
-          const SizedBox(height: 4),
-          const Icon(Icons.add_circle, color: Colors.green),
+          const SizedBox(height: 4)
         ],
       ),
     );
