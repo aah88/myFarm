@@ -25,23 +25,22 @@ class MainScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 image: DecorationImage(
-                  image: AssetImage('lib/assets/images/farmer_header.png'),
+                  image: AssetImage('lib/assets/images/farmer_header.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
               padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      'أهلاً بك!\nادخل منتجاتك وابدأ البيع',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        height: 1.5,
-                      ),
-                      textAlign: TextAlign.right,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center, 
+                crossAxisAlignment: CrossAxisAlignment.end,  
+                children: const [
+                  Text(
+                    'أهلاً بك!\nادخل منتجاتك وابدأ البيع',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      height: 1.5,
                     ),
                   ),
                 ],
