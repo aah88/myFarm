@@ -17,25 +17,31 @@ class MainScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // العنوان الأخضر
+            // Header Image
             Container(
+              constraints: const BoxConstraints(
+                minHeight: 150, maxHeight: 200,
+              ),
               decoration: BoxDecoration(
-                color: Colors.green[700],
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: AssetImage('lib/assets/images/farmer_header.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Image.network(farmerImage, height: 60),
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
                       'أهلاً بك!\nادخل منتجاتك وابدأ البيع',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 18,
+                        fontSize: 16,
                         height: 1.5,
                       ),
+                      textAlign: TextAlign.right,
                     ),
                   ),
                 ],
