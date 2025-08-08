@@ -32,13 +32,14 @@ class Product {
       id: doc.id,
       name: data['name'] ?? '',
       description: data['description']?? '',
-      category: data['category']?? '',
+      category: ProductCategory.fromMap(data['category'], data['category']['id']),
       imageUrl:data['imageUrl']?? '',
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
       'description': description,
       'category': category.toMap(),

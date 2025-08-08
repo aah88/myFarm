@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import '../../models/product_model.dart';
 import '../../models/category_model.dart';
 
@@ -34,7 +33,7 @@ class FirebaseService {
   Stream<List<ProductCategory>> categoryStream() {
   return FirebaseFirestore.instance
     .collection('category')
-    .snapshots()
+    .snapshots() 
     .map((snapshot) =>
       snapshot.docs.map((doc) => ProductCategory.fromFirestore(doc)).toList()
     );
@@ -43,5 +42,22 @@ class FirebaseService {
  Future<void> addCategory(ProductCategory category) async {
     await _db.collection('category').add(category.toMap());
   }
+
+
+    Future<List<Product>> getProductsByCategory(String categoryId) async {
+    final querySnapshot = await _db
+        .collection('product')
+        .where('category.id', isEqualTo: categoryId)
+        .get();
+    return querySnapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
+  }
+  Future<List<Product>> getProductsByCategoryName(String categoryName) async {
+    final querySnapshot = await _db
+        .collection('product')
+        .where('category.name', isEqualTo: categoryName)
+        .get();
+    return querySnapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
+  }
+
 
 }
