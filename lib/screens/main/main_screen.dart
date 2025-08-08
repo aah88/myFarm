@@ -76,6 +76,9 @@ class MainScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green[700],
                   padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), 
+                ),
                 ),
                 onPressed: () {
                   Navigator.pushReplacement(
@@ -84,7 +87,7 @@ class MainScreen extends StatelessWidget {
                                         );
                  //() => Navigator.push(context, MaterialPageRoute(builder: (_) =>  ChooseCategoryScreen()));
                 },
-                child: const Text('إضافة منتج'),
+                child: const Text('إضافة منتج', style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
               ),
             ),
 
@@ -164,7 +167,7 @@ class StatCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -198,7 +201,7 @@ class ProductCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         children: [
