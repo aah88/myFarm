@@ -25,23 +25,22 @@ class MainScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 image: DecorationImage(
-                  image: AssetImage('lib/assets/images/farmer_header.png'),
+                  image: AssetImage('lib/assets/images/farmer_header.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
               padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      'أهلاً بك!\nادخل منتجاتك وابدأ البيع',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        height: 1.5,
-                      ),
-                      textAlign: TextAlign.right,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center, 
+                crossAxisAlignment: CrossAxisAlignment.end,  
+                children: const [
+                  Text(
+                    'أهلاً بك!\nادخل منتجاتك وابدأ البيع',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      height: 1.5,
                     ),
                   ),
                 ],
@@ -77,6 +76,9 @@ class MainScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green[700],
                   padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), 
+                ),
                 ),
                 onPressed: () {
                   Navigator.pushReplacement(
@@ -85,7 +87,7 @@ class MainScreen extends StatelessWidget {
                                         );
                  //() => Navigator.push(context, MaterialPageRoute(builder: (_) =>  ChooseCategoryScreen()));
                 },
-                child: const Text('إضافة منتج'),
+                child: const Text('إضافة منتج', style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
               ),
             ),
 
@@ -165,7 +167,7 @@ class StatCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -199,7 +201,7 @@ class ProductCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         children: [
