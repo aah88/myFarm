@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../models/product_model.dart';
 import '../../services/firebase_service.dart';
 import '../unit/choose_unit_screen.dart';
+import 'package:provider/provider.dart';
+import '../../providers/listing_provider.dart';
 
 
 class ChooseSubProductScreen extends StatelessWidget {
@@ -47,7 +49,8 @@ class ChooseSubProductScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final product = products[index];
                 return ProductCard(
-                  categoryId: product.id,
+                  productId: product.id ,
+                  categoryId: product.category.id,
                   title: product.name,
                   imageUrl: product.imageUrl,
                 );
@@ -61,16 +64,18 @@ class ChooseSubProductScreen extends StatelessWidget {
 }
 
 class ProductCard extends StatelessWidget {
+  final String productId;
   final String title;
   final String imageUrl;
   final String categoryId;
 
-  const ProductCard({required this.title, required this.imageUrl, required this.categoryId});
+  const ProductCard({required this.title, required this.imageUrl, required this.categoryId,  required this.productId});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        context.read<ListingProvider>().setProductId(categoryId);
          Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ChooseUnitScreen())
