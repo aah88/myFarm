@@ -16,7 +16,7 @@ class ChooseCategoryScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         elevation: 0,
         centerTitle: true,
       ),
@@ -77,7 +77,7 @@ class CategoryCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.transparent,
-          border: Border.all(),
+          border: Border.all(color: Colors.green, width: 1.5),
           borderRadius: BorderRadius.circular(16)
         ),
         padding: const EdgeInsets.all(0),

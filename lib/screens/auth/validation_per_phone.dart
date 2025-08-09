@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../main/main_screen.dart';
-import '../../models/product_model.dart';
-import '../../services/firebase_service.dart';
 
 class PhoneAuthPage extends StatefulWidget {
   @override
@@ -12,7 +10,6 @@ class PhoneAuthPage extends StatefulWidget {
 class _PhoneAuthPageState extends State<PhoneAuthPage> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
-   late Future<List<Product>> _productsFuture;
 
   String? verificationId;
   String? _errorMessage;

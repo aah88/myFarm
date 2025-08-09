@@ -3,7 +3,6 @@ import 'package:flutter_application_1/screens/main/main_screen.dart';
 import 'package:flutter_application_1/screens/product/product_management_screen.dart';
 import 'package:flutter_application_1/screens/category/category_management_screen.dart';
 import '../auth/validation_per_phone.dart';
-import '../profile/consumer_profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

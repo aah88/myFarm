@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/product_model.dart';
 import '../../services/firebase_service.dart';
+import '../unit/choose_unit_screen.dart';
 
 
 class ChooseSubProductScreen extends StatelessWidget {
@@ -17,7 +18,7 @@ class ChooseSubProductScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         elevation: 0,
         centerTitle: true,
       ),
@@ -70,11 +71,15 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+         Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ChooseUnitScreen())
+                                        );
       },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.transparent,
-          border: Border.all(),
+          border: Border.all(color: Colors.green, width: 1.5),
           borderRadius: BorderRadius.circular(16)
         ),
         padding: const EdgeInsets.all(0),
