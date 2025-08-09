@@ -103,7 +103,9 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                   return const CircularProgressIndicator();
                 }
 
-                final products = snapshot.data!;
+                final products = snapshot.data!
+                                   .where((product) =>product.parentProduct =="")
+                                   .toList();
 
                 return DropdownButtonFormField<Product>(
                   decoration: const InputDecoration(labelText: 'المنتج الأب'),
