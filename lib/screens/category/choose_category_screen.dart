@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../models/category_model.dart';
 import '../../services/firebase_service.dart';
 import '../../screens/product/choose_product_screen.dart';
+import 'package:provider/provider.dart';
+import '../../providers/listing_provider.dart';
 
 
 class ChooseCategoryScreen extends StatelessWidget {
@@ -69,6 +71,7 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        context.read<ListingProvider>().setCategoryId(categoryId);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ChooseProductScreen(categoryId: categoryId))
