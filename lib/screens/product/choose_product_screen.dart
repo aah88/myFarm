@@ -74,10 +74,12 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-         Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => ChooseSubProductScreen(parentProductId: parentProductId))
-                                        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChooseSubProductScreen(parentProductId: parentProductId)
+          )
+        );
       },
       child: Container(
         decoration: BoxDecoration(

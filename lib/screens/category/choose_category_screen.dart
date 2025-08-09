@@ -69,10 +69,10 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => ChooseProductScreen(categoryId: categoryId))
-                                        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChooseProductScreen(categoryId: categoryId))
+        );
       },
       child: Container(
         decoration: BoxDecoration(

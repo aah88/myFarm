@@ -78,7 +78,7 @@ class MainScreen extends StatelessWidget {
                 ),
                 ),
                 onPressed: () {
-                  Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => ChooseCategoryScreen()));
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => ChooseCategoryScreen()));
                  //() => Navigator.push(context, MaterialPageRoute(builder: (_) =>  ChooseCategoryScreen()));
                 },
                 child: const Text('إضافة منتج', style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),

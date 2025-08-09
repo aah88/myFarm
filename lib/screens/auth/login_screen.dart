@@ -17,7 +17,7 @@ class LoginScreen extends StatelessWidget {
             const TextField(decoration: InputDecoration(labelText: 'رقم الهاتف')),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const FarmerProfileScreen())),
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FarmerProfileScreen())),
               child: const Text('تسجيل الدخول (تمثيلي)'),
             ),
           ],

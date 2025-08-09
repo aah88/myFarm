@@ -71,10 +71,10 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-         Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => ChooseUnitScreen())
-                                        );
+         Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChooseUnitScreen())
+        );
       },
       child: Container(
         decoration: BoxDecoration(

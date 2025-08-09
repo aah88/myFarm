@@ -60,7 +60,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
   }
 
   void _goToNextPage() {
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),//ProductManagementScreen()
     );
