@@ -14,12 +14,12 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('الرئيسية')),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: Column( 
           children: [
             const Spacer(),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  PhoneAuthPage())),
-              child: const Text('تسجيل الدخول'),
+              child: const Text('تسجيل الدخول', style: TextStyle(color: Colors.green)),
             ),
             const SizedBox(height: 10),
             ElevatedButton(

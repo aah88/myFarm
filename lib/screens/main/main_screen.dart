@@ -6,16 +6,13 @@ import '../../services/firebase_service.dart';
 class MainScreen extends StatelessWidget {
   final FirebaseService _firebaseService = FirebaseService();
 
-  final String farmerImage =
-      'https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),       // body padding
           children: [
             // Header Image
             Container(
@@ -29,7 +26,7 @@ class MainScreen extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16), // Container padding
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center, 
                 crossAxisAlignment: CrossAxisAlignment.end,  
@@ -41,32 +38,32 @@ class MainScreen extends StatelessWidget {
                       color: Colors.white,
                       fontSize: 18,
                       height: 1.5,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 16), // space after header
 
             // الإحصائيات
-            GridView.count(
+            GridView.count( 
               crossAxisCount: 3,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              childAspectRatio: 1.1,
               children: const [
                 StatCard(title: 'المنتجات', count: 5, icon: Icons.shopping_basket),
                 StatCard(title: 'الطلبات', count: 3, icon: Icons.shopping_cart),
                 StatCard(title: 'التقارير', count: 1, icon: Icons.bar_chart),
                 StatCard(title: 'طلبات جديدة', count: 3, icon: Icons.fiber_new),
-                StatCard(title: 'إحصائيات المبيعات', count: 1, icon: Icons.analytics),
-                StatCard(title: 'التقييمات والمراجعات', count: 3, icon: Icons.reviews),
+                StatCard(title: 'إحصائيات ', count: 1, icon: Icons.analytics),
+                StatCard(title: 'التقييمات', count: 3, icon: Icons.reviews),
               ],
             ),
-
+            
             const SizedBox(height: 16),
 
             // زر إضافة منتج
@@ -81,22 +78,23 @@ class MainScreen extends StatelessWidget {
                 ),
                 ),
                 onPressed: () {
-                  Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => ChooseCategoryScreen())
-                                        );
+                  Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => ChooseCategoryScreen()));
                  //() => Navigator.push(context, MaterialPageRoute(builder: (_) =>  ChooseCategoryScreen()));
                 },
                 child: const Text('إضافة منتج', style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
             // عنوان "منتجاتي الأكثر مبيعاً"
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
+                Text(
+                  'اظهر الكل >',
+                  style: TextStyle(color: Colors.red),
+                ),
                 Text(
                   'منتجاتي الأكثر مبيعاً',
                   style: TextStyle(
@@ -104,10 +102,6 @@ class MainScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.green,
                   ),
-                ),
-                Text(
-                  'اظهر الكل >',
-                  style: TextStyle(color: Colors.red),
                 ),
               ],
             ),
