@@ -12,6 +12,7 @@ class ProductManagementScreen extends StatefulWidget {
 
 class _ProductManagementScreenState extends State<ProductManagementScreen> {
   ProductCategory? selectedCategory;
+  Product? selectedProduct;
   final FirebaseService _firebaseService = FirebaseService();
 
   final _nameController = TextEditingController();
@@ -36,12 +37,14 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         name: _nameController.text,
         description: _descriptionController.text,
         category: selectedCategory!,
+        parentProduct: selectedProduct!.id,
         imageUrl: _imageUrlController.text,
       );
       await _firebaseService.addProduct(newProduct);
       setState(() {
         _productsFuture = _firebaseService.getProducts();
         selectedCategory = null;
+        selectedProduct = null;
       });
 
       _nameController.clear();
@@ -88,6 +91,32 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                   onChanged: (ProductCategory? newValue) {
                     setState(() {
                       selectedCategory = newValue;
+                    });
+                  },
+                );
+              },
+            ),
+            FutureBuilder<List<Product>>(
+              future: _productsFuture,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const CircularProgressIndicator();
+                }
+
+                final products = snapshot.data!;
+
+                return DropdownButtonFormField<Product>(
+                  decoration: const InputDecoration(labelText: 'المنتج الأب'),
+                  value: selectedProduct,
+                  items: products.map((prod) {
+                    return DropdownMenuItem<Product>(
+                      value: prod,
+                      child: Text(prod.name),
+                    );
+                  }).toList(),
+                  onChanged: (Product? newValue) {
+                    setState(() {
+                      selectedProduct = newValue;
                     });
                   },
                 );

@@ -48,6 +48,7 @@ class FirebaseService {
     final querySnapshot = await _db
         .collection('product')
         .where('category.id', isEqualTo: categoryId)
+        //.where('parent_product', isNull: false)
         .get();
     return querySnapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
   }
@@ -55,6 +56,15 @@ class FirebaseService {
     final querySnapshot = await _db
         .collection('product')
         .where('category.name', isEqualTo: categoryName)
+        //.where('parent_product', isNull: false)
+        .get();
+    return querySnapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
+  }
+
+   Future<List<Product>> getProductsByProductParent(String productParentId) async {
+    final querySnapshot = await _db
+        .collection('product')
+        .where('parent_product', isEqualTo: productParentId)
         .get();
     return querySnapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
   }

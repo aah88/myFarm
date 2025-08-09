@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../models/product_model.dart';
 import '../../services/firebase_service.dart';
-import '../../screens/product/choose_sub_product_screen.dart';
 
-class ChooseProductScreen extends StatelessWidget {
+
+class ChooseSubProductScreen extends StatelessWidget {
   final FirebaseService _firebaseService = FirebaseService();
-  final String categoryId;
+  final String parentProductId;
 
-  ChooseProductScreen({required this.categoryId});
+  ChooseSubProductScreen({required this.parentProductId});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +24,7 @@ class ChooseProductScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: FutureBuilder<List<Product>>(
-          future:  _firebaseService.getProductsByCategory(categoryId),
+          future:  _firebaseService.getProductsByProductParent(parentProductId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -34,9 +34,7 @@ class ChooseProductScreen extends StatelessWidget {
               return const Center(child: Text('لا توجد منتجات متاحة حالياً.'));
             }
 
-            final products = snapshot.data!
-                                   .where((product) =>product.parentProduct =="")
-                                   .toList();
+            final products = snapshot.data!;
             return GridView.builder(
               itemCount: products.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -51,7 +49,6 @@ class ChooseProductScreen extends StatelessWidget {
                   categoryId: product.id,
                   title: product.name,
                   imageUrl: product.imageUrl,
-                  parentProductId: product.id,
                 );
               },
             );
@@ -66,18 +63,13 @@ class ProductCard extends StatelessWidget {
   final String title;
   final String imageUrl;
   final String categoryId;
-  final String parentProductId;
 
-  const ProductCard({required this.title, required this.imageUrl, required this.categoryId, required this.parentProductId});
+  const ProductCard({required this.title, required this.imageUrl, required this.categoryId});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-         Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => ChooseSubProductScreen(parentProductId: parentProductId))
-                                        );
       },
       child: Container(
         decoration: BoxDecoration(
