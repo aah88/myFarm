@@ -241,7 +241,7 @@ class _LettersBar extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05), // Light shadow
+                      color: Colors.black.withOpacity(0.03), // Light shadow
                       blurRadius: 3,
                       offset: const Offset(0, 1),
                     ),
@@ -300,18 +300,25 @@ class ProductCard extends StatelessWidget {
             color: const Color(0xFFE8EBE6), // Same border as letters
           ),
           borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03), // Light shadow
+              blurRadius: 3,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         padding: const EdgeInsets.all(8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Product image
+            // Product image (full image without cropping)
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(6),
                 child: Image.asset(
                   imageUrl,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain, // Show full image without cropping
                   width: double.infinity,
                 ),
               ),
