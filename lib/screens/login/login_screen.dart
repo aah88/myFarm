@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/farmer/farmer_management_screen.dart';
 import 'package:flutter_application_1/screens/home/home_screen_farmer.dart';
 import 'package:flutter_application_1/screens/product/product_management_screen.dart';
 import 'package:flutter_application_1/screens/category/category_management_screen.dart';
@@ -19,6 +20,11 @@ class LoginScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  PhoneAuthPage())),
               child: const Text('تسجيل الدخول', style: TextStyle(color: Colors.green)),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  FarmerManagementScreen())),
+              child: const Text('Register', style: TextStyle(color: Colors.green)),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
