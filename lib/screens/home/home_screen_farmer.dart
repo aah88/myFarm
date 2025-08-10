@@ -20,16 +20,16 @@ class HomeScreenFarmer extends StatelessWidget {
                 minHeight: 150, maxHeight: 200,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
                 image: DecorationImage(
                   image: AssetImage('lib/assets/images/farmer_header.jpg'),
                   fit: BoxFit.cover,
-                ),
+                ),           
               ),
               padding: const EdgeInsets.all(16), // Container padding
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center, 
-                crossAxisAlignment: CrossAxisAlignment.end,  
+                crossAxisAlignment: CrossAxisAlignment.start,  
                 children: const [
                   Text(
                     'أهلاً بك!\nادخل منتجاتك وابدأ البيع',
@@ -71,10 +71,10 @@ class HomeScreenFarmer extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green[700],
+                  backgroundColor: Color(0xFF2E7D32),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), 
+                  borderRadius: BorderRadius.circular(8), 
                 ),
                 ),
                 onPressed: () {
@@ -92,16 +92,16 @@ class HomeScreenFarmer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
                 Text(
-                  'اظهر الكل >',
-                  style: TextStyle(color: Colors.red),
-                ),
-                Text(
                   'منتجاتي الأكثر مبيعاً',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                    color: Color(0xFF2E7D32),
                   ),
+                ),
+                Text(
+                  'اظهر الكل >', 
+                  style: TextStyle(color: Color(0xFFE95322)),
                 ),
               ],
             ),
@@ -160,14 +160,21 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(10),
+        color: Colors.grey[100], // ضروري لظهور الظل
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03), // Light shadow
+            blurRadius: 3,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
       padding: const EdgeInsets.all(10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: Colors.green),
+          Icon(icon, color: Color(0xFF2E7D32)),
           const SizedBox(height: 8),
           Text('$count', style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
@@ -194,8 +201,18 @@ class ProductCard extends StatelessWidget {
       width: 150,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        border: Border.all(
+                    color: const Color(0xFFE8EBE6), // Border color
+                  ),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03), // Light shadow
+            blurRadius: 3,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
       child: Column(
         children: [
