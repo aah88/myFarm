@@ -25,3 +25,4 @@ flutter:
   assets:
     - lib/assets/images/
     - lib/assets/images/vegetables/
+    - lib/assets/images/icons/
