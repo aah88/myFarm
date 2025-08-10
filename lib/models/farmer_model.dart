@@ -1,16 +1,15 @@
-import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Farmer {
   final String id;
-  final String name;
-  final String email; 
-  final String location;
-  final String phone;
-  final Timestamp createdAt;
-  final Float rating;
-  final String profileImage;
+   String name;
+   String email; 
+   String location;
+   String phone;
+   Timestamp createdAt;
+   double rating;
+   String profileImage;
 
   Farmer({required this.id,
     required this.name,
@@ -35,6 +34,18 @@ class Farmer {
     );
   }
 
+ factory Farmer.empty() {
+    return Farmer(
+      id: '',
+      email: '',
+      name:'',
+      location: '',
+      phone: '',
+      rating: 0.0,
+      profileImage: '',
+      createdAt: Timestamp.now(),
+    );
+  }
   Map<String, dynamic> toMap() {
     return {
       'name': name,

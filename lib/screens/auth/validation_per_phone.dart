@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../main/main_screen.dart';
+import '../home/home_screen_farmer.dart';
 
 class PhoneAuthPage extends StatefulWidget {
   @override
@@ -62,7 +62,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
   void _goToNextPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MainScreen()),//ProductManagementScreen()
+      MaterialPageRoute(builder: (context) => HomeScreenFarmer()),//ProductManagementScreen()
     );
   }
 
