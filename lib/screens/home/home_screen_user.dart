@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/main/main_screen.dart';
+import 'package:flutter_application_1/screens/home/home_screen_farmer.dart';
 import 'package:flutter_application_1/screens/product/product_management_screen.dart';
 import 'package:flutter_application_1/screens/category/category_management_screen.dart';
 import '../auth/validation_per_phone.dart';
@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  MainScreen())),
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  HomeScreenFarmer())),
               child: const Text('استعراض كزائر'),
             ),
             ElevatedButton(

@@ -3,7 +3,7 @@ import '../../models/product_model.dart';
 import '../category/choose_category_screen.dart';
 import '../../services/firebase_service.dart';
 
-class MainScreen extends StatelessWidget {
+class HomeScreenFarmer extends StatelessWidget {
   final FirebaseService _firebaseService = FirebaseService();
 
   @override
