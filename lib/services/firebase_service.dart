@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/models/listing_model.dart';
 import '../../models/product_model.dart';
 import '../../models/category_model.dart';
 
@@ -8,6 +9,8 @@ class FirebaseService {
   Future<void> addProduct(Product product) async {
     await _db.collection('product').add(product.toMap());
   }
+
+  
 
   Future<List<Product>> getProducts() async {
     final snapshot = await _db.collection('product').get();
@@ -67,6 +70,16 @@ class FirebaseService {
         .where('parent_product', isEqualTo: productParentId)
         .get();
     return querySnapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
+  }
+
+   Future<void> addListing(Listing listing) async {
+    await _db.collection('listing').add(listing.toMap());
+  }
+
+   Future<List<Listing>> getListing() async {
+    final snapshot = await _db.collection('listing').get();
+    return snapshot.docs.map((doc) =>
+        Listing.fromMap(doc.data(), doc.id)).toList();
   }
 
 
