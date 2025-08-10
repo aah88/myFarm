@@ -17,7 +17,6 @@ class _FarmerManagementScreenState extends State<FarmerManagementScreen> {
   final _emailController = TextEditingController();
   final _locationController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _ratingController = TextEditingController();
   final _profileImageController = TextEditingController();
 
   late Future<List<Farmer>> _farmerFarmer;
@@ -37,7 +36,7 @@ class _FarmerManagementScreenState extends State<FarmerManagementScreen> {
         email:_emailController.text,
         location: _locationController.text,
         phone: _phoneController.text,
-        rating: double.tryParse(_ratingController.text)??0.0,
+        rating: 0.0,
         profileImage: _profileImageController.text,
         createdAt: Timestamp.now()
       );
@@ -47,7 +46,6 @@ class _FarmerManagementScreenState extends State<FarmerManagementScreen> {
       _emailController.clear();
       _locationController.clear();
       _phoneController.clear();
-      _ratingController.clear();
     }
   }
 
@@ -75,11 +73,6 @@ class _FarmerManagementScreenState extends State<FarmerManagementScreen> {
             TextField(
               controller: _phoneController,
               decoration: const InputDecoration(labelText: 'تلفون'),
-              keyboardType: TextInputType.url,
-            ),
-            TextField(
-              controller: _ratingController,
-              decoration: const InputDecoration(labelText: 'تقييم'),
               keyboardType: TextInputType.url,
             ),
 
