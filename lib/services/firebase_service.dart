@@ -3,6 +3,7 @@ import 'package:flutter_application_1/models/listing_model.dart';
 import '../../models/product_model.dart';
 import '../../models/category_model.dart';
 import '../../models/farmer_model.dart';
+import '../../models/user_model.dart';
 
 class FirebaseService {
   final _db = FirebaseFirestore.instance;
@@ -89,6 +90,9 @@ class FirebaseService {
   }
    Future<void> addFarmer(Farmer farmer) async {
     await _db.collection('farmer').add(farmer.toMap());
+  }
+  Future<void> addUser(User user) async {
+    await _db.collection('user').add(user.toMap());
   }
 
 

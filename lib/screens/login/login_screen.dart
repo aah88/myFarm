@@ -3,6 +3,7 @@ import 'package:flutter_application_1/screens/farmer/farmer_management_screen.da
 import 'package:flutter_application_1/screens/home/home_screen_farmer.dart';
 import 'package:flutter_application_1/screens/product/product_management_screen.dart';
 import 'package:flutter_application_1/screens/category/category_management_screen.dart';
+import 'package:flutter_application_1/screens/user/user_management_screen.dart';
 import '../auth/validation_per_phone.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -24,7 +25,12 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  FarmerManagementScreen())),
-              child: const Text('Register', style: TextStyle(color: Color(0xFF2E7D32))),
+              child: const Text('Register farmer', style: TextStyle(color: Color(0xFF2E7D32))),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  UserManagementScreen())),
+              child: const Text('Register user', style: TextStyle(color: Color(0xFF2E7D32))),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
