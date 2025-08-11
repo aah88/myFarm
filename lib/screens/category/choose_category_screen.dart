@@ -13,12 +13,12 @@ class ChooseCategoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('إضافة منتج', style: TextStyle(color: Colors.green)),
+        title: const Text('إضافة منتج', style: TextStyle(color: Color(0xFF2E7D32))),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: Color(0xFF2E7D32),
         elevation: 0,
         centerTitle: true,
       ),
@@ -80,7 +80,7 @@ class CategoryCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.transparent,
-          border: Border.all(color: Colors.green, width: 1.5),
+          border: Border.all(color: Color(0xFF2E7D32), width: 1.5),
           borderRadius: BorderRadius.circular(16)
         ),
         padding: const EdgeInsets.all(0),

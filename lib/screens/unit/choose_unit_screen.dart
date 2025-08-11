@@ -61,7 +61,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('اختر وحدة القياس'),
-        backgroundColor: Colors.green,
+        backgroundColor: Color(0xFF2E7D32),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -91,7 +91,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
                       decoration: BoxDecoration(
                         color: isSelected ? Colors.red.shade100 : Colors.transparent,
                         border: Border.all(
-                          color: isSelected ? Colors.red : Colors.green,
+                          color: isSelected ? Colors.red : Color(0xFF2E7D32),
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(12),
@@ -106,7 +106,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: isSelected ? Colors.red : Colors.green,
+                              color: isSelected ? Colors.red : Color(0xFF2E7D32),
                             ),
                           ),
                         ],
@@ -176,7 +176,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: Color(0xFF2E7D32),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 onPressed: _finishProcess,

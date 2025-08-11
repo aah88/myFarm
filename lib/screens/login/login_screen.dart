@@ -19,12 +19,12 @@ class LoginScreen extends StatelessWidget {
             const Spacer(),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  PhoneAuthPage())),
-              child: const Text('تسجيل الدخول', style: TextStyle(color: Colors.green)),
+              child: const Text('تسجيل الدخول', style: TextStyle(color: Color(0xFF2E7D32))),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  FarmerManagementScreen())),
-              child: const Text('Register', style: TextStyle(color: Colors.green)),
+              child: const Text('Register', style: TextStyle(color: Color(0xFF2E7D32))),
             ),
             const SizedBox(height: 10),
             ElevatedButton(

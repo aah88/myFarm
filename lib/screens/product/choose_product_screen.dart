@@ -59,7 +59,7 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
     return Scaffold(
       // Top AppBar with page title and back button
       appBar: AppBar(
-        title: const Text('إضافة منتج', style: TextStyle(color: Colors.green)),
+        title: const Text('إضافة منتج', style: TextStyle(color: Color(0xFF2E7D32))),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
