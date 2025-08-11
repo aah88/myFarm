@@ -4,6 +4,7 @@ import '../../services/firebase_service.dart';
 import '../unit/choose_unit_screen.dart';
 import 'package:provider/provider.dart';
 import '../../providers/listing_provider.dart';
+import '../../widgets/product_card.dart';
 
 
 class ChooseSubProductScreen extends StatelessWidget {
@@ -11,7 +12,7 @@ class ChooseSubProductScreen extends StatelessWidget {
   final String parentProductId;
 
   ChooseSubProductScreen({required this.parentProductId});
-  @override
+  @override 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -20,7 +21,7 @@ class ChooseSubProductScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
         centerTitle: true,
       ),
@@ -49,56 +50,21 @@ class ChooseSubProductScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final product = products[index];
                 return ProductCard(
-                  productId: product.id ,
                   categoryId: product.category.id,
                   title: product.name,
+                  parentProductId: product.id ,
                   imageUrl: product.imageUrl,
+                  onTap: () {
+                    context.read<ListingProvider>().setProductId(product.category.id);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChooseUnitScreen())
+                    );
+                  },
                 );
               },
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class ProductCard extends StatelessWidget {
-  final String productId;
-  final String title;
-  final String imageUrl;
-  final String categoryId;
-
-  const ProductCard({required this.title, required this.imageUrl, required this.categoryId,  required this.productId});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.read<ListingProvider>().setProductId(categoryId);
-         Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ChooseUnitScreen())
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          border: Border.all(color: Colors.green, width: 1.5),
-          borderRadius: BorderRadius.circular(16)
-        ),
-        padding: const EdgeInsets.all(0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-             Image.asset(imageUrl, height: 120, fit: BoxFit.cover),
-          const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14),
-            ),
-          ],
         ),
       ),
     );

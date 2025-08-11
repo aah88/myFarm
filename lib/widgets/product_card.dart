@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../screens/product/choose_sub_product_screen.dart';
 
 /// Product card inside the grid
 class ProductCard extends StatelessWidget {
@@ -7,12 +6,14 @@ class ProductCard extends StatelessWidget {
   final String imageUrl;
   final String categoryId;
   final String parentProductId;
+  final VoidCallback? onTap;
 
   const ProductCard({
     required this.title,
     required this.imageUrl,
     required this.categoryId,
     required this.parentProductId,
+    this.onTap,
     Key? key,
   }) : super(key: key);
 
@@ -20,21 +21,11 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       // Navigate to sub-product screen
-      onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                ChooseSubProductScreen(parentProductId: parentProductId),
-          ),
-        );
-      },
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(
-            color: const Color(0xFFE8EBE6), // Same border as letters
-          ),
+          border: Border.all(color: const Color(0xFFE8EBE6)),
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
@@ -48,7 +39,6 @@ class ProductCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Product image (full image without cropping)
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(6),
@@ -59,6 +49,7 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
             ),
+        
             const SizedBox(height: 6),
             // Product title
             Text(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/product_model.dart';
 import '../../services/firebase_service.dart';
 import '../../widgets/product_card.dart';
+import '../../screens/product/choose_sub_product_screen.dart';
 
 
 /// Main screen for choosing a product from a category
@@ -31,7 +32,7 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
   /// Map for normalizing Arabic characters for filtering
   final Map<String, String> _charMap = const {
     'أ': 'ا', 'إ': 'ا', 'آ': 'ا', 'ى': 'ي'
-  };
+  }; 
 
   @override
   void initState() {
@@ -136,6 +137,15 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
                         title: product.name,
                         imageUrl: product.imageUrl,
                         parentProductId: product.id,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ChooseSubProductScreen(parentProductId: product.id),
+                            ),
+                          );
+                        },
                       );
                     },
                   ),
