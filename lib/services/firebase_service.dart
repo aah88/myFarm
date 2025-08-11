@@ -91,7 +91,7 @@ class FirebaseService {
    Future<void> addFarmer(Farmer farmer) async {
     await _db.collection('farmer').add(farmer.toMap());
   }
-  Future<void> addUser(User user) async {
+  Future<void> addUser(AppUser user) async {
     await _db.collection('user').add(user.toMap());
   }
 

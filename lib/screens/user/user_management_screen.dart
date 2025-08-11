@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
 import '../../services/firebase_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key});
@@ -28,15 +27,15 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   void _addUser() async {
     if (_nameController.text.isNotEmpty) {
       
-      final newUser = User(
+      final newUser = AppUser(
         id: '',
-        name: _nameController.text,
+        username: _nameController.text,
         email:_emailController.text,
         address: _addressController.text,
         phone: _phoneController.text,
         rating: 0.0,
         profileImage: _profileImageController.text,
-        createdAt: Timestamp.now()
+        createdAt: DateTime.now()
       );
       await _firebaseService.addUser(newUser);
 

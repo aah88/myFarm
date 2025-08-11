@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/listing_provider.dart';
-import 'screens/login/login_screen.dart';
+import 'screens/login/sign_in_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      home: const LoginScreen(),
+      home: const SignInPage(),
     );
   }
 }

@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class AppUser {
   final String id;
-  final String name;
+  final String username;
   final String email; 
    final String address;
   final String phone;
   final double rating;
   final String profileImage;
-  final Timestamp createdAt;
+  final DateTime  createdAt;
 
-  User({required this.id,
-    required this.name,
+  AppUser({required this.id,
+    required this.username,
     required this.email,
     required this.address,
     required this.phone,
@@ -20,10 +20,10 @@ class User {
     required this.profileImage
     });
 
-  factory User.fromMap(Map<String, dynamic> data, String id) {
-    return User(
+  factory AppUser.fromMap(Map<String, dynamic> data, String id) {
+    return AppUser(
       id: id,
-      name: data['name'] ?? '',
+      username: data['username'] ?? '',
       email: data['email']?? '',
       address: data['address']?? '',
       phone: data['phone']?? '',
@@ -35,7 +35,7 @@ class User {
 
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
+      'username': username,
       'email': email,
       'address': address,
       'phone': phone,
@@ -46,16 +46,16 @@ class User {
     };
   }
 
-   factory User.empty() {
-    return User(
+   factory AppUser.empty() {
+    return AppUser(
       id: '',
       email: '',
-      name:'',
+      username:'',
       address: '',
       phone: '',
       rating: 0.0,
       profileImage: '',
-      createdAt: Timestamp.now(),
+      createdAt: DateTime.now(),
     );
   }
 }
