@@ -66,6 +66,32 @@ class MyApp extends StatelessWidget {
             textStyle: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
+
+        // Input decoration theme to all TextFields and Dropdowns
+        inputDecorationTheme: InputDecorationTheme(      
+          labelStyle: const TextStyle(     // Label text style 
+            color: Color(0xFF91958E), 
+            fontWeight: FontWeight.bold,
+          ),
+          hintStyle: const TextStyle(   // placeholder 
+            color: Colors.grey,
+            fontSize: 14,
+          ),
+          enabledBorder: OutlineInputBorder(  // Border
+            borderSide: const BorderSide(
+              color: Color(0xFFE8EBE6), 
+              width: 1.5,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(     // Border when the field is focused
+            borderSide: const BorderSide(
+              color: Color(0xFF2E7D32), 
+              width: 2,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),       
       ),
 
       home: const SignInPage(),
