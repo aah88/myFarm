@@ -12,8 +12,8 @@ class ChooseUnitScreen extends StatefulWidget {
 }
 
 class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
-  int? selectedIndex; // Selected unit index
-  String? dropdownValue; // Selected dropdown value
+  int? selectedIndex; // Stores the selected unit index
+  String? dropdownValue; // Stores the selected dropdown value
   final FirebaseService _firebaseService = FirebaseService();
 
   // Controllers for input fields
@@ -21,12 +21,19 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
   final TextEditingController _qtyController = TextEditingController();
   final TextEditingController _extraTextController = TextEditingController();
 
-  // Add a new listing to Firebase
-  void _addListing(newListing) async {
+  // Constant: available grade options
+  static const List<String> _grades = ['نخب 1', 'نخب 2', 'نخب 3'];
+
+  // Constants: dimensions for unit icons
+  static const double _unitItemWidth = 56;
+  static const double _unitIconHeight = 48;
+
+  // Add new listing to Firebase
+  Future<void> _addListing(newListing) async {
     await _firebaseService.addListing(newListing);
   }
 
-  // Finish process and validate inputs
+  // Handle finishing process and validating inputs
   void _finishProcess() {
     if (selectedIndex == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,10 +53,10 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
     context.read<ListingProvider>().setPrice(price);
     context.read<ListingProvider>().setQty(qty);
 
-    // Add to Firebase
+    // Save to Firebase
     _addListing(context.read<ListingProvider>().listing);
 
-    // Return to previous screen with result
+    // Return to previous screen with the collected data
     Navigator.pop(context, {
       'unit': selectedUnit,
       'price': price,
@@ -58,13 +65,13 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
     });
   }
 
-  // Show extra field only for specific units
+  // Show extra text field only for specific units
   bool get _showExtraField =>
       selectedIndex != null && units[selectedIndex!].withDescription == true;
 
   @override
   void dispose() {
-    // Dispose controllers to free memory
+    // Dispose controllers to free memory and avoid leaks
     _priceController.dispose();
     _qtyController.dispose();
     _extraTextController.dispose();
@@ -73,6 +80,8 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const borderColor = Color(0xFFE8EBE6); // Light gray border color
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('اختر وحدة القياس'),
@@ -82,7 +91,22 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // ===== Horizontal icon list for units =====
+            // ==== Section Title for Unit Selection ====
+            const Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "اختر الايقونة المناسبة:",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF91958E),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            // ==== Horizontal list of unit icons ====
             SizedBox(
               height: 80,
               child: SingleChildScrollView(
@@ -98,42 +122,56 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
                           selectedIndex = index;
                         });
                       },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 120), // مدة أقصر
-                        curve: Curves.easeOut,
-                        width: 56,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: isSelected ? const Color(0xFFECF1E8) : Colors.transparent,
-                          border: Border.all(
-                            color: const Color(0xFFE8EBE6),
-                            width: 1.2,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: isSelected
-                              ? [
-                                  BoxShadow(
-                                    color: const Color(0xFF2E7D32).withOpacity(0.08), // ظل أخف
-                                    blurRadius: 4, // نعومة أقل
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ]
-                              : [],
-                        ),
-                        child: AnimatedOpacity(
-                          duration: const Duration(milliseconds: 120),
-                          opacity: isSelected ? 1 : 0.9, // الفرق بسيط
-                          child: AnimatedScale(
-                            scale: isSelected ? 1.03 : 1.0, // تكبير بسيط جدًا
+                      child: Column(
+                        children: [
+                          AnimatedContainer(
                             duration: const Duration(milliseconds: 120),
                             curve: Curves.easeOut,
-                            child: Tooltip(
-                              message: unit.name,
-                              child: Image.asset(unit.imagePath, height: 48),
+                            width: _unitItemWidth,
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: isSelected ? const Color(0xFFECF1E8) : Colors.transparent,
+                              border: Border.all(
+                                color: borderColor,
+                                width: 1.2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: isSelected
+                                  ? [
+                                      BoxShadow(
+                                        color: const Color(0xFF2E7D32).withOpacity(0.08),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                  : const [],
+                            ),
+                            child: AnimatedOpacity(
+                              duration: const Duration(milliseconds: 120),
+                              opacity: isSelected ? 1 : 0.9,
+                              child: AnimatedScale(
+                                scale: isSelected ? 1.03 : 1.0,
+                                duration: const Duration(milliseconds: 120),
+                                curve: Curves.easeOut,
+                                child: Tooltip(
+                                  message: unit.name,
+                                  child: Image.asset(
+                                    unit.imagePath,
+                                    height: _unitIconHeight,
+                                    filterQuality: FilterQuality.low,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 4),
+                          Text(
+                            unit.name,
+                            style: const TextStyle(fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     );
                   }),
@@ -141,11 +179,9 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
               ),
             ),
 
-
-
             const SizedBox(height: 16),
 
-            // Price input
+            // ==== Price Input Field ====
             TextField(
               controller: _priceController,
               keyboardType: TextInputType.number,
@@ -157,7 +193,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
 
             const SizedBox(height: 16),
 
-            // Quantity input
+            // ==== Quantity Input Field ====
             TextField(
               controller: _qtyController,
               keyboardType: TextInputType.number,
@@ -169,16 +205,19 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
 
             const SizedBox(height: 16),
 
-            // Dropdown for "نخب"
+            // ==== Dropdown Menu for Grade Selection ====
             DropdownButtonFormField<String>(
               value: dropdownValue,
+              borderRadius: BorderRadius.circular(12),
+              dropdownColor: Colors.white,
               decoration: const InputDecoration(
                 labelText: "اختر نخب من القائمة",
                 hintText: "اختر من القائمة",
+                border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.list_alt, color: Color(0xFF91958E)),
               ),
-              items: ['نخب 1', 'نخب 2', 'نخب 3']
-                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              items: _grades
+                  .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
                   .toList(),
               onChanged: (value) {
                 setState(() {
@@ -189,20 +228,19 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
 
             const SizedBox(height: 16),
 
-            // Extra field for special units
+            // ==== Extra Information Field (only for special units) ====
             if (_showExtraField) ...[
               TextField(
                 controller: _extraTextController,
                 decoration: InputDecoration(
-                  labelText:
-                      "معلومات اضافية عن محتوى ال ${units[selectedIndex!].name}",
+                  labelText: "معلومات اضافية عن محتوى ال ${units[selectedIndex!].name}",
                   hintText: "أدخل المعلومات الإضافية",
                 ),
               ),
               const SizedBox(height: 16),
             ],
 
-            // Submit button
+            // ==== Submit Button ====
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
