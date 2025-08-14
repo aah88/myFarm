@@ -1,57 +1,119 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/category_model.dart';
 import '../../services/firebase_service.dart';
 import '../../screens/product/choose_product_screen.dart';
-import 'package:provider/provider.dart';
 import '../../providers/listing_provider.dart';
 
+class ChooseCategoryScreen extends StatefulWidget {
+  const ChooseCategoryScreen({super.key, this.firebaseService});
 
-class ChooseCategoryScreen extends StatelessWidget {
-  final FirebaseService _firebaseService = FirebaseService();
+  final FirebaseService? firebaseService;
+
+  @override
+  State<ChooseCategoryScreen> createState() => _ChooseCategoryScreenState();
+}
+
+class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
+    with TickerProviderStateMixin {
+  late final FirebaseService _firebaseService =
+      widget.firebaseService ?? FirebaseService();
+
+  late Future<List<ProductCategory>> _futureCategories;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureCategories = _firebaseService.getCategory();
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      _futureCategories = _firebaseService.getCategory();
+    });
+    await _futureCategories;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('إضافة منتج', style: TextStyle(color: Color(0xFF2E7D32))),
+        title:
+            const Text('إضافة منتج', style: TextStyle(color: Color(0xFF2E7D32))),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Color(0xFF2E7D32),
+        backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
         child: FutureBuilder<List<ProductCategory>>(
-          future: _firebaseService.getCategory(),
+          future: _futureCategories,
           builder: (context, snapshot) {
+            Widget content;
+
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              content = const _LoadingSkeleton();
             } else if (snapshot.hasError) {
-              return Text('حدث خطأ: ${snapshot.error}');
+              content = _ErrorState(message: 'حدث خطأ: ${snapshot.error}');
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('لا توجد فئات متاحة حالياً.'));
+              content = const _EmptyState();
+            } else {
+              final categories = snapshot.data!;
+              content = _ResponsiveFadedGrid(
+                categories: categories,
+                onTapCategory: (cat) {
+                  context.read<ListingProvider>().setCategoryId(cat.id);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChooseProductScreen(categoryId: cat.id),
+                    ),
+                  );
+                },
+              );
             }
 
-            final categories = snapshot.data!;
-            return GridView.builder(
-              itemCount: categories.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-              ),
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                return CategoryCard(
-                  categoryId: category.id,
-                  title: category.name,
-                  imageUrl: category.imageUrl,
-                );
-              },
+            return CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                const SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'اختر الفئة المناسبة:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2E7D32),
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'اختر فئة المنتج للمتابعة واختيار المنتج ثم الوحدة.',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                            height: 1.25,
+                          ),
+                        ),
+                        SizedBox(height: 12),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  sliver: SliverToBoxAdapter(child: content),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              ],
             );
           },
         ),
@@ -60,43 +122,245 @@ class ChooseCategoryScreen extends StatelessWidget {
   }
 }
 
-class CategoryCard extends StatelessWidget {
-  final String title;
-  final String imageUrl;
-  final String categoryId;
-
-  const CategoryCard({required this.title, required this.imageUrl, required this.categoryId});
+class _LoadingSkeleton extends StatelessWidget {
+  const _LoadingSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.read<ListingProvider>().setCategoryId(categoryId);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ChooseProductScreen(categoryId: categoryId))
+    return LayoutBuilder(
+      builder: (context, c) {
+        const double maxTileWidth = 180;
+        final int crossAxisCount =
+            (c.maxWidth / maxTileWidth).floor().clamp(2, 8);
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: crossAxisCount * 4,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: 0.95,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemBuilder: (_, __) => Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFFF4F6F2),
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
         );
       },
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Text('لا توجد فئات متاحة حالياً.'),
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({super.key, required this.message});
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
       child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         decoration: BoxDecoration(
-          color: Colors.transparent,
-          border: Border.all(color: Color(0xFF2E7D32), width: 1.5),
-          borderRadius: BorderRadius.circular(16)
+          color: const Color(0xFFECF1E8),
+          borderRadius: BorderRadius.circular(12),
         ),
-        padding: const EdgeInsets.all(0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-             Image.asset(imageUrl, height: 120, fit: BoxFit.cover),
-          const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14),
-            ),
-          ],
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 14),
         ),
       ),
     );
   }
 }
+
+class _ResponsiveFadedGrid extends StatelessWidget {
+  const _ResponsiveFadedGrid({
+    super.key,
+    required this.categories,
+    required this.onTapCategory,
+  });
+
+  final List<ProductCategory> categories;
+  final void Function(ProductCategory) onTapCategory;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, c) {
+        const double maxTileWidth = 180;
+        final int crossAxisCount =
+            (c.maxWidth / maxTileWidth).floor().clamp(2, 8);
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: categories.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: 0.95,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemBuilder: (context, index) {
+            final cat = categories[index];
+            final delayMs = 40 * (index % 8);
+
+            return _FadeInUp(
+              delay: Duration(milliseconds: delayMs),
+              child: _CategoryCard(
+                title: cat.name,
+                imageUrl: cat.imageUrl, // WebP من قاعدة البيانات
+                onTap: () => onTapCategory(cat),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _CategoryCard extends StatelessWidget {
+  const _CategoryCard({
+    required this.title,
+    required this.imageUrl,
+    required this.onTap,
+  });
+
+  final String title;
+  final String imageUrl;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final r = BorderRadius.circular(14);
+
+    return Material(
+      color: Colors.white,
+      elevation: 0,
+      borderRadius: r,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: r,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: r,
+            border: Border.all(color: const Color(0xFFE8EBE6), width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+            crossAxisAlignment: CrossAxisAlignment.center, // Center horizontally
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                child: Image.asset(
+                  imageUrl,
+                  height: 110,
+                  fit: BoxFit.contain, // Keep original aspect ratio
+                ),
+              ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                child: Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center, // Center text
+                  style: const TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2E7D32),
+                    height: 1.2,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+ 
+
+class _FadeInUp extends StatefulWidget {
+  const _FadeInUp({
+    required this.child,
+    this.duration = const Duration(milliseconds: 280),
+    this.delay = Duration.zero,
+    super.key,
+  });
+
+  final Widget child;
+  final Duration duration;
+  final Duration delay;
+
+  @override
+  State<_FadeInUp> createState() => _FadeInUpState();
+}
+
+class _FadeInUpState extends State<_FadeInUp>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: widget.duration);
+  late final Animation<double> _opacity =
+      CurvedAnimation(parent: _c, curve: Curves.easeOut);
+  late final Animation<Offset> _offset =
+      Tween(begin: const Offset(0, 0.06), end: Offset.zero)
+          .animate(CurvedAnimation(parent: _c, curve: Curves.easeOut));
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.delay == Duration.zero) {
+      _c.forward();
+    } else {
+      Future.delayed(widget.delay, () {
+        if (mounted) _c.forward();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _opacity,
+      child: SlideTransition(position: _offset, child: widget.child),
+    );
+  }
+}
+

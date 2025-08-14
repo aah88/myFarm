@@ -7,11 +7,17 @@ import '../../services/firebase_service.dart';
 import '../../widgets/product_card.dart';
 import '../unit/choose_unit_screen.dart';
 
+/// Screen for choosing a *sub-product* of a given parent product.
+/// - Fetches sub-products for the provided `parentProductId`.
+/// - Shows a scrollable header (title + helper text).
+/// - Uses a responsive grid that adapts columns to screen width.
+/// - AnimatedSwitcher to transition between Loading / Empty / Grid states.
+/// - Each grid tile fades in and slides up slightly (staggered).
 class ChooseSubProductScreen extends StatefulWidget {
   const ChooseSubProductScreen({
     super.key,
     required this.parentProductId,
-    this.firebaseService, // allow DI for testing, else a default is used
+    this.firebaseService, // optional DI for tests
   });
 
   final String parentProductId;
@@ -25,7 +31,8 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
   late final FirebaseService _firebaseService =
       widget.firebaseService ?? FirebaseService();
 
-  late Future<List<Product>> _futureProducts; // cache the future
+  // Cache the future so we don't refetch on every rebuild
+  late Future<List<Product>> _futureProducts;
 
   @override
   void initState() {
@@ -34,7 +41,7 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
         _firebaseService.getProductsByProductParent(widget.parentProductId);
   }
 
-  // Optional: pull-to-refresh to re-fetch if needed
+  /// Optional: Pull-to-refresh handler (re-fetch the same future)
   Future<void> _refresh() async {
     setState(() {
       _futureProducts =
@@ -46,14 +53,13 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Simple app bar
       appBar: AppBar(
-        // App bar with consistent brand color usage
         title: const Text(
           'إضافة منتج',
           style: TextStyle(color: Color(0xFF2E7D32)),
         ),
         leading: IconButton(
-          // Back button
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
@@ -62,55 +68,53 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
         centerTitle: true,
       ),
 
-      // Body uses FutureBuilder to fetch sub-products ONCE (cached in state)
-      body: FutureBuilder<List<Product>>(
-        future: _futureProducts,
-        builder: (context, snapshot) {
-          // === Loading state ===
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      // FutureBuilder drives the UI (Loading / Error / Empty / Data)
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: FutureBuilder<List<Product>>(
+          future: _futureProducts,
+          builder: (context, snapshot) {
+            // Decide which *content widget* to render inside the switcher
+            Widget content;
 
-          // === Error state ===
-          if (snapshot.hasError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  'حدث خطأ: ${snapshot.error}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ),
-            );
-          }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Loading: show a lightweight skeleton grid
+              content = const _LoadingSkeleton();
+            } else if (snapshot.hasError) {
+              // Error: show message in a friendly card
+              content = _ErrorState(message: 'حدث خطأ: ${snapshot.error}');
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              // Empty: no sub-products found
+              content = const _EmptyState();
+            } else {
+              // Success: build the responsive grid with fade-in tiles
+              final products = snapshot.data!;
+              content = _ResponsiveFadedGrid(
+                products: products,
+                onTapProduct: (product) {
+                  // NOTE: If your listing requires the *sub-product id*, prefer product.id.
+                  context.read<ListingProvider>().setProductId(product.category.id);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ChooseUnitScreen()),
+                  );
+                },
+              );
+            }
 
-          // === Empty state ===
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Text('لا توجد منتجات متاحة حالياً.'),
-              ),
-            );
-          }
-
-          // === Success state ===
-          final products = snapshot.data!;
-
-          // Wrap in RefreshIndicator (optional quality-of-life)
-          return RefreshIndicator(
-            onRefresh: _refresh,
-            child: CustomScrollView(
+            // The "page" is a CustomScrollView with a header sliver and a sliver for content.
+            // The content area uses AnimatedSwitcher so transitions between states are smooth.
+            return CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
+                // Header (scrolls away with the content)
                 const SliverPadding(
                   padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                   sliver: SliverToBoxAdapter(
-                    // Header (scrolls away with content)
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Section title
                         Text(
                           "اختر الصنف المناسب:",
                           style: TextStyle(
@@ -121,6 +125,7 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
                           textAlign: TextAlign.right,
                         ),
                         SizedBox(height: 4),
+                        // Helper line under the title
                         Text(
                           "اضغط على أحد المنتجات أدناه لاختيار الصنف وإكمال العملية.",
                           style: TextStyle(
@@ -135,56 +140,210 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
                   ),
                 ),
 
-                // Responsive grid using MaxCrossAxisExtent
+                // Animated content area (Loading / Error / Empty / Grid)
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  sliver: SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 180, // responsive columns
-                      childAspectRatio: 0.9,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final product = products[index];
-
-                        return KeyedSubtree(
-                          key: ValueKey(product.id), // stable identity
-                          child: ProductCard(
-                            categoryId: product.category.id,
-                            title: product.name,
-                            parentProductId: product.id,
-                            imageUrl: product.imageUrl,
-                            onTap: () {
-                              // NOTE: إن كانت عملية النشر تتطلب subProductId فعليًا،
-                              // فالأدق تمرير product.id بدل product.category.id
-                              context
-                                  .read<ListingProvider>()
-                                  .setProductId(product.category.id);
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const ChooseUnitScreen(),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      childCount: products.length,
+                  sliver: SliverToBoxAdapter(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      switchInCurve: Curves.easeOut,
+                      switchOutCurve: Curves.easeIn,
+                      child: content,
                     ),
                   ),
                 ),
 
                 const SliverToBoxAdapter(child: SizedBox(height: 16)),
               ],
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
+    );
+  }
+}
+
+/// === Content states & helpers ===
+
+/// Loading skeleton: shows grey boxes where tiles would be.
+/// Gives user a hint of layout while data loads.
+class _LoadingSkeleton extends StatelessWidget {
+  const _LoadingSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, c) {
+        const double maxTileWidth = 180;
+        final int crossAxisCount =
+            (c.maxWidth / maxTileWidth).floor().clamp(2, 8);
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: crossAxisCount * 4, // a few rows of placeholders
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: 0.9,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemBuilder: (_, __) => Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFFF4F6F2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Friendly empty state
+class _EmptyState extends StatelessWidget {
+  const _EmptyState({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      key: ValueKey('empty'),
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Text('لا توجد منتجات متاحة حالياً.'),
+      ),
+    );
+  }
+}
+
+/// Error card with message
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({super.key, required this.message});
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      key: const ValueKey('error'),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFECF1E8),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 14),
+        ),
+      ),
+    );
+  }
+}
+
+/// Responsive grid that adapts to width and applies a fade-in-up animation
+/// to each tile with a subtle stagger.
+class _ResponsiveFadedGrid extends StatelessWidget {
+  const _ResponsiveFadedGrid({
+    super.key,
+    required this.products,
+    required this.onTapProduct,
+  });
+
+  final List<Product> products;
+  final void Function(Product) onTapProduct;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, c) {
+        // Compute columns similar to SliverGridDelegateWithMaxCrossAxisExtent
+        const double maxTileWidth = 180;
+        final int crossAxisCount =
+            (c.maxWidth / maxTileWidth).floor().clamp(2, 8);
+
+        return GridView.builder(
+          key: const ValueKey('grid'),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: products.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: 0.9,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemBuilder: (context, index) {
+            final product = products[index];
+            final int delayMs = 40 * (index % 8); // small stagger
+
+            return _FadeInUp(
+              delay: Duration(milliseconds: delayMs),
+              child: ProductCard(
+                categoryId: product.category.id,
+                title: product.name,
+                parentProductId: product.id,
+                imageUrl: product.imageUrl,
+                onTap: () => onTapProduct(product),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+/// Reusable fade + slight slide-up animation used for each grid tile.
+class _FadeInUp extends StatefulWidget {
+  const _FadeInUp({
+    required this.child,
+    this.duration = const Duration(milliseconds: 280),
+    this.delay = Duration.zero,
+    super.key,
+  });
+
+  final Widget child;
+  final Duration duration;
+  final Duration delay;
+
+  @override
+  State<_FadeInUp> createState() => _FadeInUpState();
+}
+
+class _FadeInUpState extends State<_FadeInUp>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: widget.duration);
+  late final Animation<double> _opacity =
+      CurvedAnimation(parent: _c, curve: Curves.easeOut);
+  late final Animation<Offset> _offset =
+      Tween(begin: const Offset(0, 0.06), end: Offset.zero)
+          .animate(CurvedAnimation(parent: _c, curve: Curves.easeOut));
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.delay == Duration.zero) {
+      _c.forward();
+    } else {
+      Future.delayed(widget.delay, () {
+        if (mounted) _c.forward();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _opacity,
+      child: SlideTransition(position: _offset, child: widget.child),
     );
   }
 }

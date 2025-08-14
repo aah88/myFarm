@@ -29,3 +29,5 @@ flutter:
     - lib/assets/images/
     - lib/assets/images/vegetables/
     - lib/assets/images/unit_icons/
+    - lib/assets/images/category/
+    
