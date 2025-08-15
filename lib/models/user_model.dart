@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppUser {
   final String id;
+  final String name;
   final String username;
   final String email; 
    final String address;
@@ -11,6 +12,7 @@ class AppUser {
   final DateTime  createdAt;
 
   AppUser({required this.id,
+    required this.name,
     required this.username,
     required this.email,
     required this.address,
@@ -23,6 +25,7 @@ class AppUser {
   factory AppUser.fromMap(Map<String, dynamic> data, String id) {
     return AppUser(
       id: id,
+      name: data['name']??'',
       username: data['username'] ?? '',
       email: data['email']?? '',
       address: data['address']?? '',
@@ -35,6 +38,7 @@ class AppUser {
 
   Map<String, dynamic> toMap() {
     return {
+      'name': name,
       'username': username,
       'email': email,
       'address': address,
@@ -48,6 +52,7 @@ class AppUser {
 
    factory AppUser.empty() {
     return AppUser(
+      name:'',
       id: '',
       email: '',
       username:'',

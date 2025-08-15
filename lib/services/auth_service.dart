@@ -7,6 +7,7 @@ class AuthService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<String?> signUp({
+    required String name,
     required String username,
     required String email,
     required String password,
@@ -36,6 +37,7 @@ class AuthService {
       // Build AppUser object
       final newUser = AppUser(
         id: userCred.user!.uid,
+        name: name,
         username: username,
         email: email,
         address: address,

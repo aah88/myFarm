@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/category_model.dart';
+import '../../providers/user_provider.dart';
 import '../../services/firebase_service.dart';
 import '../../screens/product/choose_product_screen.dart';
 import '../../providers/listing_provider.dart';
@@ -67,6 +68,7 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
                 categories: categories,
                 onTapCategory: (cat) {
                   context.read<ListingProvider>().setCategoryId(cat.id);
+                  context.read<ListingProvider>().setUserId(context.read<UserProvider>().userId!);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

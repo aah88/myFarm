@@ -2,6 +2,7 @@ class FullListing {
   final String farmerId;
   final String productId;
   final int qty;
+  final String farmerName;
   final double price;
   final double rating;
   final String productName;
@@ -11,6 +12,7 @@ class FullListing {
     required this.farmerId,
     required this.productId,
     required this.qty,
+    required this.farmerName,
     required this.price,
     required this.rating,
     required this.productName,
@@ -18,9 +20,10 @@ class FullListing {
   });
 
   /// Optional: create from Firestore data
-  factory FullListing.fromMap(Map<String, dynamic> listingData, Map<String, dynamic> productData) {
+  factory FullListing.fromMap(Map<String, dynamic> listingData, Map<String, dynamic> productData, Map<String, dynamic> userData) {
     return FullListing(
       farmerId: listingData['farmerId'] ?? '',
+      farmerName: userData['name'] ?? '',
       productId: listingData['productId'] ?? '',
       qty: listingData['qty'] ?? 0,
       price: listingData['price'] ?? 0.0,

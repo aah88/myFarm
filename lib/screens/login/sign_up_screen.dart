@@ -9,6 +9,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _addressController = TextEditingController();
@@ -23,6 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     setState(() => _loading = true);
 
     String? error = await _authService.signUp(
+      name: _nameController.text.trim(),
       username: _usernameController.text.trim(),
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
@@ -32,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
 
     setState(() => _loading = false);
-
+    if(!mounted) return;
     if (error == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('تم التسجيل! تحقق من بريدك الإلكتروني للتأكيد.')),
@@ -55,6 +57,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             children: [
               TextFormField(controller: _usernameController, decoration: InputDecoration(labelText: 'اسم المستخدم')),
+              TextFormField(controller: _nameController, decoration: InputDecoration(labelText: 'اسم')),
               TextFormField(controller: _emailController, decoration: InputDecoration(labelText: 'البريد الإلكتروني')),
               TextFormField(controller: _passwordController, decoration: InputDecoration(labelText: 'كلمة المرور'), obscureText: true),
               TextFormField(controller: _addressController, decoration: InputDecoration(labelText: 'العنوان')),

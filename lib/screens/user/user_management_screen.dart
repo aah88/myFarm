@@ -13,6 +13,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   final FirebaseService _firebaseService = FirebaseService();
 
   final _nameController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -29,7 +30,8 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       
       final newUser = AppUser(
         id: '',
-        username: _nameController.text,
+        username: _usernameController.text,
+        name: _nameController.text,
         email:_emailController.text,
         address: _addressController.text,
         phone: _phoneController.text,
@@ -44,6 +46,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       _addressController.clear();
       _phoneController.clear();
       _profileImageController.clear();
+      _usernameController.clear();
       
     }
   }

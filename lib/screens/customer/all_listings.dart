@@ -9,7 +9,7 @@ class ListingCard extends StatelessWidget {
   final double rating;
   final double price;
   final String farmerName;
-  final String distance;
+  final double distance;
   final VoidCallback onAddToCart;
 
 
@@ -54,7 +54,7 @@ class ListingCard extends StatelessWidget {
               style: const TextStyle(color: Colors.blueGrey, fontSize: 12),
             ),
             Text(
-              "المسافة: $distance",
+             "المسافة: ${AppConfig.formatDistance(distance)}",
               style: const TextStyle(color: Colors.blueGrey, fontSize: 12),
             ),
             Text(
@@ -158,8 +158,8 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                       title: listing.productName,
                       rating: listing.rating, // replace with actual rating if available
                       price: listing.price,
-                      farmerName: listing.farmerId,
-                      distance: '5.0', // replace with actual distance müss berechnet werden
+                      farmerName: listing.farmerName,
+                      distance: 5.2, // replace with actual distance müss berechnet werden
                       onAddToCart: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

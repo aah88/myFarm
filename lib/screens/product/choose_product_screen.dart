@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/product_model.dart';
 import '../../services/firebase_service.dart';
 import '../../widgets/product_card.dart';
 import '../../screens/product/choose_sub_product_screen.dart';
+import '../../providers/listing_provider.dart';
 
 /// Main screen for choosing a product from a category
 /// Displays a list of root-level products with filtering by Arabic letters.
@@ -10,8 +12,7 @@ import '../../screens/product/choose_sub_product_screen.dart';
 class ChooseProductScreen extends StatefulWidget {
   final String categoryId; // ID of the selected category
 
-  const ChooseProductScreen({required this.categoryId, Key? key})
-      : super(key: key);
+  const ChooseProductScreen({required this.categoryId, super.key});
 
   @override
   State<ChooseProductScreen> createState() => _ChooseProductScreenState();
@@ -302,6 +303,7 @@ class _ResponsiveFadedGrid extends StatelessWidget {
                 imageUrl: product.imageUrl,
                 parentProductId: product.id,
                 onTap: () {
+                  context.read<ListingProvider>().setProductId(product.id);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

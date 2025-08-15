@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/screens/auth/validation_per_phone.dart';
+import 'package:provider/provider.dart';
+import '../../providers/user_provider.dart';
 import '../../screens/farmer/farmer_management_screen.dart';
 import '../../screens/product/product_management_screen.dart';
 import '../../screens/category/category_management_screen.dart';
@@ -46,9 +48,13 @@ class _SignInPageState extends State<SignInPage> {
           setState(() => _isLoading = false);
           return;
         }
+        String uid = userCredential.user!.uid;
 
+        
         _showMessage("Sign in successful!");
         if (!mounted) return;
+        context.read<UserProvider>().setUserId(uid);
+        //HERE ADD
        Navigator.pushReplacement(
     context,
     MaterialPageRoute(builder: (context) =>  HomeScreenFarmer()),

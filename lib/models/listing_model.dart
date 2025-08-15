@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Listing {
    String id;
-   String farmerId;
+   String userId;
    String categoryId; 
    String productId; 
    String unit; 
@@ -14,7 +14,7 @@ class Listing {
   Listing({required this.id,
     required this.categoryId,
     required this.productId,
-    required this.farmerId,
+    required this.userId,
     required this.unit,
     required this.qty,
     required this.price,
@@ -25,7 +25,7 @@ class Listing {
   factory Listing.fromMap(Map<String, dynamic> data, String id) {
     return Listing(
       id: id,
-      farmerId: data['farmerId'] ?? '',
+      userId: data['userId'] ?? '',
       categoryId: data['categoryId'] ?? '',
       productId: data['productId']?? '',
       unit: data['unit']?? '',
@@ -41,7 +41,7 @@ class Listing {
       id: '',
       categoryId: '',
       productId: '',
-      farmerId: '',
+      userId: '',
       unit: '',
       qty: 0,
       price: 0.0,
@@ -52,7 +52,7 @@ class Listing {
   /// CopyWith method for updating only some fields
   Listing copyWith({
     String? id,
-    String? farmerId,
+    String? userId,
     String? categoryId,
     String? productId,
     String? unit,
@@ -63,7 +63,7 @@ class Listing {
   }) {
     return Listing(
       id: id ?? this.id,
-      farmerId: farmerId ?? this.farmerId,
+      userId: userId ?? this.userId,
       categoryId: categoryId ?? this.categoryId,
       productId: productId ?? this.productId,
       unit: unit ?? this.unit,
@@ -76,7 +76,7 @@ class Listing {
   
   Map<String, dynamic> toMap() {
     return {
-      'farmerId': farmerId,
+      'userId': userId,
       'categoryId': categoryId,
       'productId': productId,
       'unit': unit,

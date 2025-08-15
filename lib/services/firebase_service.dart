@@ -96,30 +96,54 @@ class FirebaseService {
     await _db.collection('user').add(user.toMap());
   }
 
-  Future<List<FullListing>> getFullListings() async {
+
+Future<List<FullListing>> getFullListings() async {
+  // 1. Get all listings
   final listingSnapshot = await _db.collection('listing').get();
 
-  // Get all product IDs from listings
+  // 2. Extract all unique productIds and userIds
   final productIds = listingSnapshot.docs
       .map((doc) => doc['productId'] as String)
-      .toSet();
+      .toSet()
+      .toList();
 
-  // Fetch all needed products in one go
+  final userIds = listingSnapshot.docs
+      .map((doc) => doc['userId'] as String)
+      .toSet()
+      .toList();
+
+  // 3. Fetch all products in one query
   final productSnapshot = await _db
       .collection('product')
-      .where(FieldPath.documentId, whereIn: productIds.toList())
+      .where(FieldPath.documentId, whereIn: productIds)
       .get();
 
+  // 4. Fetch all users in one query
+  final userSnapshot = await _db
+      .collection('users')
+      .where(FieldPath.documentId, whereIn: userIds)
+      .get();
+
+  // 5. Create quick lookup maps
   final productMap = {
     for (var doc in productSnapshot.docs) doc.id: doc.data()
   };
 
-  // Merge listings with product data
+  final userMap = {
+    for (var doc in userSnapshot.docs) doc.id: doc.data()
+  };
+
+  // 6. Merge listing, product, and user into one object
   return listingSnapshot.docs.map((listingDoc) {
     final listingData = listingDoc.data();
     final productData = productMap[listingData['productId']] ?? {};
+    final userData = userMap[listingData['userId']] ?? {};
 
-    return FullListing.fromMap(listingData,productData);
+    return FullListing.fromMap(
+      listingData,
+      productData,
+      userData,
+    );
   }).toList();
 }
 
