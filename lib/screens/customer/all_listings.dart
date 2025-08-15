@@ -161,6 +161,7 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                       farmerName: listing.farmerName,
                       distance: 5.2, // replace with actual distance müss berechnet werden
                       onAddToCart: () {
+                        //ADD To CART
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text("${listing.productName} تمت إضافته إلى السلة"),

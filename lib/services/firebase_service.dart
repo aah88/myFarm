@@ -147,5 +147,31 @@ Future<List<FullListing>> getFullListings() async {
   }).toList();
 }
 
+  /// Fetch multiple listings by their IDs (for cart)
+  Future<List<Listing>> getListingsByIds(List<String> ids) async {
+    if (ids.isEmpty) return [];
+
+    // Firestore limits whereIn queries to 10 items per query
+    List<Listing> allListings = [];
+    const batchSize = 10;
+    for (var i = 0; i < ids.length; i += batchSize) {
+      final batchIds = ids.sublist(
+        i,
+        (i + batchSize > ids.length) ? ids.length : i + batchSize,
+      );
+
+      final snapshot = await _db
+          .collection('listing')
+          .where(FieldPath.documentId, whereIn: batchIds)
+          .get();
+
+      allListings.addAll(snapshot.docs
+          .map((doc) => Listing.fromMap(doc.data(), doc.id))
+          .toList());
+    }
+
+    return allListings;
+  }
+
 
 }

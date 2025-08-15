@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/screens/auth/validation_per_phone.dart';
+import 'package:flutter_application_1/screens/cart/cart_management_screen.dart';
 import 'package:provider/provider.dart';
 import '../../providers/user_provider.dart';
 import '../../screens/farmer/farmer_management_screen.dart';
@@ -171,6 +172,11 @@ ElevatedButton(
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  AllListingsScreen())),
               child: const Text('BUY'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  CartScreen())),
+              child: const Text('CART'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
