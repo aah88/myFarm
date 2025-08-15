@@ -3,6 +3,7 @@ import 'package:flutter_application_1/models/listing_model.dart';
 import '../../models/product_model.dart';
 import '../../models/category_model.dart';
 import '../../models/farmer_model.dart';
+import '../../models/full_listing.dart';
 import '../../models/user_model.dart';
 
 class FirebaseService {
@@ -94,6 +95,33 @@ class FirebaseService {
   Future<void> addUser(AppUser user) async {
     await _db.collection('user').add(user.toMap());
   }
+
+  Future<List<FullListing>> getFullListings() async {
+  final listingSnapshot = await _db.collection('listing').get();
+
+  // Get all product IDs from listings
+  final productIds = listingSnapshot.docs
+      .map((doc) => doc['productId'] as String)
+      .toSet();
+
+  // Fetch all needed products in one go
+  final productSnapshot = await _db
+      .collection('product')
+      .where(FieldPath.documentId, whereIn: productIds.toList())
+      .get();
+
+  final productMap = {
+    for (var doc in productSnapshot.docs) doc.id: doc.data()
+  };
+
+  // Merge listings with product data
+  return listingSnapshot.docs.map((listingDoc) {
+    final listingData = listingDoc.data();
+    final productData = productMap[listingData['productId']] ?? {};
+
+    return FullListing.fromMap(listingData,productData);
+  }).toList();
+}
 
 
 }

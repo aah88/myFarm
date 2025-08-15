@@ -6,8 +6,9 @@ class Listing {
    String categoryId; 
    String productId; 
    String unit; 
-   String qty; 
-   String price; 
+   int qty; 
+   double price; 
+   double rating;
    Timestamp startDate; 
 
   Listing({required this.id,
@@ -17,6 +18,7 @@ class Listing {
     required this.unit,
     required this.qty,
     required this.price,
+    required this.rating,
     required this.startDate,
     });
 
@@ -29,6 +31,7 @@ class Listing {
       unit: data['unit']?? '',
       qty: data['qty']?? '',
       price: data['price']?? '',
+      rating: data['rating']?? '',
       startDate: data['startDate']?? FieldValue.serverTimestamp(),
     );
   }
@@ -40,8 +43,9 @@ class Listing {
       productId: '',
       farmerId: '',
       unit: '',
-      qty: '',
-      price: '',
+      qty: 0,
+      price: 0.0,
+      rating: 0,
       startDate: Timestamp.now(),
     );
   }
@@ -52,8 +56,9 @@ class Listing {
     String? categoryId,
     String? productId,
     String? unit,
-    String? qty,
-    String? price,
+    int? qty,
+    double? price,
+    double? rating,
     Timestamp? startDate,
   }) {
     return Listing(
@@ -64,6 +69,7 @@ class Listing {
       unit: unit ?? this.unit,
       qty: qty ?? this.qty,
       price: price ?? this.price,
+      rating: rating?? this.rating,
       startDate: startDate ?? this.startDate,
     );
   }
@@ -76,6 +82,7 @@ class Listing {
       'unit': unit,
       'qty': qty,
       'price': price,
+      'rating': rating,
       'startDate': startDate,
     };
   }

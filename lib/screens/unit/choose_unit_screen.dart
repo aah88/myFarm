@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import '../../models/unit_data.dart';
 import 'package:provider/provider.dart';
@@ -50,8 +51,9 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
 
     // Save data in provider
     context.read<ListingProvider>().setUnit(selectedUnit);
-    context.read<ListingProvider>().setPrice(price);
-    context.read<ListingProvider>().setQty(qty);
+    context.read<ListingProvider>().setPrice(double.parse(price));
+    context.read<ListingProvider>().setQty(int.parse(qty));
+  
 
     // Save to Firebase
     _addListing(context.read<ListingProvider>().listing);

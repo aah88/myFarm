@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/listing_model.dart';
+import 'package:flutter_application_1/models/full_listing.dart';
 import '../../services/firebase_service.dart';
 
 class ListingCard extends StatelessWidget {
@@ -10,6 +10,7 @@ class ListingCard extends StatelessWidget {
   final String farmerName;
   final String distance;
   final VoidCallback onAddToCart;
+
 
   const ListingCard({
     super.key,
@@ -127,8 +128,8 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
 
           // 🛒 Product Grid
           Expanded(
-            child: FutureBuilder<List<Listing>>(
-              future: _firebaseService.getListing(),
+            child: FutureBuilder<List<FullListing>>(
+              future: _firebaseService.getFullListings(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -152,16 +153,16 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                   itemBuilder: (context, index) {
                     final listing = listings[index];
                     return ListingCard(
-                      imageUrl: 'toz', // replace with actual image
-                      title: listing.productId,
-                      rating: 4.0, // replace with actual rating if available
+                      imageUrl: listing.productImageUrl, // replace with actual image
+                      title: listing.productName,
+                      rating: listing.rating, // replace with actual rating if available
                       price: listing.price,
                       farmerName: listing.farmerId,
-                      distance: '5.0', // replace with actual distance
+                      distance: '5.0', // replace with actual distance müss berechnet werden
                       onAddToCart: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("${listing.productId} تمت إضافته إلى السلة"),
+                            content: Text("${listing.productName} تمت إضافته إلى السلة"),
                           ),
                         );
                       },

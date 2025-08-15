@@ -26,13 +26,18 @@ class ListingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setQty(String qty) {
+  void setQty(int qty) {
     _listing = _listing.copyWith(qty: qty);
     notifyListeners();
   }
 
-  void setPrice(String price) {
+  void setPrice(double price) {
     _listing = _listing.copyWith(price: price);
+    notifyListeners();
+  }
+
+   void setRating(double rating) {
+    _listing = _listing.copyWith(price: rating);
     notifyListeners();
   }
 }
