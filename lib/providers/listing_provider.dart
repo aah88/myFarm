@@ -11,7 +11,7 @@ class ListingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCategoryId(String categoryId) {
+  void setCategoryId(String categoryId) { 
     _listing = _listing.copyWith(categoryId: categoryId);
     notifyListeners();
   }

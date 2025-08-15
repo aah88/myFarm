@@ -190,7 +190,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
               decoration: const InputDecoration(
                 labelText: "السعر",
                 hintText: "أدخل السعر",
-              ),
+              )
             ),
 
             const SizedBox(height: 16),
