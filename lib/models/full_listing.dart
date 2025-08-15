@@ -2,7 +2,7 @@ class FullListing {
   final String farmerId;
   final String productId;
   final int qty;
-  final String price;
+  final double price;
   final double rating;
   final String productName;
   final String productImageUrl;

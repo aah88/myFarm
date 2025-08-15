@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
 import '../../services/firebase_service.dart';
+import '../../config/app_config.dart';
 
 class ListingCard extends StatelessWidget {
   final String imageUrl;
   final String title;
   final double rating;
-  final String price;
+  final double price;
   final String farmerName;
   final String distance;
   final VoidCallback onAddToCart;
@@ -61,7 +62,7 @@ class ListingCard extends StatelessWidget {
               style: const TextStyle(color: Colors.grey),
             ),
             Text(
-              price,
+              AppConfig.formatPrice(price),
               style: const TextStyle(fontSize: 16, color: Colors.green),
             ),
             const SizedBox(height: 8),

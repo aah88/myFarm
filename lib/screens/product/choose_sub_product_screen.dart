@@ -93,7 +93,7 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
                 products: products,
                 onTapProduct: (product) {
                   // NOTE: If your listing requires the *sub-product id*, prefer product.id.
-                  context.read<ListingProvider>().setProductId(product.category.id);
+                  context.read<ListingProvider>().setProductId(product.id);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const ChooseUnitScreen()),
