@@ -3,8 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/screens/auth/validation_per_phone.dart';
 import '../../screens/farmer/farmer_management_screen.dart';
 import '../../screens/product/product_management_screen.dart';
-import '../category/category_management_screen.dart';
+import '../../screens/category/category_management_screen.dart';
 import '../../screens/home/home_screen_farmer.dart';
+import '../../screens/customer/all_listings.dart';
 import 'sign_up_screen.dart';
 
 class SignInPage extends StatefulWidget {
@@ -130,7 +131,7 @@ class _SignInPageState extends State<SignInPage> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
 
             _isLoading
                 ? const CircularProgressIndicator()
@@ -150,20 +151,27 @@ ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  PhoneAuthPage())),
               child: const Text('تسجيل الدخول', style: TextStyle(color: Color(0xFF2E7D32))),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  FarmerManagementScreen())),
               child: const Text('Register farmer', style: TextStyle(color: Color(0xFF2E7D32))),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  HomeScreenFarmer())),
               child: const Text('استعراض كزائر'),
             ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  AllListingsScreen())),
+              child: const Text('BUY'),
+            ),
+            const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProductManagementScreen())),
               child: const Text('Add Product'),
             ),
+            const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CategoryManagementScreen())),
               child: const Text('Add Category'),
@@ -172,6 +180,7 @@ ElevatedButton(
               onPressed: _forgotPassword,
               child: const Text("Forgot Password?"),
             ),
+            
             const SizedBox(height: 20),
 
             Row(
