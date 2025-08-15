@@ -1,5 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/category/choose_category_screen.dart';
+import 'package:flutter_application_1/screens/home/home_screen_farmer.dart';
+import 'package:flutter_application_1/screens/order/order_list_screen.dart';
+import 'package:flutter_application_1/screens/product/choose_product_screen.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +76,8 @@ class MyApp extends StatelessWidget {
         ),
 
         // Input decoration theme to all TextFields and Dropdowns
-        inputDecorationTheme: InputDecorationTheme(      
+        inputDecorationTheme: InputDecorationTheme(
+          //contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           labelStyle: const TextStyle(     // Label text style 
             color: Color(0xFF91958E), 
             fontWeight: FontWeight.bold,
@@ -94,10 +99,16 @@ class MyApp extends StatelessWidget {
               width: 2,
             ),
             borderRadius: BorderRadius.circular(10),
-          ),
+          ),         
         ),       
       ),
-
+  // مهم: عرّف المسارات
+    routes: {
+      '/home'   : (_) => HomeScreenFarmer(),
+      '/orders' : (_) => OrderListScreen(),
+      '/reports': (_) => ChooseCategoryScreen(),
+      '/profile': (_) => ChooseCategoryScreen(),
+    },
       home: const SignInPage(),
     );
   }

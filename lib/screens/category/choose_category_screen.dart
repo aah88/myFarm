@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../models/category_model.dart';
 import '../../providers/user_provider.dart';
 import '../../services/firebase_service.dart';
 import '../../screens/product/choose_product_screen.dart';
 import '../../providers/listing_provider.dart';
+
+import '../../widgets/app_scaffold.dart';
+import '../../widgets/bottom_nav.dart';
 
 class ChooseCategoryScreen extends StatefulWidget {
   const ChooseCategoryScreen({super.key, this.firebaseService});
@@ -37,10 +41,10 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AppScaffold(
+      currentTab: AppTab.reports, // تبويب الرئيسية يظل مفعّل
       appBar: AppBar(
-        title:
-            const Text('إضافة منتج', style: TextStyle(color: Color(0xFF2E7D32))),
+        title: const Text('إضافة منتج', style: TextStyle(color: Color(0xFF2E7D32))),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
@@ -230,7 +234,7 @@ class _ResponsiveFadedGrid extends StatelessWidget {
               delay: Duration(milliseconds: delayMs),
               child: _CategoryCard(
                 title: cat.name,
-                imageUrl: cat.imageUrl, // WebP من قاعدة البيانات
+                imageUrl: cat.imageUrl,
                 onTap: () => onTapCategory(cat),
               ),
             );
@@ -277,25 +281,27 @@ class _CategoryCard extends StatelessWidget {
             ],
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Center vertically
-            crossAxisAlignment: CrossAxisAlignment.center, // Center horizontally
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(14)),
                 child: Image.asset(
                   imageUrl,
                   height: 110,
-                  fit: BoxFit.contain, // Keep original aspect ratio
+                  fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(height: 8),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 child: Text(
                   title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center, // Center text
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14.5,
                     fontWeight: FontWeight.bold,
@@ -311,7 +317,6 @@ class _CategoryCard extends StatelessWidget {
     );
   }
 }
- 
 
 class _FadeInUp extends StatefulWidget {
   const _FadeInUp({
@@ -365,4 +370,3 @@ class _FadeInUpState extends State<_FadeInUp>
     );
   }
 }
-

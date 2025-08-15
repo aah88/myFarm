@@ -6,9 +6,9 @@ import '../../widgets/product_card.dart';
 import '../../screens/product/choose_sub_product_screen.dart';
 import '../../providers/listing_provider.dart';
 
-/// Main screen for choosing a product from a category
-/// Displays a list of root-level products with filtering by Arabic letters.
-/// Uses animations for smooth UI transitions.
+import '../../widgets/app_scaffold.dart';
+import '../../widgets/bottom_nav.dart';
+
 class ChooseProductScreen extends StatefulWidget {
   final String categoryId; // ID of the selected category
 
@@ -20,19 +20,17 @@ class ChooseProductScreen extends StatefulWidget {
 
 class _ChooseProductScreenState extends State<ChooseProductScreen> {
   final FirebaseService _firebaseService = FirebaseService();
-  late Future<List<Product>> _productsFuture; // Cache of fetched products
+  late Future<List<Product>> _productsFuture;
 
-  /// Arabic alphabet letters + "الكل" (All) at the end
   static const List<String> _letters = [
     'أ','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش',
     'ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي',
     'الكل'
   ];
 
-  String _selectedLetter = 'الكل'; // Currently selected letter for filtering
-  List<Product> _allRootProducts = []; // List of root-level products
+  String _selectedLetter = 'الكل';
+  List<Product> _allRootProducts = [];
 
-  /// Map for normalizing Arabic characters for filtering
   final Map<String, String> _charMap = const {
     'أ': 'ا', 'إ': 'ا', 'آ': 'ا', 'ى': 'ي'
   };
@@ -40,19 +38,15 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch all products in this category when the screen loads
-    _productsFuture =
-        _firebaseService.getProductsByCategory(widget.categoryId);
+    _productsFuture = _firebaseService.getProductsByCategory(widget.categoryId);
   }
 
-  /// Normalize first letter of the string for consistent filtering
   String _normalize(String s) {
     if (s.trim().isEmpty) return '';
     final first = s.trim()[0];
     return _charMap[first] ?? first;
   }
 
-  /// Check if a product name matches the selected letter
   bool _matchesLetter(String name) {
     if (_selectedLetter == 'الكل') return true;
     return _normalize(name) == _normalize(_selectedLetter);
@@ -60,11 +54,13 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // Top AppBar with title and back button
+    return AppScaffold(
+      currentTab: AppTab.home, // تظل تحت تبويب الرئيسية
       appBar: AppBar(
-        title: const Text('إضافة منتج',
-            style: TextStyle(color: Color(0xFF2E7D32))),
+        title: const Text(
+          'إضافة منتج',
+          style: TextStyle(color: Color(0xFF2E7D32)),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
@@ -73,16 +69,12 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
         elevation: 0,
         centerTitle: true,
       ),
-
-      // Main body
       body: FutureBuilder<List<Product>>(
         future: _productsFuture,
         builder: (context, snapshot) {
-          // === Loading state ===
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          // === Error state ===
           if (snapshot.hasError) {
             return Center(
               child: Padding(
@@ -92,28 +84,23 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
               ),
             );
           }
-          // === Empty state ===
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('لا توجد منتجات متاحة حالياً.'));
           }
 
-          // Store root-level products (no parent) if not already cached
           if (_allRootProducts.isEmpty) {
             _allRootProducts = snapshot.data!
                 .where((p) => p.parentProduct.isEmpty)
                 .toList();
           }
 
-          // Apply letter filter
           final products = _allRootProducts
               .where((p) => _matchesLetter(p.name))
               .toList();
 
-          // Main scroll view with header, filter, and grid
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              // Header section with title and description
               const SliverPadding(
                 padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                 sliver: SliverToBoxAdapter(
@@ -143,7 +130,7 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
                 ),
               ),
 
-              // Letters filter bar
+              // شريط الحروف
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(
@@ -158,7 +145,6 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
 
               const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-              // AnimatedSwitcher to fade between empty and grid view
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(
@@ -185,8 +171,8 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
   }
 }
 
-/// Widget for the alphabet filter bar
-/// Displays each letter in a rounded box and highlights the selected letter
+// ====== بقية الويدجتات المساعدة كما هي ======
+
 class _LettersBar extends StatelessWidget {
   final List<String> letters;
   final String selectedLetter;
@@ -200,11 +186,11 @@ class _LettersBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double letterSize = 37; // Box size for letters
-    const double allWidth = 45; // Width for "الكل"
+    const double letterSize = 37;
+    const double allWidth = 45;
 
     return Directionality(
-      textDirection: TextDirection.rtl, // Align right for Arabic
+      textDirection: TextDirection.rtl,
       child: Wrap(
         spacing: 6,
         runSpacing: 6,
@@ -248,7 +234,6 @@ class _LettersBar extends StatelessWidget {
   }
 }
 
-/// Widget for empty state (no products match the filter)
 class _EmptyState extends StatelessWidget {
   const _EmptyState({super.key});
 
@@ -263,7 +248,6 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-/// Responsive grid that fades in and slightly slides up each tile
 class _ResponsiveFadedGrid extends StatelessWidget {
   const _ResponsiveFadedGrid({
     super.key,
@@ -276,7 +260,6 @@ class _ResponsiveFadedGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Determine number of columns based on available width
         const double maxTileWidth = 180;
         final int crossAxisCount =
             (constraints.maxWidth / maxTileWidth).floor().clamp(2, 8);
@@ -293,7 +276,7 @@ class _ResponsiveFadedGrid extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             final product = products[index];
-            final int delayMs = 40 * (index % 8); // Stagger effect delay
+            final int delayMs = 40 * (index % 8);
 
             return _FadeInUp(
               delay: Duration(milliseconds: delayMs),
@@ -322,7 +305,6 @@ class _ResponsiveFadedGrid extends StatelessWidget {
   }
 }
 
-/// Fade + slide-up animation for grid tiles
 class _FadeInUp extends StatefulWidget {
   const _FadeInUp({
     required this.child,

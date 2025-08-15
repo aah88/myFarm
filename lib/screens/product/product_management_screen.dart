@@ -62,14 +62,24 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         child: Column(
           children: [
             TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'اسم المنتج'),
+              controller: _nameController,                      
+              decoration: const InputDecoration(
+                labelText: "المنتج",
+                hintText: "أدخل المنتج",
+              )
             ),
+            const SizedBox(height: 16),
+
             TextField(
               controller: _descriptionController,
-              decoration: const InputDecoration(labelText: 'وصف المنتج'),
+              decoration: const InputDecoration(
+                labelText: "وصف المنتج",
+                hintText: "أدخل وصف المنتج",
+              )
             ),
 
+            const SizedBox(height: 16),
+            
             StreamBuilder<List<ProductCategory>>(
               stream: _categoriesStream,
               builder: (context, snapshot) {
@@ -80,7 +90,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                 final categories = snapshot.data!;
 
                 return DropdownButtonFormField<ProductCategory>(
-                  decoration: const InputDecoration(labelText: 'الفئة'),
+                  decoration: const InputDecoration(labelText: 'الفئة', hintText: "اختر من القائمة",),
                   value: selectedCategory,
                   items: categories.map((cat) {
                     return DropdownMenuItem<ProductCategory>(
@@ -96,6 +106,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                 );
               },
             ),
+            const SizedBox(height: 16),
+            
             FutureBuilder<List<Product>>(
               future: _productsFuture,
               builder: (context, snapshot) {
@@ -124,7 +136,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                 );
               },
             ),
-
+            const SizedBox(height: 16),
             TextField(
               controller: _imageUrlController,
               decoration: const InputDecoration(labelText: 'صورة'),
