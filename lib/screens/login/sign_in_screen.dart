@@ -4,6 +4,7 @@ import 'package:flutter_application_1/providers/cart_provider.dart';
 import 'package:flutter_application_1/screens/auth/validation_per_phone.dart';
 import 'package:flutter_application_1/screens/cart/cart_management_screen.dart';
 import 'package:flutter_application_1/screens/home/home_screen_user.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
 import '../../providers/user_provider.dart';
 import '../../screens/product/product_management_screen.dart';
@@ -155,18 +156,14 @@ class _SignInPageState extends State<SignInPage> {
                 : SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
                       onPressed: _signIn,
                       child: const Text("Sign In", style: TextStyle(fontSize: 16)),
                     ),
                   ),
             const SizedBox(height: 12),
-ElevatedButton(
+            ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  PhoneAuthPage())),
-              child: const Text('تسجيل الدخول', style: TextStyle(color: Color(0xFF2E7D32))),
+              child: const Text('تسجيل الدخول'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
@@ -210,7 +207,7 @@ ElevatedButton(
                     "Sign Up",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.green,
+                      color: BrandColors.green,
                     ),
                   ),
                 ),
