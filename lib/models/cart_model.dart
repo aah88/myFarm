@@ -1,7 +1,8 @@
 class Cart {
   final List<CartItem> items;
-
-  Cart({required this.items});
+  final String userId;
+  
+  Cart({required this.items, required this.userId});
 
   factory Cart.fromMap(Map<String, dynamic> data) {
     var itemsList = <CartItem>[];
@@ -10,20 +11,37 @@ class Cart {
           .map((item) => CartItem.fromMap(item))
           .toList();
     }
-    return Cart(items: itemsList);
+    return Cart(items: itemsList, userId: data['userId'] ?? '');
   }
 
   Map<String, dynamic> toMap() {
     return {
       'items': items.map((item) => item.toMap()).toList(),
+      'userId': userId
     };
   }
 
-  factory Cart.empty() {
-    return Cart(items: []);
+  factory Cart.userCart(String userId) {
+    return Cart(items: [], userId: userId);
+  }
+    factory Cart.empty() {
+    return Cart(items: [], userId: '');
+  }
+
+   Cart copyWith({
+    List<CartItem>? items,
+    String? userId,
+ 
+  }) {
+    return Cart(
+      items: items??this.items,
+      userId: userId ?? this.userId,
+
+    );
   }
 }
 
+ 
 class CartItem {
   final String listingId;
   final int qty;

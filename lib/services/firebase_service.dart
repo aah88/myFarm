@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/models/cart_model.dart';
 import 'package:flutter_application_1/models/listing_model.dart';
 import '../../models/product_model.dart';
 import '../../models/category_model.dart';
@@ -79,6 +80,8 @@ class FirebaseService {
     await _db.collection('listing').add(listing.toMap());
   }
 
+ 
+
    Future<List<Listing>> getListing() async {
     final snapshot = await _db.collection('listing').get();
     return snapshot.docs.map((doc) =>
@@ -143,6 +146,7 @@ Future<List<FullListing>> getFullListings() async {
       listingData,
       productData,
       userData,
+      listingDoc.id 
     );
   }).toList();
 }
@@ -174,4 +178,24 @@ Future<List<FullListing>> getFullListings() async {
   }
 
 
+   Future<Map<String, dynamic>?> getCartByUserId(String userId) async {
+    try {
+      DocumentSnapshot doc = await _db.collection("cart").doc(userId).get();
+
+      if (doc.exists) {
+        return doc.data() as Map<String, dynamic>;
+      } else {
+        print("No cart found for this user");
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching cart: $e");
+      return null;
+    }
+  }
+
+
+ Future<void> addCart(Cart cart) async {
+    await _db.collection('cart').add(cart.toMap());
+  }
 }

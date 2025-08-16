@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/providers/cart_provider.dart';
 import 'package:flutter_application_1/screens/auth/validation_per_phone.dart';
 import 'package:flutter_application_1/screens/cart/cart_management_screen.dart';
 import 'package:provider/provider.dart';
@@ -56,6 +57,10 @@ class _SignInPageState extends State<SignInPage> {
         if (!mounted) return;
         context.read<UserProvider>().setUserId(uid);
         //HERE ADD
+        //1.Check if cart exist and get it, if not then create one for this user
+        final cartProvider = Provider.of<CartProvider>(context, listen: false);
+        await cartProvider.loadCart(uid); //
+           if(!mounted) return;
        Navigator.pushReplacement(
     context,
     MaterialPageRoute(builder: (context) =>  HomeScreenFarmer()),
