@@ -5,6 +5,7 @@ import 'package:flutter_application_1/screens/favorites/favorites_screen.dart';
 import 'package:flutter_application_1/screens/home/home_screen_farmer.dart';
 import 'package:flutter_application_1/screens/notifications/notifications_screen.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
+import 'package:flutter_application_1/theme/app_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -53,55 +54,10 @@ class MyApp extends StatelessWidget {
         child: child!,
       ),
 
-      // 🎨 Clean Material 3 theme
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2E7D32)),
-        scaffoldBackgroundColor: Colors.white,
-        textTheme: GoogleFonts.tajawalTextTheme(),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        splashFactory: InkSparkle.splashFactory, // أو InkRipple
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          elevation: 0,
-          centerTitle: true,
-        ),
-        dividerColor: const Color(0xFFE8EBE6),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size.fromHeight(44),
-            textStyle: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
+        theme: AppTheme.light(),        // Light
+        // darkTheme: AppTheme.dark(),   // (اختياري) Dark
+        // themeMode: ThemeMode.system,  // (اختياري) تبديل تلقائي
 
-        // Input decoration theme to all TextFields and Dropdowns
-        inputDecorationTheme: InputDecorationTheme(
-          //contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          labelStyle: const TextStyle(     // Label text style 
-            color: Color(0xFF91958E), 
-            fontWeight: FontWeight.bold,
-          ),
-          hintStyle: const TextStyle(   // placeholder 
-            color: Colors.grey,
-            fontSize: 14,
-          ),
-          enabledBorder: OutlineInputBorder(  // Border
-            borderSide: const BorderSide(
-              color: Color(0xFFE8EBE6), 
-              width: 1.5,
-            ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          focusedBorder: OutlineInputBorder(     // Border when the field is focused
-            borderSide: const BorderSide(
-              color: Color(0xFF2E7D32), 
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(10),
-          ),         
-        ),       
-      ),
   // مهم: عرّف المسارات
     routes: {
       '/home'   : (_) => HomeScreenFarmer(),
