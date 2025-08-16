@@ -4,6 +4,7 @@ class FullListing {
   final String productId;
   final int qty;
   final String farmerName;
+  final String unit;
   final double price;
   final double rating;
   final String productName;
@@ -11,6 +12,7 @@ class FullListing {
 
   FullListing({
     required this.id,
+    required this.unit,
     required this.farmerId,
     required this.productId,
     required this.qty,
@@ -26,6 +28,7 @@ class FullListing {
     return FullListing(
       id: id,
       farmerId: listingData['farmerId'] ?? '',
+      unit:listingData['unit']??'',
       farmerName: userData['name'] ?? '',
       productId: listingData['productId'] ?? '',
       qty: listingData['qty'] ?? 0,

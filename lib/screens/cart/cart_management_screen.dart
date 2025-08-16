@@ -1,5 +1,6 @@
 // lib/screens/cart/cart_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/full_listing.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart_provider.dart';
@@ -20,7 +21,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   final FirebaseService _firebaseService = FirebaseService();
   bool _loading = true;
-  Map<String, Listing> _listingMap = {};
+  Map<String, FullListing> _listingMap = {};
 
   @override
   void initState() {
@@ -35,7 +36,7 @@ class _CartScreenState extends State<CartScreen> {
     final listingIds = cart.items.map((item) => item.listingId).toList();
 
     // اجلب التفاصيل
-    final listings = await _firebaseService.getListingsByIds(listingIds);
+    final listings = await _firebaseService.getFullListingsByIds(listingIds);
 
     // حوّلها لخريطة للوصول السريع
     _listingMap = {for (var l in listings) l.id: l};
@@ -104,12 +105,12 @@ class _CartScreenState extends State<CartScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          'Product name', // listing.productName
+                                        Text(
+                                          " المنتج: ${listing.productName}", 
                                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                         ),
-                                        const Text(
-                                          'المزارع', // "المزارع: ${listing.farmerName}"
+                                        Text(
+                                          "المزارع: ${listing.farmerName}", 
                                           style: TextStyle(fontSize: 12, color: Colors.grey),
                                         ),
                                         Text(
