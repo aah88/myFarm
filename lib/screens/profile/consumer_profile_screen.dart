@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/bottom_nav.dart';
 
 class ConsumerProfileScreen extends StatelessWidget {
   const ConsumerProfileScreen({super.key});
@@ -27,6 +28,8 @@ class ConsumerProfileScreen extends StatelessWidget {
           ),
         ],
       ),
+      // ✅ BottomNav بدون تفعيل أي تبويب
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }

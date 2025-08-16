@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/bottom_nav.dart';
 
 class ReviewsScreen extends StatelessWidget {
   const ReviewsScreen({super.key});
@@ -25,6 +26,8 @@ class ReviewsScreen extends StatelessWidget {
           );
         },
       ),
+      // ✅ BottomNav بدون تفعيل أي تبويب
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }

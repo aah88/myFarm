@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import '../../models/unit_data.dart';
 import 'package:provider/provider.dart';
 import '../../providers/listing_provider.dart';
@@ -263,6 +264,8 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
           ],
         ),
       ),
+      // ✅ BottomNav بدون تفعيل أي تبويب
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }

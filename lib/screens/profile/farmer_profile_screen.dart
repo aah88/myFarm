@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import '../order/order_list_screen.dart';
 import '../product/product_management_screen.dart';
 
@@ -30,6 +31,8 @@ class FarmerProfileScreen extends StatelessWidget {
           ),
         ],
       ),
+      // ✅ BottomNav بدون تفعيل أي تبويب
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }

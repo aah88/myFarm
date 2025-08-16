@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product_model.dart';
@@ -159,6 +160,7 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
           },
         ),
       ),
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }
