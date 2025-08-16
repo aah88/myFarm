@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/home/home_screen_farmer.dart';
 import 'package:flutter_application_1/screens/product/product_management_screen.dart';
 import 'package:flutter_application_1/screens/category/category_management_screen.dart';
+import 'package:provider/provider.dart';
+import '../../providers/cart_provider.dart';
+import '../../providers/user_provider.dart';
 import '../auth/validation_per_phone.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,6 +12,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     //TODO Löschen AHMAD
+     context.read<UserProvider>().setUserId('fPFgIzsfSbMbiftLFJvaIQx14x42');
+     final cartProvider = Provider.of<CartProvider>(context, listen: false);
+     cartProvider.loadCart('fPFgIzsfSbMbiftLFJvaIQx14x42'); //
+     // 
     return Scaffold(
       appBar: AppBar(title: const Text('الرئيسية')),
       body: Padding(

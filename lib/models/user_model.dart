@@ -9,6 +9,7 @@ class AppUser {
   final String phone;
   final double rating;
   final String profileImage;
+  final bool isFarmer;
   final DateTime  createdAt;
 
   AppUser({required this.id,
@@ -19,6 +20,7 @@ class AppUser {
     required this.phone,
     required this.createdAt,
     required this.rating,
+     required this.isFarmer,
     required this.profileImage
     });
 
@@ -32,7 +34,8 @@ class AppUser {
       phone: data['phone']?? '',
       rating: data['rating']??0.0,
       profileImage: data['profileImage']??'',
-      createdAt:data['createdAt']?? FieldValue.serverTimestamp(),
+      isFarmer: data['isFarmer']??false,
+      createdAt:data['createdAt'].toDate()?? FieldValue.serverTimestamp(),
     );
   }
 
@@ -45,7 +48,8 @@ class AppUser {
       'phone': phone,
       'createdAt': createdAt,
       'profileImage': profileImage,
-      'rating':rating
+      'rating':rating,
+      'isFarmer':isFarmer
 
     };
   }
@@ -59,6 +63,7 @@ class AppUser {
       address: '',
       phone: '',
       rating: 0.0,
+      isFarmer: false,
       profileImage: '',
       createdAt: DateTime.now(),
     );

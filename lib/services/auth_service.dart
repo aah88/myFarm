@@ -42,6 +42,7 @@ class AuthService {
         email: email,
         address: address,
         phone: phone,
+        isFarmer: false,
         createdAt: DateTime.now(),
         rating: 0.0,
         profileImage: profileImage,

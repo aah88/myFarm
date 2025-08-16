@@ -37,7 +37,8 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
         phone: _phoneController.text,
         rating: 0.0,
         profileImage: _profileImageController.text,
-        createdAt: DateTime.now()
+        createdAt: DateTime.now(),
+        isFarmer: false
       );
       await _firebaseService.addUser(newUser);
 

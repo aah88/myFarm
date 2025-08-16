@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/farmer_model.dart';
 import '../../services/firebase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+//TODO löschen Ahmad
 class FarmerManagementScreen extends StatefulWidget {
   const FarmerManagementScreen({super.key});
 

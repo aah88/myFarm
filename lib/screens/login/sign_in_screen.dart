@@ -3,13 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/providers/cart_provider.dart';
 import 'package:flutter_application_1/screens/auth/validation_per_phone.dart';
 import 'package:flutter_application_1/screens/cart/cart_management_screen.dart';
+import 'package:flutter_application_1/screens/home/home_screen_user.dart';
 import 'package:provider/provider.dart';
 import '../../providers/user_provider.dart';
-import '../../screens/farmer/farmer_management_screen.dart';
 import '../../screens/product/product_management_screen.dart';
 import '../../screens/category/category_management_screen.dart';
 import '../../screens/home/home_screen_farmer.dart';
 import '../../screens/customer/all_listings.dart';
+import '../../services/firebase_service.dart';
 import 'sign_up_screen.dart';
 
 class SignInPage extends StatefulWidget {
@@ -24,6 +25,7 @@ class _SignInPageState extends State<SignInPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+   final FirebaseService _firebaseService = FirebaseService();
 
   Future<void> _signIn() async {
     final email = _emailController.text.trim();
@@ -56,14 +58,17 @@ class _SignInPageState extends State<SignInPage> {
         _showMessage("Sign in successful!");
         if (!mounted) return;
         context.read<UserProvider>().setUserId(uid);
+        var userDetails = await _firebaseService.getUserById(uid);
+        
         //HERE ADD
         //1.Check if cart exist and get it, if not then create one for this user
         final cartProvider = Provider.of<CartProvider>(context, listen: false);
-        await cartProvider.loadCart(uid); //
+        await cartProvider.loadCart(uid); 
+        //
            if(!mounted) return;
        Navigator.pushReplacement(
     context,
-    MaterialPageRoute(builder: (context) =>  HomeScreenFarmer()),
+    MaterialPageRoute(builder: (context) => userDetails!.isFarmer ? HomeScreenFarmer():HomeScreen()),
   );
       }
     } on FirebaseAuthException catch (e) {
@@ -162,11 +167,6 @@ class _SignInPageState extends State<SignInPage> {
 ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  PhoneAuthPage())),
               child: const Text('تسجيل الدخول', style: TextStyle(color: Color(0xFF2E7D32))),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  FarmerManagementScreen())),
-              child: const Text('Register farmer', style: TextStyle(color: Color(0xFF2E7D32))),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
