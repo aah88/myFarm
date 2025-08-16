@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/product_model.dart';
+import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
 import '../category/choose_category_screen.dart';
 import '../../services/firebase_service.dart';
@@ -19,6 +20,8 @@ class HomeScreenFarmer extends StatelessWidget {
   Widget build(BuildContext context) {
     //TODO Löschen AHMAD
      context.read<UserProvider>().setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
+     final cartProvider = Provider.of<CartProvider>(context, listen: false);
+     cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2'); //
      // 
     return AppScaffold(
       currentTab: AppTab.home,    
