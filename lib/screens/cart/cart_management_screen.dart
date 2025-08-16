@@ -84,13 +84,13 @@ class _CartScreenState extends State<CartScreen> {
                                   // صورة المنتج
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: ('' /* listing.imageUrl */).isNotEmpty
-                                        ? Image.network(
-                                            '', // listing.imageUrl
-                                            height: 70,
-                                            width: 70,
-                                            fit: BoxFit.cover,
-                                          )
+                                    child: (listing.productImageUrl).isNotEmpty
+                                        ? Image.asset(
+                                                    listing.productImageUrl,
+                                                    height: 70,
+                                                    width: 70,
+                                                    fit: BoxFit.cover,
+                                                  )
                                         : Container(
                                             height: 70,
                                             width: 70,
