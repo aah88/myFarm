@@ -119,7 +119,7 @@ class HomeScreenFarmer extends StatelessWidget {
             children: [
               Text(
                 'منتجاتي الأكثر مبيعاً',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: BrandColors.green,
                     ),
