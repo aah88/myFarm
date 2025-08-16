@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/category/choose_category_screen.dart';
+import 'package:flutter_application_1/screens/cart/cart_management_screen.dart';
+import 'package:flutter_application_1/screens/favorites/favorites_screen.dart';
 import 'package:flutter_application_1/screens/home/home_screen_farmer.dart';
-import 'package:flutter_application_1/screens/order/order_list_screen.dart';
-import 'package:flutter_application_1/screens/product/choose_product_screen.dart';
+import 'package:flutter_application_1/screens/notifications/notifications_screen.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -105,9 +105,9 @@ class MyApp extends StatelessWidget {
   // مهم: عرّف المسارات
     routes: {
       '/home'   : (_) => HomeScreenFarmer(),
-      '/orders' : (_) => OrderListScreen(),
-      '/reports': (_) => ChooseCategoryScreen(),
-      '/profile': (_) => ChooseCategoryScreen(),
+      '/cart': (_) => CartScreen(),
+      '/favorites': (_) => const FavoritesScreen(),
+      '/notifications': (_) => NotificationsScreen(),
     },
       home: const SignInPage(),
     );

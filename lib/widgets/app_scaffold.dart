@@ -1,32 +1,40 @@
 import 'package:flutter/material.dart';
-import 'bottom_nav.dart';
+import 'bottom_nav.dart'; // 👈 لازم نستورد AppTab من هنا فقط
 
 class AppScaffold extends StatelessWidget {
-  final AppTab currentTab;
   final PreferredSizeWidget? appBar;
   final Widget body;
+
+  /// لو null يعني لا تفعّل أي تبويب (مفيد للصفحات الفرعية)
+  final AppTab? currentTab;
+
+  final Widget? floatingActionButton;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
   final Color? backgroundColor;
+  final bool extendBody;
 
   const AppScaffold({
     super.key,
-    required this.currentTab,
-    required this.body,
     this.appBar,
+    required this.body,
+    required this.currentTab, // خليها مطلوبة حتى تنتبه تمرّرها (حتى لو null)
+    this.floatingActionButton,
+    this.floatingActionButtonLocation,
     this.backgroundColor,
+    this.extendBody = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    // debugPrint('[AppScaffold] currentTab=$currentTab'); // تشخيص إن احتجت
     return Scaffold(
-      backgroundColor: backgroundColor ?? Colors.white,
       appBar: appBar,
-      body: SafeArea(child: body),
-      bottomNavigationBar: BottomNav(
-        current: AppTab.home,
-        activeColor: Colors.teal,      // لون الأيقونة المفعّلة
-        inactiveColor: Colors.grey,    // (اختياري)
-      ),
-
+      backgroundColor: backgroundColor,
+      body: body,
+      bottomNavigationBar: BottomNav(current: currentTab),
+      floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: floatingActionButtonLocation,
+      extendBody: extendBody,
     );
   }
 }

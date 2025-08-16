@@ -1,21 +1,22 @@
-// lib/widgets/bottom_nav.dart
 import 'package:flutter/material.dart';
 
-enum AppTab { home, orders, reports, profile }
+/// التبويبات الحالية
+enum AppTab { home, favorites, cart, notifications }
 
 extension on AppTab {
   String get route {
     switch (this) {
-      case AppTab.home:    return '/home';
-      case AppTab.orders:  return '/orders';
-      case AppTab.reports: return '/reports';
-      case AppTab.profile: return '/profile';
+      case AppTab.home:          return '/home';
+      case AppTab.favorites:     return '/favorites';
+      case AppTab.cart:          return '/cart';
+      case AppTab.notifications: return '/notifications';
     }
   }
 }
 
 class BottomNav extends StatelessWidget {
-  final AppTab current;
+  /// nullable: لو null ما يميّز أي تبويب (مفيد للصفحات الفرعية)
+  final AppTab? current;
   final bool showNotificationsDot;
 
   /// ألوان وخلفية وارتفاع الشريط
@@ -36,18 +37,31 @@ class BottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // لكل تبويب: أيقونة مفعّلة (filled) وأيقونة غير مفعّلة (outline)
     final items = <_NavSpec>[
-      _NavSpec(tab: AppTab.home,    icon: Icons.home_rounded),
-      _NavSpec(tab: AppTab.orders,  icon: Icons.shopping_cart_rounded),
-      _NavSpec(tab: AppTab.reports, icon: Icons.favorite_border_rounded),
       _NavSpec(
-        tab: AppTab.profile,
-        icon: Icons.notifications_none_rounded,
+        tab: AppTab.home,
+        activeIcon: Icons.home_rounded,
+        inactiveIcon: Icons.home_outlined,
+      ),
+      _NavSpec(
+        tab: AppTab.cart,
+        activeIcon: Icons.shopping_cart_rounded,
+        inactiveIcon: Icons.shopping_cart_outlined,
+      ),
+      _NavSpec(
+        tab: AppTab.favorites,
+        activeIcon: Icons.favorite,                // filled
+        inactiveIcon: Icons.favorite_border_rounded, // outline
+      ),
+      _NavSpec(
+        tab: AppTab.notifications,
+        activeIcon: Icons.notifications_rounded,
+        inactiveIcon: Icons.notifications_none_rounded,
         showDot: showNotificationsDot,
       ),
     ];
 
-    // بدون SafeArea لتقليل الفراغ السفلي قدر الإمكان
     return Container(
       width: double.infinity,
       height: barHeight,
@@ -63,21 +77,24 @@ class BottomNav extends StatelessWidget {
       ),
       child: Row(
         children: items.map((spec) {
-          final selected = current == spec.tab;
+          final selected = (current != null && current == spec.tab);
           return Expanded(
             child: _NavItem(
-              icon: spec.icon,
+              icon: selected ? spec.activeIcon : spec.inactiveIcon,
               selected: selected,
-              showDot: spec.showDot && spec.tab == AppTab.profile,
+              showDot: spec.showDot && spec.tab == AppTab.notifications,
               activeColor: activeColor,
               inactiveColor: inactiveColor,
               onTap: () {
-                if (!selected) {
-                  // ينتقل ويستبدل الصفحة الحالية (ما يكدّس الستاك)
-                  Navigator.of(context).pushReplacementNamed(spec.tab.route);
+                if (selected) return;
 
-                  // بديل: لو تبي ترجع الستاك نظيف دائمًا
-                  // Navigator.of(context).pushNamedAndRemoveUntil(spec.tab.route, (route) => false);
+                if (spec.tab == AppTab.home) {
+                  // Home يرجع للجذر (أنظف)
+                  Navigator.of(context, rootNavigator: true)
+                      .pushNamedAndRemoveUntil('/home', (route) => false);
+                } else {
+                  Navigator.of(context, rootNavigator: true)
+                      .pushReplacementNamed(spec.tab.route);
                 }
               },
             ),
@@ -90,9 +107,16 @@ class BottomNav extends StatelessWidget {
 
 class _NavSpec {
   final AppTab tab;
-  final IconData icon;
+  final IconData activeIcon;
+  final IconData inactiveIcon;
   final bool showDot;
-  const _NavSpec({required this.tab, required this.icon, this.showDot = false});
+
+  const _NavSpec({
+    required this.tab,
+    required this.activeIcon,
+    required this.inactiveIcon,
+    this.showDot = false,
+  });
 }
 
 class _NavItem extends StatelessWidget {
@@ -107,9 +131,9 @@ class _NavItem extends StatelessWidget {
     required this.icon,
     required this.selected,
     required this.onTap,
-    required this.activeColor,
-    required this.inactiveColor,
     this.showDot = false,
+    this.activeColor = const Color(0xFF2E7D32),
+    this.inactiveColor = const Color(0xFFB6BAB5),
   });
 
   @override
