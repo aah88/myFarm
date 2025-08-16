@@ -105,8 +105,8 @@ class MyApp extends StatelessWidget {
   // مهم: عرّف المسارات
     routes: {
       '/home'   : (_) => HomeScreenFarmer(),
-      '/favorites': (_) => const FavoritesScreen(),
       '/cart': (_) => CartScreen(),
+      '/favorites': (_) => const FavoritesScreen(),
       '/notifications': (_) => NotificationsScreen(),
     },
       home: const SignInPage(),

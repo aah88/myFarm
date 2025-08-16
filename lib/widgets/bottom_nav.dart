@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-/// حدّثنا التبويبات: استبدلنا reports بـ cart
+/// التبويبات الحالية
 enum AppTab { home, favorites, cart, notifications }
 
 extension on AppTab {
   String get route {
     switch (this) {
-      case AppTab.home:    return '/home';
-      case AppTab.favorites:  return '/favorites';
-      case AppTab.cart:    return '/cart';     // مسار جديد
+      case AppTab.home:          return '/home';
+      case AppTab.favorites:     return '/favorites';
+      case AppTab.cart:          return '/cart';
       case AppTab.notifications: return '/notifications';
     }
   }
@@ -37,13 +37,27 @@ class BottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // لكل تبويب: أيقونة مفعّلة (filled) وأيقونة غير مفعّلة (outline)
     final items = <_NavSpec>[
-      _NavSpec(tab: AppTab.home,   icon: Icons.home_rounded),
-      _NavSpec(tab: AppTab.favorites, icon: Icons.favorite),  // أوامر/طلبات
-      _NavSpec(tab: AppTab.cart,   icon: Icons.shopping_cart_rounded), // السلة
+      _NavSpec(
+        tab: AppTab.home,
+        activeIcon: Icons.home_rounded,
+        inactiveIcon: Icons.home_outlined,
+      ),
+      _NavSpec(
+        tab: AppTab.cart,
+        activeIcon: Icons.shopping_cart_rounded,
+        inactiveIcon: Icons.shopping_cart_outlined,
+      ),
+      _NavSpec(
+        tab: AppTab.favorites,
+        activeIcon: Icons.favorite,                // filled
+        inactiveIcon: Icons.favorite_border_rounded, // outline
+      ),
       _NavSpec(
         tab: AppTab.notifications,
-        icon: Icons.notifications_none_rounded,
+        activeIcon: Icons.notifications_rounded,
+        inactiveIcon: Icons.notifications_none_rounded,
         showDot: showNotificationsDot,
       ),
     ];
@@ -66,14 +80,21 @@ class BottomNav extends StatelessWidget {
           final selected = (current != null && current == spec.tab);
           return Expanded(
             child: _NavItem(
-              icon: spec.icon,
+              icon: selected ? spec.activeIcon : spec.inactiveIcon,
               selected: selected,
               showDot: spec.showDot && spec.tab == AppTab.notifications,
               activeColor: activeColor,
               inactiveColor: inactiveColor,
               onTap: () {
-                if (!selected) {
-                  Navigator.of(context).pushReplacementNamed(spec.tab.route);
+                if (selected) return;
+
+                if (spec.tab == AppTab.home) {
+                  // Home يرجع للجذر (أنظف)
+                  Navigator.of(context, rootNavigator: true)
+                      .pushNamedAndRemoveUntil('/home', (route) => false);
+                } else {
+                  Navigator.of(context, rootNavigator: true)
+                      .pushReplacementNamed(spec.tab.route);
                 }
               },
             ),
@@ -86,9 +107,16 @@ class BottomNav extends StatelessWidget {
 
 class _NavSpec {
   final AppTab tab;
-  final IconData icon;
+  final IconData activeIcon;
+  final IconData inactiveIcon;
   final bool showDot;
-  const _NavSpec({required this.tab, required this.icon, this.showDot = false});
+
+  const _NavSpec({
+    required this.tab,
+    required this.activeIcon,
+    required this.inactiveIcon,
+    this.showDot = false,
+  });
 }
 
 class _NavItem extends StatelessWidget {
