@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/cart_model.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
+import 'package:provider/provider.dart';
+import '../../providers/cart_provider.dart';
 import '../../services/firebase_service.dart';
 import '../../config/app_config.dart';
 
@@ -162,6 +165,7 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                       distance: 5.2, // replace with actual distance müss berechnet werden
                       onAddToCart: () {
                         //ADD To CART
+                        context.read<CartProvider>().addItem(CartItem(listingId: listing.id, qty: 2)); //
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text("${listing.productName} تمت إضافته إلى السلة"),

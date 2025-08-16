@@ -1,56 +1,77 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../../models/cart_model.dart';
-import '../../models/listing_model.dart' show Listing; // <-- adjust to your actual path
+import '../../models/listing_model.dart'; // <-- adjust to your actual path
 
-class CartProvider with ChangeNotifier {
+
+class CartProvider extends ChangeNotifier {
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+
   Cart _cart = Cart.empty();
-
   Cart get cart => _cart;
 
-  List<CartItem> get items => _cart.items;
-
-  int get totalItems => _cart.items.fold(0, (sum, item) => sum + item.qty);
-
-  void setCart(Cart cart) {
-    _cart = cart;
-    notifyListeners();
+  /// Load cart from Firestore by userId
+  Future<void> loadCart(String userId) async {
+    try {
+      DocumentSnapshot doc = await _db.collection("cart").doc(userId).get();
+      if (doc.exists) {
+        _cart = Cart.fromMap(doc.data() as Map<String, dynamic>);
+      } else {
+        _cart = Cart.userCart(userId);
+        await saveCart(); // create empty cart in Firestore
+      }
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error loading cart: $e");
+    }
   }
 
-  void addItem(String listingId, {int qty = 1}) {
-    final index = _cart.items.indexWhere((item) => item.listingId == listingId);
+  /// Add item to cart
+  void addItem(CartItem item) {
+    List<CartItem> updatedItems = List.from(_cart.items);
+
+    int index = updatedItems.indexWhere((i) => i.listingId == item.listingId);
 
     if (index >= 0) {
-      _cart.items[index] = CartItem(
-        listingId: _cart.items[index].listingId,
-        qty: _cart.items[index].qty + qty,
+      // Update quantity if already in cart
+      updatedItems[index] = CartItem(
+        listingId: updatedItems[index].listingId,
+        qty: updatedItems[index].qty + item.qty,
       );
     } else {
-      _cart.items.add(CartItem(listingId: listingId, qty: qty));
+      updatedItems.add(item);
     }
+
+    _cart = _cart.copyWith(items: updatedItems);
     notifyListeners();
+    saveCart();
   }
 
+  /// Remove item from cart
   void removeItem(String listingId) {
-    _cart.items.removeWhere((item) => item.listingId == listingId);
+    List<CartItem> updatedItems =
+        _cart.items.where((item) => item.listingId != listingId).toList();
+
+    _cart = _cart.copyWith(items: updatedItems);
     notifyListeners();
+    saveCart();
   }
 
-  void updateQuantity(String listingId, int qty) {
-    final index = _cart.items.indexWhere((item) => item.listingId == listingId);
-    if (index >= 0) {
-      _cart.items[index] = CartItem(
-        listingId: _cart.items[index].listingId,
-        qty: qty,
-      );
-      notifyListeners();
+  /// Clear cart
+  void clearCart() {
+    _cart = _cart.copyWith(items: []);
+    notifyListeners();
+    saveCart();
+  }
+
+  /// Save cart to Firestore
+  Future<void> saveCart() async {
+    try {
+      await _db.collection("cart").doc(_cart.userId).set(_cart.toMap());
+    } catch (e) {
+      debugPrint("Error saving cart: $e");
     }
   }
-
-  void clearCart() {
-    _cart = Cart.empty();
-    notifyListeners();
-  }
-
   void updateQty(String listingId, int qty) {
   final index = _cart.items.indexWhere((item) => item.listingId == listingId);
   if (index != -1) {
@@ -70,3 +91,4 @@ double totalPrice(Map<String, Listing> listingMap) {
   return total;
 }
 }
+

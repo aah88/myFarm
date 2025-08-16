@@ -76,6 +76,7 @@ class Listing {
   
   Map<String, dynamic> toMap() {
     return {
+      'id':id,
       'userId': userId,
       'categoryId': categoryId,
       'productId': productId,

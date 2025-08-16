@@ -5,6 +5,7 @@ import '../../services/firebase_service.dart';
 
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
+import '../customer/all_listings.dart';
 
 class HomeScreenFarmer extends StatelessWidget {
   HomeScreenFarmer({super.key});
@@ -78,7 +79,10 @@ class HomeScreenFarmer extends StatelessWidget {
           ),
 
           const SizedBox(height: 16),
-
+           ElevatedButton(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  AllListingsScreen())),
+              child: const Text('BUY'),
+            ), const SizedBox(height: 16),
           // زر إضافة منتج
           SizedBox(
             width: double.infinity,
