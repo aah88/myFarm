@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../../providers/cart_provider.dart';
 import '../../services/firebase_service.dart';
-import '../../models/listing_model.dart';
 
 // مهم: AppScaffold يضيف BottomNav، ونحتاج AppTab من bottom_nav.dart
 import '../../widgets/app_scaffold.dart';

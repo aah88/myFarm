@@ -14,19 +14,33 @@ import '../customer/all_listings.dart';
 // 🧩 Tokens
 import '../../theme/design_tokens.dart';
 
-class HomeScreenFarmer extends StatelessWidget {
-  HomeScreenFarmer({super.key});
-
-  final FirebaseService _firebaseService = FirebaseService();
- 
+class HomeScreenFarmer extends StatefulWidget {
+  const HomeScreenFarmer({super.key});
 
   @override
+  State<HomeScreenFarmer> createState() => _HomeScreenFarmerState();
+}
+
+class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
+  final FirebaseService _firebaseService = FirebaseService();
+
+  @override
+void initState() {
+  super.initState();
+
+  Future.microtask(() {
+    if (!mounted) return; // ✅ guard against context after dispose
+
+    final userProvider = context.read<UserProvider>();
+    userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
+
+    final cartProvider = context.read<CartProvider>();
+    cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
+  });
+}
+  @override
   Widget build(BuildContext context) {
-    //TODO Löschen AHMAD
-     context.read<UserProvider>().setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
-     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-     cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2'); //
-     // 
+   
     return AppScaffold(
       currentTab: AppTab.home,
       body: ListView(
