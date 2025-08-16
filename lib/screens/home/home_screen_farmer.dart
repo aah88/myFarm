@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/product_model.dart';
+import '../../providers/user_provider.dart';
 import '../category/choose_category_screen.dart';
 import '../../services/firebase_service.dart';
 
@@ -11,9 +13,13 @@ class HomeScreenFarmer extends StatelessWidget {
   HomeScreenFarmer({super.key});
 
   final FirebaseService _firebaseService = FirebaseService();
+ 
 
   @override
   Widget build(BuildContext context) {
+    //TODO Löschen AHMAD
+     context.read<UserProvider>().setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
+     // 
     return AppScaffold(
       currentTab: AppTab.home,    
         appBar: AppBar(
