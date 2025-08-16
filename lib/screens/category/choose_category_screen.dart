@@ -7,7 +7,7 @@ import '../../services/firebase_service.dart';
 import '../../screens/product/choose_product_screen.dart';
 import '../../providers/listing_provider.dart';
 
-import '../../widgets/app_scaffold.dart';
+// ✅ نستخدم BottomNav فقط بدون AppScaffold
 import '../../widgets/bottom_nav.dart';
 
 class ChooseCategoryScreen extends StatefulWidget {
@@ -41,8 +41,8 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      currentTab: AppTab.reports, // تبويب الرئيسية يظل مفعّل
+    return Scaffold(
+      // ليست تبويب رئيسي؛ صفحة فرعية ضمن تدفق إضافة منتج
       appBar: AppBar(
         title: const Text('إضافة منتج', style: TextStyle(color: Color(0xFF2E7D32))),
         leading: IconButton(
@@ -72,7 +72,9 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
                 categories: categories,
                 onTapCategory: (cat) {
                   context.read<ListingProvider>().setCategoryId(cat.id);
-                  context.read<ListingProvider>().setUserId(context.read<UserProvider>().userId!);
+                  context.read<ListingProvider>().setUserId(
+                        context.read<UserProvider>().userId!,
+                      );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -124,6 +126,8 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
           },
         ),
       ),
+      // ✅ BottomNav بدون تفعيل أي تبويب
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/order/order_details_screen.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
 
@@ -12,8 +13,7 @@ class OrderListScreen extends StatelessWidget {
       {'customer': 'خالد', 'item': 'بطاطا', 'qty': 2},
     ];
 
-    return AppScaffold(
-      currentTab: AppTab.orders, // تبويب الطلبات مفعّل
+    return Scaffold(
       appBar: AppBar(title: const Text('الطلبات')),
       body: ListView.separated(
         itemCount: orders.length,
@@ -24,9 +24,19 @@ class OrderListScreen extends StatelessWidget {
             leading: const Icon(Icons.shopping_bag),
             title: Text('${order['item']} × ${order['qty']}'),
             subtitle: Text('العميل: ${order['customer']}'),
+            trailing: const Icon(Icons.chevron_left), // للسهم RTL
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => OrderDetailsScreen(order: order),
+                ),
+              );
+            },
           );
         },
       ),
     );
+
   }
 }

@@ -1,21 +1,22 @@
-// lib/widgets/bottom_nav.dart
 import 'package:flutter/material.dart';
 
-enum AppTab { home, orders, reports, profile }
+/// حدّثنا التبويبات: استبدلنا reports بـ cart
+enum AppTab { home, favorites, cart, notifications }
 
 extension on AppTab {
   String get route {
     switch (this) {
       case AppTab.home:    return '/home';
-      case AppTab.orders:  return '/orders';
-      case AppTab.reports: return '/reports';
-      case AppTab.profile: return '/profile';
+      case AppTab.favorites:  return '/favorites';
+      case AppTab.cart:    return '/cart';     // مسار جديد
+      case AppTab.notifications: return '/notifications';
     }
   }
 }
 
 class BottomNav extends StatelessWidget {
-  final AppTab current;
+  /// nullable: لو null ما يميّز أي تبويب (مفيد للصفحات الفرعية)
+  final AppTab? current;
   final bool showNotificationsDot;
 
   /// ألوان وخلفية وارتفاع الشريط
@@ -37,17 +38,16 @@ class BottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = <_NavSpec>[
-      _NavSpec(tab: AppTab.home,    icon: Icons.home_rounded),
-      _NavSpec(tab: AppTab.orders,  icon: Icons.shopping_cart_rounded),
-      _NavSpec(tab: AppTab.reports, icon: Icons.favorite_border_rounded),
+      _NavSpec(tab: AppTab.home,   icon: Icons.home_rounded),
+      _NavSpec(tab: AppTab.favorites, icon: Icons.favorite),  // أوامر/طلبات
+      _NavSpec(tab: AppTab.cart,   icon: Icons.shopping_cart_rounded), // السلة
       _NavSpec(
-        tab: AppTab.profile,
+        tab: AppTab.notifications,
         icon: Icons.notifications_none_rounded,
         showDot: showNotificationsDot,
       ),
     ];
 
-    // بدون SafeArea لتقليل الفراغ السفلي قدر الإمكان
     return Container(
       width: double.infinity,
       height: barHeight,
@@ -63,21 +63,17 @@ class BottomNav extends StatelessWidget {
       ),
       child: Row(
         children: items.map((spec) {
-          final selected = current == spec.tab;
+          final selected = (current != null && current == spec.tab);
           return Expanded(
             child: _NavItem(
               icon: spec.icon,
               selected: selected,
-              showDot: spec.showDot && spec.tab == AppTab.profile,
+              showDot: spec.showDot && spec.tab == AppTab.notifications,
               activeColor: activeColor,
               inactiveColor: inactiveColor,
               onTap: () {
                 if (!selected) {
-                  // ينتقل ويستبدل الصفحة الحالية (ما يكدّس الستاك)
                   Navigator.of(context).pushReplacementNamed(spec.tab.route);
-
-                  // بديل: لو تبي ترجع الستاك نظيف دائمًا
-                  // Navigator.of(context).pushNamedAndRemoveUntil(spec.tab.route, (route) => false);
                 }
               },
             ),
@@ -107,9 +103,9 @@ class _NavItem extends StatelessWidget {
     required this.icon,
     required this.selected,
     required this.onTap,
-    required this.activeColor,
-    required this.inactiveColor,
     this.showDot = false,
+    this.activeColor = const Color(0xFF2E7D32),
+    this.inactiveColor = const Color(0xFFB6BAB5),
   });
 
   @override

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../models/product_model.dart';
 import '../../services/firebase_service.dart';
 import '../../widgets/product_card.dart';
 import '../../screens/product/choose_sub_product_screen.dart';
 import '../../providers/listing_provider.dart';
 
-import '../../widgets/app_scaffold.dart';
+// نضيف شريط التنقل السفلي فقط
 import '../../widgets/bottom_nav.dart';
 
 class ChooseProductScreen extends StatefulWidget {
@@ -22,6 +23,7 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
   final FirebaseService _firebaseService = FirebaseService();
   late Future<List<Product>> _productsFuture;
 
+  /// الحروف العربية + "الكل"
   static const List<String> _letters = [
     'أ','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش',
     'ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي',
@@ -31,6 +33,7 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
   String _selectedLetter = 'الكل';
   List<Product> _allRootProducts = [];
 
+  /// لتطبيع أول حرف للمقارنة
   final Map<String, String> _charMap = const {
     'أ': 'ا', 'إ': 'ا', 'آ': 'ا', 'ى': 'ي'
   };
@@ -54,8 +57,8 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      currentTab: AppTab.home, // تظل تحت تبويب الرئيسية
+    return Scaffold(
+      // ليست تبويب رئيسي، فقط صفحة فرعية
       appBar: AppBar(
         title: const Text(
           'إضافة منتج',
@@ -79,8 +82,10 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: Text('حدث خطأ: ${snapshot.error}',
-                    textAlign: TextAlign.center),
+                child: Text(
+                  'حدث خطأ: ${snapshot.error}',
+                  textAlign: TextAlign.center,
+                ),
               ),
             );
           }
@@ -167,6 +172,8 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
           );
         },
       ),
+      // ✅ BottomNav بدون تفعيل أي تبويب
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }
