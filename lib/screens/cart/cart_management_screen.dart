@@ -9,6 +9,7 @@ import '../../services/firebase_service.dart';
 // مهم: AppScaffold يضيف BottomNav، ونحتاج AppTab من bottom_nav.dart
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
+import '../order/order_summary.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -105,16 +106,12 @@ class _CartScreenState extends State<CartScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          " المنتج: ${listing.productName}", 
+                                          listing.productName, 
                                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                         ),
                                         Text(
                                           "المزارع: ${listing.farmerName}", 
                                           style: TextStyle(fontSize: 12, color: Colors.grey),
-                                        ),
-                                        Text(
-                                          "الوحدة: ${listing.unit}",
-                                          style: const TextStyle(fontSize: 12, color: Colors.grey),
                                         ),
                                         Text(
                                           "${listing.price} ل.س",
@@ -138,7 +135,7 @@ class _CartScreenState extends State<CartScreen> {
                                           cartItem.qty + 1,
                                         ),
                                       ),
-                                      Text("${cartItem.qty}", style: const TextStyle(fontSize: 16)),
+                                      Text("${cartItem.qty} ${listing.unit}", style: const TextStyle(fontSize: 16)),
                                       IconButton(
                                         icon: const Icon(Icons.remove_circle_outline),
                                         onPressed: () {
@@ -189,6 +186,8 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (_) =>  OrderSummaryScreen()));
+                                  
                                   // TODO: تابع عملية الدفع
                                 },
                                 style: ElevatedButton.styleFrom(

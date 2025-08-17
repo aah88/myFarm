@@ -9,6 +9,7 @@ class Listing {
    int qty; 
    double price; 
    double rating;
+   int minimumQty;
    Timestamp startDate; 
 
   Listing({required this.id,
@@ -19,6 +20,7 @@ class Listing {
     required this.qty,
     required this.price,
     required this.rating,
+    required this.minimumQty,
     required this.startDate,
     });
 
@@ -29,9 +31,10 @@ class Listing {
       categoryId: data['categoryId'] ?? '',
       productId: data['productId']?? '',
       unit: data['unit']?? '',
-      qty: data['qty']?? '',
-      price: data['price']?? '',
-      rating: data['rating']?? '',
+      qty: data['qty']?? 0,
+      price: data['price']?? 0.0,
+      rating: data['rating']?? 0.0,
+      minimumQty: data['qty']?? 0, 
       startDate: data['startDate']?? FieldValue.serverTimestamp(),
     );
   }
@@ -46,6 +49,7 @@ class Listing {
       qty: 0,
       price: 0.0,
       rating: 0,
+      minimumQty: 0,
       startDate: Timestamp.now(),
     );
   }
@@ -59,6 +63,7 @@ class Listing {
     int? qty,
     double? price,
     double? rating,
+    int? minimumQty,
     Timestamp? startDate,
   }) {
     return Listing(
@@ -70,6 +75,7 @@ class Listing {
       qty: qty ?? this.qty,
       price: price ?? this.price,
       rating: rating?? this.rating,
+      minimumQty: minimumQty?? this.minimumQty,
       startDate: startDate ?? this.startDate,
     );
   }
@@ -84,6 +90,7 @@ class Listing {
       'qty': qty,
       'price': price,
       'rating': rating,
+      'minimumQty': minimumQty,
       'startDate': startDate,
     };
   }
