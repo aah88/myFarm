@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/cart/cart_management_screen.dart';
+import 'package:flutter_application_1/screens/cart/cart_screen.dart';
 import 'package:flutter_application_1/screens/favorites/favorites_screen.dart';
 import 'package:flutter_application_1/screens/home/home_screen_farmer.dart';
 import 'package:flutter_application_1/screens/notifications/notifications_screen.dart';

@@ -13,9 +13,9 @@ class Listing {
    Timestamp startDate; 
 
   Listing({required this.id,
+    required this.userId,
     required this.categoryId,
     required this.productId,
-    required this.userId,
     required this.unit,
     required this.qty,
     required this.price,

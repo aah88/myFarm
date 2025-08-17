@@ -1,6 +1,6 @@
 class FullListing {
   final String id;
-  final String farmerId;
+  final String userId;
   final String productId;
   final int qty;
   final String farmerName;
@@ -13,7 +13,7 @@ class FullListing {
   FullListing({
     required this.id,
     required this.unit,
-    required this.farmerId,
+    required this.userId,
     required this.productId,
     required this.qty,
     required this.farmerName,
@@ -27,7 +27,7 @@ class FullListing {
   factory FullListing.fromMap(Map<String, dynamic> listingData, Map<String, dynamic> productData, Map<String, dynamic> userData, String id) {
     return FullListing(
       id: id,
-      farmerId: listingData['farmerId'] ?? '',
+      userId: listingData['userId'] ?? '',
       unit:listingData['unit']??'',
       farmerName: userData['name'] ?? '',
       productId: listingData['productId'] ?? '',

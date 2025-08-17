@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/providers/cart_provider.dart';
 import 'package:flutter_application_1/screens/auth/validation_per_phone.dart';
-import 'package:flutter_application_1/screens/cart/cart_management_screen.dart';
+import 'package:flutter_application_1/screens/cart/cart_screen.dart';
 import 'package:flutter_application_1/screens/home/home_screen_user.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';

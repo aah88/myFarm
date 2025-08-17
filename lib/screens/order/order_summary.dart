@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../models/full_listing.dart';
 import '../../providers/cart_provider.dart';
 import '../../models/cart_model.dart';
+import '../../services/firebase_service.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
   const OrderSummaryScreen({super.key});
+  
 
   @override
   State<OrderSummaryScreen> createState() => _OrderSummaryScreenState();
@@ -13,6 +16,33 @@ class OrderSummaryScreen extends StatefulWidget {
 class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   String? _selectedDelivery;
   String? _selectedPayment;
+  final FirebaseService _firebaseService = FirebaseService();
+  bool _loading = true;
+  Map<String, FullListing> _listingMap = {};
+
+
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadListingDetails();
+  }
+   Future<void> _loadListingDetails() async {
+    final cart = context.read<CartProvider>().cart;
+
+    // IDs المطلوبة فقط
+    final listingIds = cart.items.map((item) => item.listingId).toList();
+
+    // اجلب التفاصيل
+    final listings = await _firebaseService.getFullListingsByIds(listingIds);
+
+    // حوّلها لخريطة للوصول السريع
+    _listingMap = {for (var l in listings) l.id: l};
+
+    if (mounted) {
+      setState(() => _loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,12 +112,13 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                 itemCount: cart.items.length,
                 itemBuilder: (ctx, i) {
                   final item = cart.items[i];
+                  final listing = _listingMap[item.listingId];
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 6),
                     child: ListTile(
                       leading: const Icon(Icons.shopping_bag),
-                      title: Text("منتج: ${item.listingId}"),
-                      subtitle: Text("الكمية: ${item.qty}"),
+                      title: Text("${listing?.productName}"),
+                      subtitle: Text("الكمية: ${item.qty} ${listing?.unit}"),
                     ),
                   );
                 },
