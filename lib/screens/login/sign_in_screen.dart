@@ -10,6 +10,7 @@ import '../../providers/user_provider.dart';
 import '../../screens/product/product_management_screen.dart';
 import '../../screens/category/category_management_screen.dart';
 import '../../screens/home/home_screen_farmer.dart';
+import '../../screens/home/home_screen_user.dart';
 import '../../screens/customer/all_listings.dart';
 import '../../services/firebase_service.dart';
 import 'sign_up_screen.dart';
@@ -69,7 +70,7 @@ class _SignInPageState extends State<SignInPage> {
            if(!mounted) return;
        Navigator.pushReplacement(
     context,
-    MaterialPageRoute(builder: (context) => userDetails!.isFarmer ? HomeScreenFarmer():HomeScreen()),
+    MaterialPageRoute(builder: (context) => userDetails!.isFarmer ? HomeScreenFarmer():HomeScreenUser()),
   );
       }
     } on FirebaseAuthException catch (e) {
@@ -168,17 +169,12 @@ class _SignInPageState extends State<SignInPage> {
             const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  HomeScreenFarmer())),
-              child: const Text('استعراض كزائر'),
+              child: const Text('استعراض فلاح'),
             ),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  AllListingsScreen())),
-              child: const Text('BUY'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  CartScreen())),
-              child: const Text('CART'),
+             ElevatedButton(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  HomeScreenUser())),
+              child: const Text('استعراض مسنخدم'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(

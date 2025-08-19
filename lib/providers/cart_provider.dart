@@ -91,5 +91,11 @@ double totalPrice(Map<String, FullListing> listingMap) {
   }
   return total;
 }
+
+double itemTotal(String listingId, int qty, Map<String, FullListing> listingMap) {
+  final listing = listingMap[listingId];
+  if (listing == null) return 0;
+  return listing.price * qty;
+}
 }
 

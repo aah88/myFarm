@@ -7,8 +7,8 @@ import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
 import '../auth/validation_per_phone.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreenUser extends StatelessWidget {
+  const HomeScreenUser({super.key});
 
   @override
   Widget build(BuildContext context) {
