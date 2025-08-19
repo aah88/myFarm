@@ -19,14 +19,14 @@ class Radii {
 }
 
 /// ألوان العلامة
-class BrandColors {
+class AppColors {
   static const Color green = Color(0xFF2E7D32);
   static const Color greenSoft = Color(0xFFECF1E8);
   static const Color gray100 = Color(0xFFF7F8F6);
   static const Color gray200 = Color(0xFFE8EBE6);
   static const Color gray400 = Color(0xFFB6BAB5);
-  static const Color text = Colors.black87;
-  static const Color danger = Color(0xFFE95322);
+  static const Color text = Colors.black87; 
+  static const Color danger = Color(0xFFEF574B);
   static const Color white = Colors.white;
 }
 
@@ -51,7 +51,7 @@ class Shadows {
 
 /// حدود وحواف
 class Borders {
-  static BorderSide thin = const BorderSide(color: BrandColors.gray200, width: 1);
+  static BorderSide thin = const BorderSide(color: AppColors.gray200, width: 1);
   static BorderRadius rSm = BorderRadius.circular(Radii.sm);
   static BorderRadius rMd = BorderRadius.circular(Radii.md);
 }

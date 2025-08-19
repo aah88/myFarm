@@ -135,15 +135,15 @@ void initState() {
                 'منتجاتي الأكثر مبيعاً',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: BrandColors.green,
+                      color: AppColors.green,
                     ),
               ),
               TextButton.icon(
                 onPressed: () {
                   // TODO: انتقل لصفحة كل المنتجات الأكثر مبيعًا
                 },
-                icon: const Icon(Icons.chevron_left, size: 18, color: BrandColors.danger),
-                label: const Text('عرض الكل', style: TextStyle(color: BrandColors.danger)),
+                icon: const Icon(Icons.chevron_left, size: 18, color: AppColors.danger),
+                label: const Text('عرض الكل', style: TextStyle(color: AppColors.danger)),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: Spacing.sm, vertical: Spacing.xs),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -211,7 +211,7 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: BrandColors.white,
+        color: AppColors.white,
         borderRadius: Borders.rSm,
         border: Border.fromBorderSide(Borders.thin),
         boxShadow: Shadows.cardSm,
@@ -220,7 +220,7 @@ class StatCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: BrandColors.green, size: iconSize),
+          Icon(icon, color: AppColors.green, size: iconSize),
           const SizedBox(height: Spacing.sm),
           Text(
             _formatCount(count),
@@ -250,8 +250,8 @@ class ProductCard extends StatelessWidget {
       width: 150,
       padding: const EdgeInsets.all(Spacing.md - 2), // 10px
       decoration: BoxDecoration(
-        color: BrandColors.white,
-        border: Border.all(color: BrandColors.gray200),
+        color: AppColors.white,
+        border: Border.all(color: AppColors.gray200),
         borderRadius: Borders.rSm,
         boxShadow: Shadows.cardXs,
       ),
