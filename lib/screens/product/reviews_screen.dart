@@ -16,7 +16,7 @@ class ReviewsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         itemCount: reviews.length,
         separatorBuilder: (_, __) => const Divider(),
-        itemBuilder: (context, index) {
+        itemBuilder: (context, index) { 
           final review = reviews[index];
           return ListTile(
             leading: CircleAvatar(child: Text(review['user'][0])),

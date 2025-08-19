@@ -6,7 +6,7 @@ import 'design_tokens.dart';
 class AppTheme {
   static ThemeData light() {
     final scheme = ColorScheme.fromSeed(
-      seedColor: BrandColors.green,
+      seedColor: AppColors.green,
       brightness: Brightness.light,
     );
 
@@ -15,36 +15,36 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: BrandColors.white,
+      scaffoldBackgroundColor: AppColors.white,
       splashFactory: InkSparkle.splashFactory,
 
       // نصوص
       textTheme: baseText.apply(
-        bodyColor: BrandColors.text,
-        displayColor: BrandColors.text,
+        bodyColor: AppColors.text,
+        displayColor: AppColors.text,
       ),
 
       // 👇 AppBar (لو حاب تخصيص مختلف لأيقونات الشريط)
       appBarTheme: const AppBarTheme(
-        backgroundColor: BrandColors.white,
-        foregroundColor: BrandColors.text,
+        backgroundColor: AppColors.white,
+        foregroundColor: AppColors.text,
         elevation: 0,
         centerTitle: true,
-        iconTheme: IconThemeData(size: 22, color: BrandColors.text),
+        iconTheme: IconThemeData(size: 22, color: AppColors.text),
       ),
 
       // 👇 هذا هو الموضع الوحيد لـ iconTheme (لا تكرّره)
-      iconTheme: const IconThemeData(size: 22, color: BrandColors.green),
+      iconTheme: const IconThemeData(size: 22, color: AppColors.green),
 
       dividerTheme: const DividerThemeData(
-        color: BrandColors.gray200,
+        color: AppColors.gray200,
         thickness: 1,
         space: 1,
       ),
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: BrandColors.green,
+          backgroundColor: AppColors.green,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(48),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -60,10 +60,10 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           minimumSize: const Size.fromHeight(48),
-          side: const BorderSide(color: BrandColors.gray200, width: 1.2),
+          side: const BorderSide(color: AppColors.gray200, width: 1.2),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           shape: RoundedRectangleBorder(borderRadius: Borders.rSm),
-          foregroundColor: BrandColors.text,
+          foregroundColor: AppColors.text,
           textStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -74,7 +74,7 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          foregroundColor: BrandColors.danger,
+          foregroundColor: AppColors.danger,
           textStyle: const TextStyle(
             fontSize: 13,           // أصغر قليلًا للـ text buttons
             fontWeight: FontWeight.w600,
@@ -84,7 +84,7 @@ class AppTheme {
       ),
 
       cardTheme: CardThemeData(
-        color: BrandColors.white,
+        color: AppColors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: Borders.rSm,
