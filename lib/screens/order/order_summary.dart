@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../models/full_listing.dart';
 import '../../providers/cart_provider.dart';
 import '../../models/local_data.dart';
+import '../../providers/full_listing_provider.dart';
 import '../../services/firebase_service.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
@@ -18,8 +19,6 @@ class OrderSummaryScreen extends StatefulWidget {
 class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   String? _selectedDelivery;
   String? _selectedPayment;
-  final FirebaseService _firebaseService = FirebaseService();
-  bool _loading = true;
   Map<String, FullListing> _listingMap = {};
 
 
@@ -27,29 +26,14 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   @override
   void initState() {
     super.initState();
-    _loadListingDetails();
-  }
-   Future<void> _loadListingDetails() async {
-    final cart = context.read<CartProvider>().cart;
-
-    // IDs المطلوبة فقط
-    final listingIds = cart.items.map((item) => item.listingId).toList();
-
-    // اجلب التفاصيل
-    final listings = await _firebaseService.getFullListingsByIds(listingIds);
-
-    // حوّلها لخريطة للوصول السريع
-    _listingMap = {for (var l in listings) l.id: l};
-
-    if (mounted) {
-      setState(() => _loading = false);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     final cartProvider = context.watch<CartProvider>();
     final cart = cartProvider.cart;
+    final listings = context.read<FullListingProvider>().listings;
+    _listingMap = {for (var l in listings) l.id: l};
 
     return Scaffold(
       appBar: AppBar(
@@ -122,6 +106,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       leading: const Icon(Icons.shopping_bag_outlined),
                       title: Text(listing?.productName ?? '—'),
                       subtitle: Text('الكمية: ${item.qty} ${listing?.unit ?? ''}'),
+                      trailing:  Text('سعر و مزارع: ${listing!.price} ${listing.farmerName}'),
                       // ممكن تضيف السعر أو أزرار الكمية هنا إذا حاب
                     );
                   },

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/providers/full_listing_provider.dart';
 import 'package:flutter_application_1/screens/cart/cart_screen.dart';
 import 'package:flutter_application_1/screens/favorites/favorites_screen.dart';
 import 'package:flutter_application_1/screens/home/home_screen_farmer.dart';
@@ -28,6 +29,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ListingProvider()),
+        ChangeNotifierProvider(create: (_) => FullListingProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
       ],

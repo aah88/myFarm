@@ -1,6 +1,7 @@
 // lib/screens/cart/cart_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
+import 'package:flutter_application_1/providers/full_listing_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart_provider.dart';
@@ -13,7 +14,6 @@ import '../order/order_summary.dart';
 
 // 🎨 Tokens
 import '../../theme/design_tokens.dart';
-import '../order/order_summary.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -35,18 +35,14 @@ class _CartScreenState extends State<CartScreen> {
 
   Future<void> _loadListingDetails() async {
     final cart = context.read<CartProvider>().cart;
-
-    // IDs المطلوبة فقط
     final listingIds = cart.items.map((item) => item.listingId).toList();
-
-    // اجلب التفاصيل
     final listings = await _firebaseService.getFullListingsByIds(listingIds);
-
-    // حوّلها لخريطة للوصول السريع
+   
     _listingMap = {for (var l in listings) l.id: l};
 
     if (mounted) {
       setState(() => _loading = false);
+      context.read<FullListingProvider>().setListings(listings);
     }
   }
 

@@ -165,7 +165,7 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                       distance: 5.2, // replace with actual distance müss berechnet werden
                       onAddToCart: () {
                         //ADD To CART
-                        context.read<CartProvider>().addItem(CartItem(listingId: listing.id, qty: 2)); //
+                        context.read<CartProvider>().addItem(CartItem(listingId: listing.id, qty: 1)); //
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text("${listing.productName} تمت إضافته إلى السلة"),
