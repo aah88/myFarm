@@ -55,7 +55,7 @@ class _CartScreenState extends State<CartScreen> {
     return AppScaffold(
       currentTab: AppTab.cart,
       appBar: AppBar(
-        title: const Text('سلة المشتريات', style: TextStyle(color: Color(0xFF2E7D32))),
+        title: const Text('🛒 سلة المشتريات', style: TextStyle(color: Color(0xFF2E7D32))),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
