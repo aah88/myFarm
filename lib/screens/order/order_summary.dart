@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/order_status.dart';
+import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import 'package:provider/provider.dart';
 import '../../models/full_listing.dart';
 import '../../providers/cart_provider.dart';
@@ -53,10 +54,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("ملخص الطلب"),
-        backgroundColor: const Color(0xFF2E7D32),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -67,16 +67,17 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
             ),
             const SizedBox(height: 12),
 
-       
-
             /// --- DELIVERY METHOD ---
-            const Text(
-              "اختر وسيلة التوصيل",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            DropdownButton<String>(
+            DropdownButtonFormField<String>(
               value: _selectedDelivery,
+              borderRadius: BorderRadius.circular(12),
               hint: const Text("اختر وسيلة التوصيل"),
+               decoration: const InputDecoration(
+                labelText: "اختر وسيلة التوصيل",
+                hintText: "اختر وسيلة التوصيل",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.list_alt, color: Color(0xFF91958E)),
+              ),    
               isExpanded: true,
               items:   deliveryMeans.map((item) => DropdownMenuItem(value: item.id, child: Text(item.name)) ).toList(),
               onChanged: (value) {
@@ -87,13 +88,16 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
             const SizedBox(height: 16),
 
             /// --- PAYMENT METHOD ---
-            const Text(
-              "اختر وسيلة الدفع",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            DropdownButton<String>(
+            DropdownButtonFormField<String>(
               value: _selectedPayment,
-              hint: const Text("اختر وسيلة الدفع"),
+               borderRadius: BorderRadius.circular(12),
+              dropdownColor: Colors.white,
+              decoration: const InputDecoration(
+                labelText: "اختر وسيلة الدفع",
+                hintText: "اختر وسيلة الدفع",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.list_alt, color: Color(0xFF91958E)),
+              ),
               isExpanded: true,
               items:  paymentMeans.map((item) => DropdownMenuItem(value: item.id, child: Text(item.name)) ).toList(),
               onChanged: (value) {
@@ -102,7 +106,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
             ),
 
             const SizedBox(height: 24),
-     Expanded(
+            Expanded(
               child: ListView.builder(
                 itemCount: cart.items.length,
                 itemBuilder: (ctx, i) {
@@ -156,6 +160,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }
