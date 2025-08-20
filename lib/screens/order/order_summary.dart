@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/order_status.dart';
 import 'package:provider/provider.dart';
 import '../../models/full_listing.dart';
 import '../../providers/cart_provider.dart';
-import '../../models/cart_model.dart';
+import '../../models/local_data.dart';
 import '../../services/firebase_service.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
@@ -77,10 +78,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
               value: _selectedDelivery,
               hint: const Text("اختر وسيلة التوصيل"),
               isExpanded: true,
-              items: const [
-                DropdownMenuItem(value: "pickup", child: Text("استلام من المزرعة")),
-                DropdownMenuItem(value: "courier", child: Text("خدمة توصيل")),
-              ],
+              items:   deliveryMeans.map((item) => DropdownMenuItem(value: item.id, child: Text(item.name)) ).toList(),
               onChanged: (value) {
                 setState(() => _selectedDelivery = value);
               },
@@ -97,10 +95,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
               value: _selectedPayment,
               hint: const Text("اختر وسيلة الدفع"),
               isExpanded: true,
-              items: const [
-                DropdownMenuItem(value: "cash", child: Text("الدفع عند الاستلام")),
-                DropdownMenuItem(value: "card", child: Text("بطاقة بنكية")),
-              ],
+              items:  paymentMeans.map((item) => DropdownMenuItem(value: item.id, child: Text(item.name)) ).toList(),
               onChanged: (value) {
                 setState(() => _selectedPayment = value);
               },
@@ -140,8 +135,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                 onPressed: (_selectedDelivery == null || _selectedPayment == null)
                     ? null
                     : () async {
-                        // 🔹 here you would save the order to Firestore
-                        // e.g., await FirebaseService().createOrder(cart, _selectedDelivery!, _selectedPayment!);
+                       await FirebaseService().createOrder(cart, _selectedDelivery!, _selectedPayment!, OrderStatus.pending);
 
                         // 🔹 empty the cart after order confirmation
                         cartProvider.clearCart();

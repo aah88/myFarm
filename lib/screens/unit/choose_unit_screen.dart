@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
-import '../../models/unit_data.dart';
+import '../../models/local_data.dart';
 import 'package:provider/provider.dart';
 import '../../providers/listing_provider.dart';
 import '../../services/firebase_service.dart';

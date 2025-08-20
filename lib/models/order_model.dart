@@ -1,71 +1,109 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'cart_model.dart';
+import 'order_status.dart';
 class Order {
-  final String id;
-  final List<OrderItem> orderItems;
-  final int totalAmount;
-  final String paymentStatus; 
-  final String deliveryStatus;
-  final Timestamp orderDate;
+  final List<OrderItem> items;
+  final String userId;
+  final String paymentMeanId;
+  final String deliveryMeanId;
+  final OrderStatus status;
+  
+  Order({required this.items, required this.userId, required this.paymentMeanId, required this.deliveryMeanId, required this.status});
 
-  Order({required this.id,
-    required this.orderItems,
-    required this.totalAmount,
-    required this.paymentStatus,
-    required this.deliveryStatus,
-    required this.orderDate,
-    });
-
-  factory Order.fromMap(Map<String, dynamic> data, String id) {
-    return Order(
-      id: id,
-      orderItems: data['orderItems'] ?? [],
-      totalAmount: data['totalAmount'] ?? 0,
-      paymentStatus: data['paymentStatus']?? '',
-      deliveryStatus: data['deliveryStatus']?? '',
-      orderDate: data['orderDate']?? FieldValue.serverTimestamp(),
-    );
+  factory Order.fromMap(Map<String, dynamic> data) {
+    var itemsList = <OrderItem>[];
+    if (data['items'] != null) {
+      itemsList = List<Map<String, dynamic>>.from(data['items'])
+          .map((item) => OrderItem.fromMap(item))
+          .toList();
+    }
+    return Order(items: itemsList, 
+    userId: data['userId'] ?? '', 
+    paymentMeanId: data['paymentMeanId']??'', 
+    deliveryMeanId: data['deliveryMeanId']??'',
+    status: OrderStatus.values.firstWhere(
+        (s) => s.toString() == 'OrderStatus.${data['status']}',
+        orElse: () => OrderStatus.pending,
+      ),);
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'orderItems': orderItems,
-      'totalAmount': totalAmount,
-      'paymentStatus': paymentStatus,
-      'deliveryStatus': deliveryStatus,
-      'orderDate': orderDate,
+      'items': items.map((item) => item.toMap()).toList(),
+      'userId': userId,
+      'paymentMeanId':paymentMeanId,
+      'deliveryMeanId': deliveryMeanId,
+      'status': status.name, 
     };
+  }
+
+  factory Order.userOrder(String userId) {
+    return Order(items: [], userId: userId, paymentMeanId: '', deliveryMeanId: '', status: OrderStatus.pending);
+  }
+    factory Order.empty() {
+    return Order(items: [], userId: '', paymentMeanId: '', deliveryMeanId: '', status: OrderStatus.pending);
+  }
+
+   Order copyWith({
+    List<OrderItem>? items,
+    String? userId,
+    String? paymentMeanId,
+    String? deliveryMeanId,
+    OrderStatus? status
+  
+ 
+  }) {
+    return Order(
+      items: items??this.items,
+      userId: userId ?? this.userId,
+      paymentMeanId: paymentMeanId ?? this.paymentMeanId,
+      deliveryMeanId: deliveryMeanId?? this.deliveryMeanId,
+      status: status?? this.status
+    );
   }
 }
 
-class OrderItem{
-  final String productId;
-   final String name;
-  final int quantity;
-  final int unitPrice;
+ 
+class OrderItem {
+  final String listingId;
+  final int qty;
 
-  OrderItem({
-    required this.productId,
-    required this.name,
-    required this.quantity,
-    required this.unitPrice
-    });
+  OrderItem({required this.listingId, required this.qty});
 
-  factory OrderItem.fromMap(Map<String, dynamic> data, String id) {
+  factory OrderItem.fromMap(Map<String, dynamic> data) {
     return OrderItem(
-      productId: data['productId'] ?? '',
-      name: data['name'] ?? '',
-      quantity: data['quantity'] ?? 0,
-      unitPrice:data['unitPrice']?? 0,
+      listingId: data['listingId'] ?? '',
+      qty: (data['qty'] ?? 0).toInt(),
     );
   }
+
+   factory OrderItem.fromCartItem(CartItem cartItem) {
+    return OrderItem(
+      listingId: cartItem.listingId,
+      qty: cartItem.qty,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
-      "name":name,
-      "productId":productId,
-      "quantity": quantity,
-      "unitPrice": unitPrice,
+      "listingId": listingId,
+      "qty": qty,
     };
   }
-   
+
+  factory OrderItem.empty() {
+    return OrderItem(listingId: '', qty: 0);
+  }
+}
+
+//Extension
+  extension CartToOrder on Cart {
+  Order toOrder({required String paymentMeanId, required String deliveryMeanId, required OrderStatus status}) {
+    return Order(
+      items: items.map((cartItem) => OrderItem.fromCartItem(cartItem)).toList(),
+      userId: userId,
+      paymentMeanId: paymentMeanId,
+      deliveryMeanId: deliveryMeanId,
+      status: status
+    );
+  }
 }

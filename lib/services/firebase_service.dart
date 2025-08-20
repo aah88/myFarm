@@ -1,11 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_application_1/models/cart_model.dart';
-import 'package:flutter_application_1/models/listing_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Order;
+import '../../models/cart_model.dart';
+import '../../models/listing_model.dart';
+import '../../models/order_status.dart';
 import '../../models/product_model.dart';
 import '../../models/category_model.dart';
 import '../../models/farmer_model.dart';
 import '../../models/full_listing.dart';
 import '../../models/user_model.dart';
+import '../../models/order_model.dart';
 
 class FirebaseService {
   final _db = FirebaseFirestore.instance;
@@ -285,4 +287,23 @@ Future<List<FullListing>> getFullListings() async {
  Future<void> addCart(Cart cart) async {
     await _db.collection('cart').add(cart.toMap());
   }
+
+
+   Future<void> createOrder(Cart cart, String selectedDelivery,String selectedPayment, OrderStatus status) async{
+    // convert:
+         final order = cart.toOrder(paymentMeanId: selectedPayment, deliveryMeanId: selectedDelivery, status: status);
+         await _db.collection('order').add(order.toMap());
+   }
+
+   Future<Order?> getOrderById(String id) async {
+  final doc = await _db.collection('order').doc(id).get();
+  if (doc.exists) {
+    return Order.fromMap(doc.data() as Map<String, dynamic>);
+  }
+  return null;
+}
+
+Future<void> updateOrderStatus(String orderId, OrderStatus status) async {
+  await _db.collection('order').doc(orderId).update({'status': status.name});
+}
 }
