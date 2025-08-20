@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
 import 'package:flutter_application_1/providers/full_listing_provider.dart';
+import 'package:flutter_application_1/screens/customer/all_listings.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart_provider.dart';
@@ -62,7 +63,7 @@ class _CartScreenState extends State<CartScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : cart.items.isEmpty
-              ? const Center(child: Text("السلة فارغة"))
+              ? const _EmptyCart()
               : Column(
                   children: [
                     // القائمة قابلة للتمدد
@@ -220,6 +221,44 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                   ],
                 ),
+    );
+  }
+}
+
+class _EmptyCart extends StatelessWidget {
+  const _EmptyCart();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding:
+            const EdgeInsets.symmetric(horizontal: Spacing.xl, vertical: Spacing.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.shopping_cart_outlined, size: 72, color: AppColors.green),
+            const SizedBox(height: Spacing.md),
+            const Text('السلة فارغة'),
+            const SizedBox(height: Spacing.sm),
+            const Text('أضف منتجات إلى السلة لعرضها هنا.', style: TextStyle(color: Colors.grey)),
+            const SizedBox(height: Spacing.lg),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => AllListingsScreen()),
+                  );
+                },
+                child: const Text(
+                  " تصفح المنتجات"
+                ),
+              ),
+            ),           
+          ],
+        ),
+      ),
     );
   }
 }
