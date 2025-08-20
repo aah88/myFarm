@@ -5,18 +5,36 @@ import 'package:flutter_application_1/screens/category/category_management_scree
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
+import '../../services/firebase_service.dart';
 import '../auth/validation_per_phone.dart';
 
-class HomeScreenUser extends StatelessWidget {
+
+class HomeScreenUser extends StatefulWidget {
   const HomeScreenUser({super.key});
 
   @override
+  State<HomeScreenUser> createState() => _HomeScreenUserState();
+}
+
+class _HomeScreenUserState extends State<HomeScreenUser> {
+  final FirebaseService _firebaseService = FirebaseService();
+
+  @override
+void initState() {
+  super.initState();
+
+  Future.microtask(() {
+    if (!mounted) return; // ✅ guard against context after dispose
+
+    final userProvider = context.read<UserProvider>();
+    userProvider.setUserId('fPFgIzsfSbMbiftLFJvaIQx14x42');
+
+    final cartProvider = context.read<CartProvider>();
+    cartProvider.loadCart('fPFgIzsfSbMbiftLFJvaIQx14x42');
+  });
+}
+  @override
   Widget build(BuildContext context) {
-     //TODO Löschen AHMAD
-     context.read<UserProvider>().setUserId('fPFgIzsfSbMbiftLFJvaIQx14x42');
-     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-     cartProvider.loadCart('fPFgIzsfSbMbiftLFJvaIQx14x42'); //
-     // 
     return Scaffold(
       appBar: AppBar(title: const Text('الرئيسية')),
       body: Padding(
