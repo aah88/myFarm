@@ -106,23 +106,31 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
             ),
 
             const SizedBox(height: 24),
+
             Expanded(
-              child: ListView.builder(
-                itemCount: cart.items.length,
-                itemBuilder: (ctx, i) {
-                  final item = cart.items[i];
-                  final listing = _listingMap[item.listingId];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 6),
-                    child: ListTile(
-                      leading: const Icon(Icons.shopping_bag),
-                      title: Text("${listing?.productName}"),
-                      subtitle: Text("الكمية: ${item.qty} ${listing?.unit}"),
-                    ),
-                  );
-                },
+              child: Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount: cart.items.length,
+                  itemBuilder: (ctx, i) {
+                    final item = cart.items[i];
+                    final listing = _listingMap[item.listingId];
+
+                    return ListTile(
+                      leading: const Icon(Icons.shopping_bag_outlined),
+                      title: Text(listing?.productName ?? '—'),
+                      subtitle: Text('الكمية: ${item.qty} ${listing?.unit ?? ''}'),
+                      // ممكن تضيف السعر أو أزرار الكمية هنا إذا حاب
+                    );
+                  },
+                  separatorBuilder: (_, __) => const Divider(height: 1),
+                ),
               ),
             ),
+
+
 
             const SizedBox(height: 16),
             /// --- CONFIRM BUTTON ---
