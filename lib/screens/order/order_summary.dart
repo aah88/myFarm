@@ -44,12 +44,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// --- ORDER SUMMARY ---
-            const Text(
-              "مراجعة الطلب",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
 
             /// --- DELIVERY METHOD ---
             DropdownButtonFormField<String>(
@@ -93,29 +87,85 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
 
             Expanded(
               child: Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 child: ListView.separated(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   itemCount: cart.items.length,
+                  separatorBuilder: (_, __) =>
+                      const Divider(height: 1, thickness: .6, color: Color(0xFFE8EBE6)),
                   itemBuilder: (ctx, i) {
                     final item = cart.items[i];
                     final listing = _listingMap[item.listingId];
+                    if (listing == null) {
+                      return const ListTile(
+                        title: Text('—'),
+                        subtitle: Text('العنصر غير متاح'),
+                      );
+                    }
+
+                    final lineTotal = listing.price * item.qty;
 
                     return ListTile(
-                      leading: const Icon(Icons.shopping_bag_outlined),
-                      title: Text(listing?.productName ?? '—'),
-                      subtitle: Text('الكمية: ${item.qty} ${listing?.unit ?? ''}'),
-                      trailing:  Text('سعر و مزارع: ${listing!.price} ${listing.farmerName}'),
-                      // ممكن تضيف السعر أو أزرار الكمية هنا إذا حاب
+                      // صورة مصغّرة بدل الأيقونة
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: listing.productImageUrl.isNotEmpty
+                            ? Image.asset(
+                                listing.productImageUrl,
+                                width: 52,
+                                height: 52,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                width: 52,
+                                height: 52,
+                                color: const Color(0xFFF1F3F0),
+                                child: const Icon(Icons.image, color: Colors.grey),
+                              ),
+                      ),
+                      minLeadingWidth: 44,
+                      minVerticalPadding: 0,
+
+                      title: Text(
+                        listing.productName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'السعر: ${listing.price}',
+                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'الكمية: ${item.qty} ${listing.unit}',
+                            style: const TextStyle(fontSize: 12, color: Colors.black54),
+                          ),
+                        ],
+                      ),
+
+                      trailing: Text(
+                        'ل.س ${lineTotal.toStringAsFixed(0)}',
+                        style: const TextStyle(
+                          color: Color(0xFF2E7D32),
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      visualDensity: VisualDensity.compact,
                     );
                   },
-                  separatorBuilder: (_, __) => const Divider(height: 1),
                 ),
               ),
             ),
-
-
 
             const SizedBox(height: 16),
             /// --- CONFIRM BUTTON ---
