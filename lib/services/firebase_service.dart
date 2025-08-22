@@ -8,6 +8,7 @@ import '../../models/farmer_model.dart';
 import '../../models/full_listing.dart';
 import '../../models/user_model.dart';
 import '../../models/order_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseService {
   final _db = FirebaseFirestore.instance;
@@ -306,4 +307,23 @@ Future<List<FullListing>> getFullListings() async {
 Future<void> updateOrderStatus(String orderId, OrderStatus status) async {
   await _db.collection('order').doc(orderId).update({'status': status.name});
 }
+
+
+
+Future<void> saveShopOwnerToken(String userId) async {
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  if (fcmToken != null) {
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'fcmToken': fcmToken,
+    });
+  }
+}
+
+FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  if (message.notification != null) {
+    print("🔔 Notification received: ${message.notification!.title}");
+    // Show local notification with flutter_local_notifications
+  }
+});
+
 }
