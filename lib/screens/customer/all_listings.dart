@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/cart_model.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
+import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../services/firebase_service.dart';
@@ -180,6 +181,8 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
           ),
         ],
       ),
+            // ✅ BottomNav بدون تفعيل أي تبويب
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }
