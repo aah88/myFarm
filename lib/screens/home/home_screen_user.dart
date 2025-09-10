@@ -13,7 +13,10 @@ import '../../widgets/bottom_nav.dart';
 import '../customer/all_listings.dart';
 
 // 🧩 Tokens
+
 import '../../theme/design_tokens.dart'; 
+import '../../providers/listing_provider.dart';          // ⬅ جديد
+import '../product/choose_product_screen.dart';          // ⬅ جديد
 
 class HomeScreenUser extends StatefulWidget {
   const HomeScreenUser({super.key});
@@ -82,61 +85,95 @@ void initState() {
 
           const SizedBox(height: Spacing.md),
 
-          // الإحصائيات
-          GridView.count(
-            crossAxisCount: 5,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: Spacing.md,
-            crossAxisSpacing: Spacing.md,
-            children: const [
-              StatCard(title: 'المنتجات', count: 5, icon: Icons.shopping_basket),
-              StatCard(title: 'الطلبات', count: 3, icon: Icons.shopping_cart),
-              StatCard(title: 'التقارير', count: 1, icon: Icons.bar_chart),
-              StatCard(title: 'طلبات جديدة', count: 103, icon: Icons.fiber_new),
-              StatCard(title: 'إحصائيات', count: 1, icon: Icons.analytics),
-              StatCard(title: 'التقييمات', count: 3, icon: Icons.star_rounded),
-            ],
-          ),
-
-
-
-          // زر شراء (ثانوي)
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => AllListingsScreen()),
-              ),
-              child: const Text('شراء منتج'),
-            ),
-          ),
-
-          const SizedBox(height: Spacing.md),
-
-          // زر إضافة منتج (أساسي)
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ChooseCategoryScreen()),
-                );
-              },
-              child: const Text('إضافة منتج'),
-            ),
-          ),
-
-          const SizedBox(height: Spacing.lg),
-
-          // عنوان "منتجاتي الأكثر مبيعاً" + "عرض الكل"
+          // عنوان " الأصناف " + "عرض الكل"
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'منتجاتي الأكثر مبيعاً',
+                '  الأصناف',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.green,
+                    ),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ChooseCategoryScreen()),
+                  );
+                },
+                icon: const Icon(Icons.chevron_left, size: 18, color: AppColors.danger),
+                label: const Text('عرض الكل', style: TextStyle(color: AppColors.danger)),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.sm, vertical: Spacing.xs),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+            ],
+          ),
+
+            
+            const SizedBox(height: Spacing.md),
+
+            // 🔻 سلايدر الأصناف
+
+          FutureBuilder<List<ProductCategory>>(
+            future: _futureCategories,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox(
+                  height: 96,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              if (snapshot.hasError) {
+                return Text('تعذّر تحميل الأصناف: ${snapshot.error}');
+              }
+
+              final categories = snapshot.data ?? [];
+              if (categories.isEmpty) return const SizedBox.shrink();
+
+              return SizedBox(
+                height: 96,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: categories.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: Spacing.md),
+                  itemBuilder: (context, i) {
+                    final c = categories[i];
+                    return _CategoryChipSmall(
+                      title: c.name,
+                      imageUrl: c.imageUrl, // مسار أصل/شبكة
+                      onTap: () {
+                        // نفس تدفّق صفحة الأصناف:
+                        context.read<ListingProvider>().setCategoryId(c.id);
+                        context.read<ListingProvider>().setUserId(
+                              context.read<UserProvider>().userId!,
+                            );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ChooseProductScreen(categoryId: c.id),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+
+          const SizedBox(height: Spacing.md),
+
+          // عنوان  الأكثر مبيعاً" + "عرض الكل"
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                ' الأكثر مبيعاً',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.green,
@@ -274,3 +311,62 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
+
+class _CategoryChipSmall extends StatelessWidget {
+  const _CategoryChipSmall({
+    required this.title,
+    required this.imageUrl,
+    required this.onTap,
+  });
+
+  final String title;
+  final String imageUrl;
+  final VoidCallback onTap;
+ 
+  @override
+  Widget build(BuildContext context) {
+    final r = BorderRadius.circular(16);
+    return InkWell( 
+      onTap: onTap,
+      borderRadius: r,
+      child: Container(
+        width: 95,
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF4F6F2),
+          borderRadius: r,
+          border: Border.all(color: const Color(0xFFE8EBE6)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // استخدم Image.asset أو Image.network حسب نوع الرابط
+            imageUrl.startsWith('http')
+                ? Image.network(imageUrl, height: 45, fit: BoxFit.contain)
+                : Image.asset(imageUrl, height: 45, fit: BoxFit.contain),
+            const SizedBox(height: 6),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2E7D32),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
