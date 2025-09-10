@@ -74,4 +74,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
->>>>>>> 08c1031 (Initial commit)
+/linux/
+/macos/
+/windows/
