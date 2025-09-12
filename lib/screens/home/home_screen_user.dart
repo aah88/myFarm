@@ -1,22 +1,28 @@
 // lib/screens/home/home_screen_farmer.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/category_model.dart';
 import 'package:provider/provider.dart';
-import '../../models/product_model.dart';
-import '../../providers/cart_provider.dart';
+
+// Models
+import 'package:flutter_application_1/models/category_model.dart';
+import 'package:flutter_application_1/models/full_listing.dart';
+import 'package:flutter_application_1/models/cart_model.dart';
+
+// Providers & services
 import '../../providers/user_provider.dart';
-import '../category/choose_category_screen.dart';
+import '../../providers/cart_provider.dart';
+import '../../providers/listing_provider.dart';
 import '../../services/firebase_service.dart';
 
+// UI & routing
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
+import '../category/choose_category_screen.dart';
+import '../product/choose_product_screen.dart';
 import '../customer/all_listings.dart';
+import '../../widgets/product_listing_card.dart'; // ✅ الكارت الجديد
 
-// 🧩 Tokens
-
-import '../../theme/design_tokens.dart'; 
-import '../../providers/listing_provider.dart';          // ⬅ جديد
-import '../product/choose_product_screen.dart';          // ⬅ جديد
+// Design tokens
+import '../../theme/design_tokens.dart';
 
 class HomeScreenUser extends StatefulWidget {
   const HomeScreenUser({super.key});
@@ -27,33 +33,32 @@ class HomeScreenUser extends StatefulWidget {
 
 class _HomeScreenUserState extends State<HomeScreenUser> {
   final FirebaseService _firebaseService = FirebaseService();
-    late Future<List<ProductCategory>> _futureCategories;
+  late Future<List<ProductCategory>> _futureCategories;
 
   @override
-void initState() {
-  super.initState();
-  _futureCategories = _firebaseService.getCategory();
-  Future.microtask(() {
-    if (!mounted) return; // ✅ guard against context after dispose
+  void initState() {
+    super.initState();
+    _futureCategories = _firebaseService.getCategory();
 
-    final userProvider = context.read<UserProvider>();
-    userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
+    // تهيئة مزودي المستخدم والسلة
+    Future.microtask(() {
+      if (!mounted) return;
+      final userProvider = context.read<UserProvider>();
+      userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
 
-    final cartProvider = context.read<CartProvider>();
-    cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
-  });
-}
+      final cartProvider = context.read<CartProvider>();
+      cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
+    });
+  }
 
-  
   @override
   Widget build(BuildContext context) {
-   
     return AppScaffold(
       currentTab: AppTab.home,
       body: ListView(
         padding: const EdgeInsets.all(Spacing.lg),
         children: [
-          // Header Image
+          // ====== Header ======
           Container(
             constraints: const BoxConstraints(minHeight: 120, maxHeight: 150),
             decoration: BoxDecoration(
@@ -85,7 +90,7 @@ void initState() {
 
           const SizedBox(height: Spacing.md),
 
-          // عنوان " الأصناف " + "عرض الكل"
+          // ====== الأصناف + عرض الكل ======
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -113,11 +118,9 @@ void initState() {
             ],
           ),
 
-            
-            const SizedBox(height: Spacing.md),
+          const SizedBox(height: Spacing.md),
 
-            // 🔻 سلايدر الأصناف
-
+          // ====== سلايدر الأصناف ======
           FutureBuilder<List<ProductCategory>>(
             future: _futureCategories,
             builder: (context, snapshot) {
@@ -145,9 +148,8 @@ void initState() {
                     final c = categories[i];
                     return _CategoryChipSmall(
                       title: c.name,
-                      imageUrl: c.imageUrl, // مسار أصل/شبكة
+                      imageUrl: c.imageUrl,
                       onTap: () {
-                        // نفس تدفّق صفحة الأصناف:
                         context.read<ListingProvider>().setCategoryId(c.id);
                         context.read<ListingProvider>().setUserId(
                               context.read<UserProvider>().userId!,
@@ -166,9 +168,9 @@ void initState() {
             },
           ),
 
-          const SizedBox(height: Spacing.md),
+          const SizedBox(height: Spacing.lg),
 
-          // عنوان  الأكثر مبيعاً" + "عرض الكل"
+          // ====== الأكثر مبيعاً + عرض الكل ======
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -181,7 +183,10 @@ void initState() {
               ),
               TextButton.icon(
                 onPressed: () {
-                  // TODO: انتقل لصفحة كل المنتجات الأكثر مبيعًا
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AllListingsScreen()),
+                  );
                 },
                 icon: const Icon(Icons.chevron_left, size: 18, color: AppColors.danger),
                 label: const Text('عرض الكل', style: TextStyle(color: AppColors.danger)),
@@ -195,9 +200,9 @@ void initState() {
 
           const SizedBox(height: Spacing.md),
 
-          // المنتجات (سلايدر)
-          FutureBuilder<List<Product>>(
-            future: _firebaseService.getProducts(),
+          // ====== شبكة المنتجات (مثل الصورة) ======
+          FutureBuilder<List<FullListing>>(
+            future: _firebaseService.getFullListings(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -207,105 +212,46 @@ void initState() {
                 return const Text('لا توجد منتجات متاحة');
               }
 
-              final products = snapshot.data!;
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: products.map((product) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: Spacing.md),
-                      child: ProductCard(
-                        imageUrl: product.imageUrl,
-                        title: product.name,
-                      ),
+              final listings = snapshot.data!;
+
+              return Directionality(
+                textDirection: TextDirection.rtl,
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.only(top: 4),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 0.78,
+                  ),
+                  itemCount: listings.length,
+                  itemBuilder: (context, i) {
+                    final l = listings[i];
+                    return ProductListingCard(
+                      imageUrl: l.productImageUrl,
+                      title: l.productName,
+                      rating: l.rating,
+                      price: l.price,
+                      farmerName: l.farmerName,
+                      distance: 5.2, // replace with actual distance müss berechnet werden
+                      onAddToCart: () {
+                        context.read<CartProvider>().addItem(
+                              CartItem(listingId: l.id, qty: 1),
+                            );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("${l.productName} تمت إضافته إلى السلة")),
+                        );
+                      },
                     );
-                  }).toList(),
+                  },
                 ),
               );
             },
           ),
 
           const SizedBox(height: Spacing.xl),
-        ],
-      ),
-    );
-  }
-}
-
-class StatCard extends StatelessWidget {
-  final String title;
-  final int count;
-  final IconData icon;
-  final double iconSize;
-
-  const StatCard({
-    super.key,
-    required this.title,
-    required this.count,
-    required this.icon,
-    this.iconSize = 22,
-  });
-
-  String _formatCount(int n) => n > 99 ? '99+' : '$n';
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: Borders.rSm,
-        border: Border.fromBorderSide(Borders.thin),
-        boxShadow: Shadows.cardSm,
-      ),
-      padding: const EdgeInsets.all(Spacing.md),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: AppColors.green, size: iconSize),
-          const SizedBox(height: Spacing.sm),
-          Text(
-            _formatCount(count),
-            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
-          ),
-          const SizedBox(height: Spacing.xs),
-          Text(title, style: const TextStyle(fontSize: 12)),
-        ],
-      ),
-    );
-  }
-}
-
-class ProductCard extends StatelessWidget {
-  final String imageUrl;
-  final String title;
-
-  const ProductCard({
-    super.key,
-    required this.imageUrl,
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 150,
-      padding: const EdgeInsets.all(Spacing.md - 2), // 10px
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        border: Border.all(color: AppColors.gray200),
-        borderRadius: Borders.rSm,
-        boxShadow: Shadows.cardXs,
-      ),
-      child: Column(
-        children: [
-          Image.asset(
-            imageUrl,
-            height: 86,
-            fit: BoxFit.contain, // مناسب لصور PNG/شفافة
-          ),
-          const SizedBox(height: Spacing.sm),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: Spacing.xs),
         ],
       ),
     );
@@ -322,11 +268,11 @@ class _CategoryChipSmall extends StatelessWidget {
   final String title;
   final String imageUrl;
   final VoidCallback onTap;
- 
+
   @override
   Widget build(BuildContext context) {
     final r = BorderRadius.circular(16);
-    return InkWell( 
+    return InkWell(
       onTap: onTap,
       borderRadius: r,
       child: Container(
@@ -347,7 +293,6 @@ class _CategoryChipSmall extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // استخدم Image.asset أو Image.network حسب نوع الرابط
             imageUrl.startsWith('http')
                 ? Image.network(imageUrl, height: 45, fit: BoxFit.contain)
                 : Image.asset(imageUrl, height: 45, fit: BoxFit.contain),
@@ -368,5 +313,3 @@ class _CategoryChipSmall extends StatelessWidget {
     );
   }
 }
-
-
