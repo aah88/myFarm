@@ -25,22 +25,22 @@ class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
   final FirebaseService _firebaseService = FirebaseService();
 
   @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  Future.microtask(() {
-    if (!mounted) return; // ✅ guard against context after dispose
+    Future.microtask(() {
+      if (!mounted) return; // ✅ guard against context after dispose
 
-    final userProvider = context.read<UserProvider>();
-    userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
+      final userProvider = context.read<UserProvider>();
+      userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
 
-    final cartProvider = context.read<CartProvider>();
-    cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
-  });
-}
+      final cartProvider = context.read<CartProvider>();
+      cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-   
     return AppScaffold(
       currentTab: AppTab.home,
       body: ListView(
@@ -85,13 +85,73 @@ void initState() {
             physics: const NeverScrollableScrollPhysics(),
             mainAxisSpacing: Spacing.md,
             crossAxisSpacing: Spacing.md,
-            children: const [
-              StatCard(title: 'المنتجات', count: 5, icon: Icons.shopping_basket),
-              StatCard(title: 'الطلبات', count: 3, icon: Icons.shopping_cart),
-              StatCard(title: 'التقارير', count: 1, icon: Icons.bar_chart),
-              StatCard(title: 'طلبات جديدة', count: 103, icon: Icons.fiber_new),
-              StatCard(title: 'إحصائيات', count: 1, icon: Icons.analytics),
-              StatCard(title: 'التقييمات', count: 3, icon: Icons.star_rounded),
+            children: [
+              StatCard(
+                title: 'المنتجات',
+                count: 5,
+                icon: Icons.shopping_basket,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AllListingsScreen()),
+                  );
+                },
+              ),
+              StatCard(
+                title: 'الطلبات',
+                count: 3,
+                icon: Icons.shopping_cart,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AllListingsScreen()),
+                  );
+                },
+              ),
+              StatCard(
+                title: 'التقارير',
+                count: 1,
+                icon: Icons.bar_chart,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AllListingsScreen()),
+                  );
+                },
+              ),
+              StatCard(
+                title: 'طلبات جديدة',
+                count: 103,
+                icon: Icons.fiber_new,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AllListingsScreen()),
+                  );
+                },
+              ),
+              StatCard(
+                title: 'إحصائيات',
+                count: 1,
+                icon: Icons.analytics,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AllListingsScreen()),
+                  );
+                },
+              ),
+              StatCard(
+                title: 'التقييمات',
+                count: 3,
+                icon: Icons.star_rounded,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AllListingsScreen()),
+                  );
+                },
+              ),
             ],
           ),
 
@@ -101,10 +161,11 @@ void initState() {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => AllListingsScreen()),
-              ),
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AllListingsScreen()),
+                  ),
               child: const Text('شراء منتج'),
             ),
           ),
@@ -118,7 +179,9 @@ void initState() {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ChooseCategoryScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const ChooseCategoryScreen(),
+                  ),
                 );
               },
               child: const Text('إضافة منتج'),
@@ -134,18 +197,28 @@ void initState() {
               Text(
                 'منتجاتي الأكثر مبيعاً',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.green,
-                    ),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.green,
+                ),
               ),
               TextButton.icon(
                 onPressed: () {
                   // TODO: انتقل لصفحة كل المنتجات الأكثر مبيعًا
                 },
-                icon: const Icon(Icons.chevron_left, size: 18, color: AppColors.danger),
-                label: const Text('عرض الكل', style: TextStyle(color: AppColors.danger)),
+                icon: const Icon(
+                  Icons.chevron_left,
+                  size: 18,
+                  color: AppColors.danger,
+                ),
+                label: const Text(
+                  'عرض الكل',
+                  style: TextStyle(color: AppColors.danger),
+                ),
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.sm, vertical: Spacing.xs),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.sm,
+                    vertical: Spacing.xs,
+                  ),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
@@ -170,15 +243,16 @@ void initState() {
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: products.map((product) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: Spacing.md),
-                      child: ProductCard(
-                        imageUrl: product.imageUrl,
-                        title: product.name,
-                      ),
-                    );
-                  }).toList(),
+                  children:
+                      products.map((product) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: Spacing.md),
+                          child: ProductCard(
+                            imageUrl: product.imageUrl,
+                            title: product.name,
+                          ),
+                        );
+                      }).toList(),
                 ),
               );
             },
@@ -196,6 +270,7 @@ class StatCard extends StatelessWidget {
   final int count;
   final IconData icon;
   final double iconSize;
+  final VoidCallback? onTap;
 
   const StatCard({
     super.key,
@@ -203,32 +278,38 @@ class StatCard extends StatelessWidget {
     required this.count,
     required this.icon,
     this.iconSize = 22,
+    this.onTap,
   });
 
   String _formatCount(int n) => n > 99 ? '99+' : '$n';
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: Borders.rSm,
-        border: Border.fromBorderSide(Borders.thin),
-        boxShadow: Shadows.cardSm,
-      ),
-      padding: const EdgeInsets.all(Spacing.md),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: AppColors.green, size: iconSize),
-          const SizedBox(height: Spacing.sm),
-          Text(
-            _formatCount(count),
-            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
-          ),
-          const SizedBox(height: Spacing.xs),
-          Text(title, style: const TextStyle(fontSize: 12)),
-        ],
+    return InkWell(
+      // ✅ ripple effect
+      borderRadius: Borders.rSm,
+      onTap: onTap, // ✅ navigation comes from parent
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: Borders.rSm,
+          border: Border.fromBorderSide(Borders.thin),
+          boxShadow: Shadows.cardSm,
+        ),
+        padding: const EdgeInsets.all(Spacing.md),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: AppColors.green, size: iconSize),
+            const SizedBox(height: Spacing.sm),
+            Text(
+              _formatCount(count),
+              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+            ),
+            const SizedBox(height: Spacing.xs),
+            Text(title, style: const TextStyle(fontSize: 12)),
+          ],
+        ),
       ),
     );
   }
@@ -238,11 +319,7 @@ class ProductCard extends StatelessWidget {
   final String imageUrl;
   final String title;
 
-  const ProductCard({
-    super.key,
-    required this.imageUrl,
-    required this.title,
-  });
+  const ProductCard({super.key, required this.imageUrl, required this.title});
 
   @override
   Widget build(BuildContext context) {
