@@ -217,36 +217,34 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
               return Directionality(
                 textDirection: TextDirection.rtl,
                 child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.only(top: 4),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 0.78,
-                  ),
-                  itemCount: listings.length,
-                  itemBuilder: (context, i) {
-                    final l = listings[i];
-                    return ProductListingCard(
-                      imageUrl: l.productImageUrl,
-                      title: l.productName,
-                      rating: l.rating,
-                      price: l.price,
-                      farmerName: l.farmerName,
-                      distance: 5.2, // replace with actual distance müss berechnet werden
-                      onAddToCart: () {
-                        context.read<CartProvider>().addItem(
-                              CartItem(listingId: l.id, qty: 1),
-                            );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("${l.productName} تمت إضافته إلى السلة")),
-                        );
-                      },
-                    );
-                  },
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(top: 4),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 250, // 👈 أقصى عرض للكارت الواحد
+                  childAspectRatio: 0.9,   // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
                 ),
+                itemCount: listings.length,
+                itemBuilder: (context, index) {
+                  final listing = listings[index];
+                  return ProductListingCard(
+                    imageUrl: listing.productImageUrl,
+                    title: listing.productName,
+                    rating: listing.rating,
+                    price: listing.price,
+                    farmerName: listing.farmerName,
+                    distance: 5.2, // replace with actual distance müss berechnet werden
+                    onAddToCart: () {
+                      context.read<CartProvider>().addItem(CartItem(listingId: listing.id, qty: 1),);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("${listing.productName} تمت إضافته إلى السلة")),
+                      );
+                    },
+                  );
+                },
+              )
               );
             },
           ),

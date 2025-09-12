@@ -26,12 +26,12 @@ class ProductListingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl, // RTL للغة العربية
+      textDirection: TextDirection.rtl,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFE7EAE5)),
+          border: Border.all(color: const Color(0xFFE8EBE6)),
+          borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.04),
@@ -42,57 +42,78 @@ class ProductListingCard extends StatelessWidget {
         ),
         clipBehavior: Clip.antiAlias,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(8),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ====== صورة المنتج ======
+              // ====== صورة المنتج + التقييم فوقها ======
               Expanded(
-                child: Center(
-                  child: _isNetwork
-                      ? Image.network(imageUrl, fit: BoxFit.contain)
-                      : Image.asset(imageUrl, fit: BoxFit.contain),
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: _isNetwork
+                          ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.contain,
+                              width: double.infinity,
+                            )
+                          : Image.asset(
+                              imageUrl,
+                              fit: BoxFit.contain,
+                              width: double.infinity,
+                            ),
+                    ),
+                    // بادج التقييم
+                    Positioned(
+                      bottom: 5,
+                      left: 8, 
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.star, size: 16, color: Color(0xFFFFC107)),
+                            const SizedBox(width: 4),
+                            Text(
+                              rating.toStringAsFixed(1),
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
 
-              // ====== التقييم ======
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.star, size: 16, color: Color(0xFFFFC107)),
-                  const SizedBox(width: 4),
-                  Text(
-                    rating.toStringAsFixed(1),
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
               const SizedBox(height: 6),
 
               // ====== اسم المنتج ======
-              Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  title,
+                  textAlign: TextAlign.right,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF70756B),
+                  ),
                 ),
               ),
+
               const SizedBox(height: 8),
 
               // ====== السعر + زر الإضافة ======
               Row(
                 children: [
-                  Text(
-                    AppConfig.formatPrice(price),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const Spacer(),
                   SizedBox(
                     width: 36,
                     height: 36,
@@ -108,19 +129,15 @@ class ProductListingCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const Spacer(),
+                  Text(
+                    AppConfig.formatPrice(price),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
                 ],
-              ),
-
-              // ====== معلومات إضافية ======
-              const SizedBox(height: 6),
-              Text(
-                'من $farmerName · ${AppConfig.formatDistance(distance)}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.black.withOpacity(.6),
-                ),
               ),
             ],
           ),
