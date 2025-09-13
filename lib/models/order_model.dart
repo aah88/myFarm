@@ -4,6 +4,7 @@ import 'cart_model.dart';
 import 'order_status.dart';
 
 class Order {
+  final String id;
   final List<OrderItem> items;
   final String userId;
   final String paymentMeanId;
@@ -12,6 +13,7 @@ class Order {
   Timestamp startDate;
 
   Order({
+    required this.id,
     required this.items,
     required this.userId,
     required this.paymentMeanId,
@@ -20,7 +22,7 @@ class Order {
     required this.startDate,
   });
 
-  factory Order.fromMap(Map<String, dynamic> data) {
+  factory Order.fromMap(Map<String, dynamic> data, String id) {
     var itemsList = <OrderItem>[];
     if (data['items'] != null) {
       itemsList =
@@ -29,6 +31,7 @@ class Order {
           ).map((item) => OrderItem.fromMap(item)).toList();
     }
     return Order(
+      id: id,
       items: itemsList,
       userId: data['userId'] ?? '',
       paymentMeanId: data['paymentMeanId'] ?? '',
@@ -54,6 +57,7 @@ class Order {
 
   factory Order.userOrder(String userId) {
     return Order(
+      id: '',
       items: [],
       userId: userId,
       paymentMeanId: '',
@@ -64,6 +68,7 @@ class Order {
   }
   factory Order.empty() {
     return Order(
+      id: '',
       items: [],
       userId: '',
       paymentMeanId: '',
@@ -74,6 +79,7 @@ class Order {
   }
 
   Order copyWith({
+    String? id,
     List<OrderItem>? items,
     String? userId,
     String? paymentMeanId,
@@ -82,6 +88,7 @@ class Order {
     Timestamp? startDate,
   }) {
     return Order(
+      id: id ?? '',
       items: items ?? this.items,
       userId: userId ?? this.userId,
       paymentMeanId: paymentMeanId ?? this.paymentMeanId,
@@ -126,6 +133,7 @@ extension CartToOrder on Cart {
     required OrderStatus status,
   }) {
     return Order(
+      id: '',
       items: items.map((cartItem) => OrderItem.fromCartItem(cartItem)).toList(),
       userId: userId,
       paymentMeanId: paymentMeanId,

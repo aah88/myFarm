@@ -311,9 +311,16 @@ class FirebaseService {
   Future<Order?> getOrderById(String id) async {
     final doc = await _db.collection('order').doc(id).get();
     if (doc.exists) {
-      return Order.fromMap(doc.data() as Map<String, dynamic>);
+      return Order.fromMap(doc.data() as Map<String, dynamic>, doc.id);
     }
     return null;
+  }
+
+  Future<List<Order>> getAllOrders() async {
+    final snapshot = await _db.collection('order').get();
+    return snapshot.docs
+        .map((doc) => Order.fromMap(doc.data(), doc.id))
+        .toList();
   }
 
   Future<void> updateOrderStatus(String orderId, OrderStatus status) async {

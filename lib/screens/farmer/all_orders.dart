@@ -9,14 +9,14 @@ import '../../providers/cart_provider.dart';
 import '../../services/firebase_service.dart';
 import '../../widgets/product_listing_card.dart'; // ✅ الكارت الجديد
 
-class AllListingsScreen extends StatefulWidget {
-  const AllListingsScreen({super.key});
+class AllOrdersFarmerScreen extends StatefulWidget {
+  const AllOrdersFarmerScreen({super.key});
 
   @override
-  State<AllListingsScreen> createState() => _AllListingsScreenState();
+  State<AllOrdersFarmerScreen> createState() => _AllOrdersFarmerScreenState();
 }
 
-class _AllListingsScreenState extends State<AllListingsScreen> {
+class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
   final FirebaseService _firebaseService = FirebaseService();
 
   final String farmerImage =
@@ -25,7 +25,7 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("كل المنتجات")),
+      appBar: AppBar(title: const Text("كل الطلبات")),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -75,12 +75,15 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                     textDirection: TextDirection.rtl,
                     child: GridView.builder(
                       padding: const EdgeInsets.only(top: 4),
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 250, // 👈 أقصى عرض للكارت الواحد
-                        childAspectRatio: 0.9,   // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent:
+                                250, // 👈 أقصى عرض للكارت الواحد
+                            childAspectRatio:
+                                0.9, // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
                       itemCount: listings.length,
                       itemBuilder: (context, index) {
                         final listing = listings[index];
@@ -90,15 +93,18 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                           rating: listing.rating,
                           price: listing.price,
                           farmerName: listing.farmerName,
-                          distance: 5.2, // replace with actual distance müss berechnet werden
+                          distance:
+                              5.2, // replace with actual distance müss berechnet werden
                           onAddToCart: () {
                             context.read<CartProvider>().addItem(
-                                  CartItem(listingId: listing.id, qty: 1),
-                                );
+                              CartItem(listingId: listing.id, qty: 1),
+                            );
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                  content: Text(
-                                      "${listing.productName} تمت إضافته إلى السلة")),
+                                content: Text(
+                                  "${listing.productName} تمت إضافته إلى السلة",
+                                ),
+                              ),
                             );
                           },
                         );
