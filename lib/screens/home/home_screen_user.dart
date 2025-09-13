@@ -126,7 +126,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const SizedBox(
-                  height: 96,
+                  height: 75,
                   child: Center(child: CircularProgressIndicator()),
                 );
               }
@@ -138,7 +138,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
               if (categories.isEmpty) return const SizedBox.shrink();
 
               return SizedBox(
-                height: 96,
+                height: 75,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
@@ -292,18 +292,18 @@ class _CategoryChipSmall extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             imageUrl.startsWith('http')
-                ? Image.network(imageUrl, height: 45, fit: BoxFit.contain)
-                : Image.asset(imageUrl, height: 45, fit: BoxFit.contain),
+                ? Image.network(imageUrl, height: 40, fit: BoxFit.contain)
+                : Image.asset(imageUrl, height: 40, fit: BoxFit.contain),
             const SizedBox(height: 6),
             Text(
               title,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF2E7D32),
-              ),
+              ), 
             ),
           ],
         ),
