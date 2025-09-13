@@ -19,7 +19,9 @@ import '../../widgets/bottom_nav.dart';
 import '../category/choose_category_screen.dart';
 import '../product/choose_product_screen.dart';
 import '../customer/all_listings.dart';
-import '../../widgets/product_listing_card.dart'; // ✅ الكارت الجديد
+import '../../widgets/product_listing_card.dart'; 
+import '../../widgets/teaser_card.dart'; 
+
 
 // Design tokens
 import '../../theme/design_tokens.dart';
@@ -64,7 +66,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
             decoration: BoxDecoration(
               borderRadius: Borders.rSm,
               image: const DecorationImage(
-                image: AssetImage('lib/assets/images/farmer_header.jpg'),
+                image: AssetImage('lib/assets/images/user_header.webp'),
                 fit: BoxFit.cover,
               ),
               boxShadow: Shadows.cardSm,
@@ -74,8 +76,8 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'أهلاً بك!\nادخل منتجاتك وابدأ البيع',
+              Text( 
+                '  من المزرعة لبيتك!\n جودة عالية وسعر أقل دائمًا',
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     color: Colors.white,
@@ -249,7 +251,21 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
             },
           ),
 
-          const SizedBox(height: Spacing.xl),
+          // ====== Teaser (صورة يمين + نص يسار) ======
+          const SizedBox(height: Spacing.lg),
+
+          TeaserCard(
+            leftTitle: 'اكتشف منتجات الموسم',
+            leftBigText: 'خصم حتى 20%',
+            rightImage: const AssetImage('lib/assets/images/teaser_box_fruits_veg.png'),
+            leftStart: const Color(0xFF4D9C27),
+            leftEnd:   AppColors.green,
+            height: 150,
+            onTap: () { 
+              // افتح صفحة العروض/الموسمي
+            },
+          ),
+          const SizedBox(height: Spacing.lg), 
         ],
       ),
     );
@@ -311,3 +327,4 @@ class _CategoryChipSmall extends StatelessWidget {
     );
   }
 }
+
