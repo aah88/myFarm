@@ -8,8 +8,8 @@ class TeaserCard extends StatelessWidget {
     this.leftTitle = 'Experience our\ndelicious new dish',
     this.leftBigText = '20% OFF',
     required this.rightImage,
-    this.leftStart = const Color(0xFF4D9C27),
-    this.leftEnd   = const Color(0xFF74B751),
+    this.leftStart = AppColors.green,
+    this.leftEnd   = AppColors.green,
     this.height = 150,
     this.onTap,
   });

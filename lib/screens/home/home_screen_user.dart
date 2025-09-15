@@ -258,8 +258,8 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
             leftTitle: 'اكتشف منتجات الموسم',
             leftBigText: 'خصم حتى 20%',
             rightImage: const AssetImage('lib/assets/images/teaser_box_fruits_veg.webp'),
-            leftStart: const Color(0xFF4D9C27),
-            leftEnd:   AppColors.green,
+            leftStart: AppColors.green,
+            leftEnd:    AppColors.green,
             height: 150,
             onTap: () { 
               // افتح صفحة العروض/الموسمي
