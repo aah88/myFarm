@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 
 /// Teaser: صورة على اليمين + جراديانت ونص على اليسار (بدون أي زخارف)
 class TeaserCard extends StatelessWidget {
@@ -28,8 +29,9 @@ class TeaserCard extends StatelessWidget {
       child: Container(
         height: height,
         decoration: BoxDecoration(
-          color: Color(0xFFF4F6F2),
+          color: AppColors.gray100,
           borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.gray200),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(.06),

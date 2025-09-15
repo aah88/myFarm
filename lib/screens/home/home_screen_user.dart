@@ -257,7 +257,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
           TeaserCard(
             leftTitle: 'اكتشف منتجات الموسم',
             leftBigText: 'خصم حتى 20%',
-            rightImage: const AssetImage('lib/assets/images/teaser_box_fruits_veg.png'),
+            rightImage: const AssetImage('lib/assets/images/teaser_box_fruits_veg.webp'),
             leftStart: const Color(0xFF4D9C27),
             leftEnd:   AppColors.green,
             height: 150,
@@ -293,9 +293,9 @@ class _CategoryChipSmall extends StatelessWidget {
         width: 95,
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         decoration: BoxDecoration(
-          color: const Color(0xFFF4F6F2),
+          color: AppColors.gray100,
           borderRadius: r,
-          border: Border.all(color: const Color(0xFFE8EBE6)),
+          border: Border.all(color: AppColors.gray200),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.04),
