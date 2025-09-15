@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../config/app_config.dart';
 
 class ProductListingCard extends StatelessWidget {
@@ -118,13 +119,18 @@ class ProductListingCard extends StatelessWidget {
                     width: 36,
                     height: 36,
                     child: Material(
-                      color: const Color(0x1A2E7D32),
-                      shape: const CircleBorder(),
+                      color: AppColors.gray100,                
+                      shape: CircleBorder(
+                        side: BorderSide(
+                          color: AppColors.gray200, // لون الحد
+                          width: 1,                 // سماكة الحد
+                        ),
+                      ),
                       child: InkWell(
                         customBorder: const CircleBorder(),
                         onTap: onAddToCart,
                         child: const Center(
-                          child: Icon(Icons.add, color: Color(0xFF2E7D32)),
+                          child: Icon(Icons.add, color: AppColors.green),
                         ),
                       ),
                     ),
