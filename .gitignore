@@ -77,3 +77,5 @@ app.*.map.json
 /linux/
 /macos/
 /windows/
+macos/Flutter/GeneratedPluginRegistrant.swift
+windows/flutter/generated_plugins.cmake

@@ -18,6 +18,7 @@ import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
 import '../category/choose_category_screen.dart';
 import '../product/choose_product_screen.dart';
+import '../product/product_detail_screen.dart';
 import '../customer/all_listings.dart';
 import '../../widgets/product_listing_card.dart'; 
 import '../../widgets/teaser_card.dart'; 
@@ -230,24 +231,38 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                 ),
                 itemCount: listings.length,
                 itemBuilder: (context, index) {
-                  final listing = listings[index];
-                  return ProductListingCard(
+                final listing = listings[index];
+
+                return InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProductDetailScreen(),
+                      ),
+                    );
+                  },
+                  child: ProductListingCard(
                     imageUrl: listing.productImageUrl,
                     title: listing.productName,
                     rating: listing.rating,
                     price: listing.price,
                     farmerName: listing.farmerName,
-                    distance: 5.2, // replace with actual distance müss berechnet werden
+                    distance: 5.2,  // replace with actual distance müss berechnet werden
                     onAddToCart: () {
-                      context.read<CartProvider>().addItem(CartItem(listingId: listing.id, qty: 1),);
+                      context.read<CartProvider>().addItem(
+                        CartItem(listingId: listing.id, qty: 1),
+                      );
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("${listing.productName} تمت إضافته إلى السلة")),
                       );
                     },
-                  );
-                },
+                  ),
+                );
+              },
               )
-              );
+             );
             },
           ),
 
