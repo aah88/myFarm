@@ -11,6 +11,7 @@ import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
 import '../customer/all_listings.dart';
 import '../farmer/all_farmer_listings.dart';
+import '../farmer/all_orders.dart';
 
 // 🧩 Tokens
 import '../../theme/design_tokens.dart';
@@ -107,7 +108,7 @@ class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => AllListingsScreen()),
+                    MaterialPageRoute(builder: (_) => AllOrdersFarmerScreen()),
                   );
                 },
               ),

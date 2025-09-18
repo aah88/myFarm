@@ -10,7 +10,6 @@ import '../../services/firebase_service.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
   const OrderSummaryScreen({super.key});
-  
 
   @override
   State<OrderSummaryScreen> createState() => _OrderSummaryScreenState();
@@ -21,8 +20,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   String? _selectedPayment;
   Map<String, FullListing> _listingMap = {};
 
-
-  
   @override
   void initState() {
     super.initState();
@@ -36,28 +33,33 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     _listingMap = {for (var l in listings) l.id: l};
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("ملخص الطلب"),
-      ),
+      appBar: AppBar(title: const Text("ملخص الطلب")),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             /// --- DELIVERY METHOD ---
             DropdownButtonFormField<String>(
               value: _selectedDelivery,
               borderRadius: BorderRadius.circular(12),
               hint: const Text("اختر وسيلة التوصيل"),
-               decoration: const InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "اختر وسيلة التوصيل",
                 hintText: "اختر وسيلة التوصيل",
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.list_alt, color: Color(0xFF91958E)),
-              ),    
+              ),
               isExpanded: true,
-              items:   deliveryMeans.map((item) => DropdownMenuItem(value: item.id, child: Text(item.name)) ).toList(),
+              items:
+                  deliveryMeans
+                      .map(
+                        (item) => DropdownMenuItem(
+                          value: item.id,
+                          child: Text(item.name),
+                        ),
+                      )
+                      .toList(),
               onChanged: (value) {
                 setState(() => _selectedDelivery = value);
               },
@@ -68,7 +70,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
             /// --- PAYMENT METHOD ---
             DropdownButtonFormField<String>(
               value: _selectedPayment,
-               borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12),
               dropdownColor: Colors.white,
               decoration: const InputDecoration(
                 labelText: "اختر وسيلة الدفع",
@@ -77,7 +79,15 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                 prefixIcon: Icon(Icons.list_alt, color: Color(0xFF91958E)),
               ),
               isExpanded: true,
-              items:  paymentMeans.map((item) => DropdownMenuItem(value: item.id, child: Text(item.name)) ).toList(),
+              items:
+                  paymentMeans
+                      .map(
+                        (item) => DropdownMenuItem(
+                          value: item.id,
+                          child: Text(item.name),
+                        ),
+                      )
+                      .toList(),
               onChanged: (value) {
                 setState(() => _selectedPayment = value);
               },
@@ -88,12 +98,18 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
             Expanded(
               child: Card(
                 margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: ListView.separated(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   itemCount: cart.items.length,
-                  separatorBuilder: (_, __) =>
-                      const Divider(height: 1, thickness: .6, color: Color(0xFFE8EBE6)),
+                  separatorBuilder:
+                      (_, __) => const Divider(
+                        height: 1,
+                        thickness: .6,
+                        color: Color(0xFFE8EBE6),
+                      ),
                   itemBuilder: (ctx, i) {
                     final item = cart.items[i];
                     final listing = _listingMap[item.listingId];
@@ -110,19 +126,23 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       // صورة مصغّرة بدل الأيقونة
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: listing.productImageUrl.isNotEmpty
-                            ? Image.asset(
-                                listing.productImageUrl,
-                                width: 52,
-                                height: 52,
-                                fit: BoxFit.cover,
-                              )
-                            : Container(
-                                width: 52,
-                                height: 52,
-                                color: const Color(0xFFF1F3F0),
-                                child: const Icon(Icons.image, color: Colors.grey),
-                              ),
+                        child:
+                            listing.productImageUrl.isNotEmpty
+                                ? Image.asset(
+                                  listing.productImageUrl,
+                                  width: 52,
+                                  height: 52,
+                                  fit: BoxFit.cover,
+                                )
+                                : Container(
+                                  width: 52,
+                                  height: 52,
+                                  color: const Color(0xFFF1F3F0),
+                                  child: const Icon(
+                                    Icons.image,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                       ),
                       minLeadingWidth: 44,
                       minVerticalPadding: 0,
@@ -133,19 +153,25 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
-                      
+
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             'السعر: ${listing.price}',
-                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
                           ),
                           const SizedBox(height: 2),
                           Text(
                             'الكمية: ${item.qty} ${listing.unit}',
-                            style: const TextStyle(fontSize: 12, color: Colors.black54),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.black54,
+                            ),
                           ),
                         ],
                       ),
@@ -158,8 +184,10 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         ),
                       ),
 
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       visualDensity: VisualDensity.compact,
                     );
                   },
@@ -168,6 +196,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
             ),
 
             const SizedBox(height: 16),
+
             /// --- CONFIRM BUTTON ---
             SizedBox(
               width: double.infinity,
@@ -179,21 +208,28 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: (_selectedDelivery == null || _selectedPayment == null)
-                    ? null
-                    : () async {
-                       await FirebaseService().createOrder(cart, _selectedDelivery!, _selectedPayment!, OrderStatus.pending);
+                onPressed:
+                    (_selectedDelivery == null || _selectedPayment == null)
+                        ? null
+                        : () async {
+                          //TODO AAH
+                          await FirebaseService().createOrder(
+                            cart,
+                            _selectedDelivery!,
+                            _selectedPayment!,
+                            OrderStatus.pending,
+                          );
 
-                        // 🔹 empty the cart after order confirmation
-                        cartProvider.clearCart();
+                          // 🔹 empty the cart after order confirmation
+                          cartProvider.clearCart();
 
-                        if (!mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("✅ تم تأكيد الطلب")),
-                        );
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("✅ تم تأكيد الطلب")),
+                          );
 
-                        Navigator.pop(context); // go back after confirmation
-                      },
+                          Navigator.pop(context); // go back after confirmation
+                        },
                 child: const Text(
                   "تأكيد الطلب",
                   style: TextStyle(color: Colors.white, fontSize: 16),
