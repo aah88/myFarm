@@ -45,16 +45,17 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
     // تهيئة مزودي المستخدم والسلة
     Future.microtask(() {
       if (!mounted) return;
-      final userProvider = context.read<UserProvider>();
-      userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
+      // final userProvider = context.read<UserProvider>();
+      // userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
 
-      final cartProvider = context.read<CartProvider>();
-      cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
+      // final cartProvider = context.read<CartProvider>();
+      // cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final String? username = context.read<UserProvider>().userName;
     return AppScaffold(
       currentTab: AppTab.home,
       body: ListView(
@@ -72,14 +73,14 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
               boxShadow: Shadows.cardSm,
             ),
             padding: const EdgeInsets.all(Spacing.lg),
-            child: const Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '  من المزرعة لبيتك!\n جودة عالية وسعر أقل دائمًا',
+                  '$username !أهلاً بك!\n من المزرعة لبيتك!\n جودة عالية وسعر أقل دائمًا',
                   textAlign: TextAlign.right,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     height: 1.5,

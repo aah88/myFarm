@@ -54,22 +54,24 @@ class _SignInPageState extends State<SignInPage> {
         String uid = userCredential.user!.uid;
 
         _showMessage("Sign in successful!");
-        if (!mounted) return;
-        context.read<UserProvider>().setUserId(uid);
+
         var userDetails = await _firebaseService.getUserById(uid);
 
-        //HERE ADD
-        //1.Check if cart exist and get it, if not then create one for this user
+        if (!mounted) return;
+        context.read<UserProvider>().setUserId(uid);
+        context.read<UserProvider>().setUserName(userDetails!.name);
+
         final cartProvider = Provider.of<CartProvider>(context, listen: false);
         await cartProvider.loadCart(uid);
         //
         if (!mounted) return;
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder:
                 (context) =>
-                    userDetails!.isFarmer
+                    userDetails.isFarmer
                         ? HomeScreenFarmer()
                         : HomeScreenUser(),
           ),
