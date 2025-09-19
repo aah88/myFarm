@@ -1,3 +1,4 @@
+// product_listing_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../config/app_config.dart';
@@ -12,9 +13,11 @@ class ProductListingCard extends StatelessWidget {
   final String farmerName;
   final double distance;
 
-  final VoidCallback onAddToCart;
-  final VoidCallback? onEdit;                 // جديد
-  final ListingCardAction action;             // جديد (افتراضي add)
+  final VoidCallback onAddToCart; // لزر الإضافة
+  final VoidCallback? onEdit;     // لزر التعديل (اختياري)
+  final VoidCallback? onDelete;   // 💡 جديد: اختياري، لإظهار زر الحذف أعلى البطاقة
+
+  final ListingCardAction action;
 
   const ProductListingCard({
     super.key,
@@ -25,20 +28,20 @@ class ProductListingCard extends StatelessWidget {
     required this.farmerName,
     required this.distance,
     required this.onAddToCart,
-    this.onEdit,                               // جديد
-    this.action = ListingCardAction.add,       // جديد
+    this.onEdit,
+    this.onDelete,                  // ليس إلزاميًا
+    this.action = ListingCardAction.add,
   });
 
   bool get _isNetwork => imageUrl.startsWith('http');
 
   @override
-  @override
   Widget build(BuildContext context) {
-    // حدّد الأيقونة والحدث حسب الحالة
-    final IconData _actionIcon =
-        action == ListingCardAction.add ? Icons.add : Icons.edit_outlined;
-    final VoidCallback _actionTap =
-        action == ListingCardAction.add ? onAddToCart : (onEdit ?? onAddToCart);
+    final bool isAdd = action == ListingCardAction.add;
+    final IconData mainIcon = isAdd ? Icons.add : Icons.edit_outlined;
+    final String mainTooltip = isAdd ? 'إضافة' : 'تعديل';
+    final VoidCallback mainTap = isAdd ? onAddToCart : (onEdit ?? onAddToCart);
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
@@ -60,28 +63,46 @@ class ProductListingCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ====== صورة المنتج + التقييم فوقها ======
+              // ====== صورة المنتج + (اختياري) زر الحذف + التقييم ======
               Expanded(
                 child: Stack(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(6),
                       child: _isNetwork
-                          ? Image.network(
-                              imageUrl,
-                              fit: BoxFit.contain,
-                              width: double.infinity,
-                            )
-                          : Image.asset(
-                              imageUrl,
-                              fit: BoxFit.contain,
-                              width: double.infinity,
-                            ),
+                          ? Image.network(imageUrl, fit: BoxFit.contain, width: double.infinity)
+                          : Image.asset(imageUrl, fit: BoxFit.contain, width: double.infinity),
                     ),
-                    // بادج التقييم
+
+                    // 🗑️ يظهر فقط إن كان onDelete != null — أعلى يمين
+                    if (onDelete != null)
+                      Positioned(
+                        top: 6,
+                        right: 0,
+                        child: Tooltip(
+                          message: 'حذف',
+                          child: Material(
+                            color: Colors.white,
+                            shape: const CircleBorder(),
+                            child: InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: onDelete,
+                              child: const SizedBox(
+                                width: 32,
+                                height: 32,
+                                child: Center(
+                                  child: Icon(Icons.delete_outline, size: 18, color: Color(0xFFD32F2F)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    // ⭐ التقييم — أسفل يسار
                     Positioned(
                       bottom: 5,
-                      left: 8, 
+                      left: 8,
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                         decoration: BoxDecoration(
@@ -112,46 +133,40 @@ class ProductListingCard extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: Text(
                   title,
-                  textAlign: TextAlign.right,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF70756B),
-                  ),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF70756B)),
+                  textAlign: TextAlign.right,
                 ),
               ),
 
               const SizedBox(height: 8),
 
-              // ====== السعر + زر الإضافة ======
+              // ====== السعر + زر الإجراء (إضافة/تعديل) ======
               Row(
                 children: [
-        SizedBox(
-          width: 36,
-          height: 36,
-          child: Material(
-            color: AppColors.gray100,
-            shape: CircleBorder(
-              side: BorderSide(color: AppColors.gray200, width: 1),
-            ),
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onTap: _actionTap,
-              child: Center(
-                child: Icon(_actionIcon, color: AppColors.green),
-              ),
-            ),
-          ),
-        ),
+                  SizedBox(
+                    width: 36,
+                    height: 36,
+                    child: Tooltip(
+                      message: mainTooltip,
+                      child: Material(
+                        color: AppColors.gray100,
+                        shape: CircleBorder(
+                          side: BorderSide(color: AppColors.gray200, width: 1),
+                        ),
+                        child: InkWell(
+                          customBorder: const CircleBorder(),
+                          onTap: mainTap,
+                          child: Center(child: Icon(mainIcon, color: AppColors.green)),
+                        ),
+                      ),
+                    ),
+                  ),
                   const Spacer(),
                   Text(
                     AppConfig.formatPrice(price),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                   ),
                 ],
               ),

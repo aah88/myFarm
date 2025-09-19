@@ -99,18 +99,24 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
                       itemCount: listings.length,
                       itemBuilder: (context, index) {
                         final listing = listings[index];
-                        return ProductListingCard(
+                        return  ProductListingCard(
                           imageUrl: listing.productImageUrl,
                           title: listing.productName,
                           rating: listing.rating,
                           price: listing.price,
                           farmerName: listing.farmerName,
                           distance: 0,
-                          onAddToCart: () {}, // ممكن تركه فاضي
-                          action: ListingCardAction.edit,
+                          action: ListingCardAction.edit, // action: ListingCardAction.add, // الافتراضي
                           onEdit: () {
-                            // افتح شاشة التعديل مثلاً
-                            Navigator.pushNamed(context, '/edit-listing', arguments: listing.id);
+                            Navigator.pushNamed(context, '/edit-listing', arguments: listing.id)
+                              .then((_) => setState(() {}));
+                          },
+                          onAddToCart: () {},
+
+                          // ✅ زر الحذف
+                          onDelete: () {
+                            Navigator.pushNamed(context, '/edit-listing', arguments: listing.id)
+                              .then((_) => setState(() {}));
                           },
                         );
                       },
