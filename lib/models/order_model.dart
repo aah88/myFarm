@@ -7,6 +7,7 @@ class Order {
   final String id;
   final List<OrderItem> items;
   final String userId;
+  final String farmerId;
   final String paymentMeanId;
   final String deliveryMeanId;
   final OrderStatus status;
@@ -16,6 +17,7 @@ class Order {
     required this.id,
     required this.items,
     required this.userId,
+    required this.farmerId,
     required this.paymentMeanId,
     required this.deliveryMeanId,
     required this.status,
@@ -34,6 +36,7 @@ class Order {
       id: id,
       items: itemsList,
       userId: data['userId'] ?? '',
+      farmerId: data['farmerId'] ?? '',
       paymentMeanId: data['paymentMeanId'] ?? '',
       deliveryMeanId: data['deliveryMeanId'] ?? '',
       startDate: data['startDate'] ?? FieldValue.serverTimestamp(),
@@ -48,6 +51,7 @@ class Order {
     return {
       'items': items.map((item) => item.toMap()).toList(),
       'userId': userId,
+      'farmerId': farmerId,
       'paymentMeanId': paymentMeanId,
       'deliveryMeanId': deliveryMeanId,
       'status': status.name,
@@ -55,11 +59,12 @@ class Order {
     };
   }
 
-  factory Order.userOrder(String userId) {
+  factory Order.userOrder(String userId, String farmerId) {
     return Order(
       id: '',
       items: [],
       userId: userId,
+      farmerId: farmerId,
       paymentMeanId: '',
       deliveryMeanId: '',
       status: OrderStatus.pending,
@@ -71,6 +76,7 @@ class Order {
       id: '',
       items: [],
       userId: '',
+      farmerId: '',
       paymentMeanId: '',
       deliveryMeanId: '',
       status: OrderStatus.pending,
@@ -82,6 +88,7 @@ class Order {
     String? id,
     List<OrderItem>? items,
     String? userId,
+    String? farmerId,
     String? paymentMeanId,
     String? deliveryMeanId,
     OrderStatus? status,
@@ -91,6 +98,7 @@ class Order {
       id: id ?? '',
       items: items ?? this.items,
       userId: userId ?? this.userId,
+      farmerId: farmerId ?? this.farmerId,
       paymentMeanId: paymentMeanId ?? this.paymentMeanId,
       deliveryMeanId: deliveryMeanId ?? this.deliveryMeanId,
       status: status ?? this.status,
@@ -127,19 +135,34 @@ class OrderItem {
 
 //Extension
 extension CartToOrder on Cart {
-  Order toOrder({
+  List<Order> toOrder({
     required String paymentMeanId,
     required String deliveryMeanId,
     required OrderStatus status,
+    required userId,
   }) {
-    return Order(
-      id: '',
-      items: items.map((cartItem) => OrderItem.fromCartItem(cartItem)).toList(),
-      userId: userId,
-      paymentMeanId: paymentMeanId,
-      deliveryMeanId: deliveryMeanId,
-      status: status,
-      startDate: Timestamp.now(),
-    );
+    final Map<String, List<CartItem>> groupedByFarmer = {};
+    final List<Order> orders = [];
+    for (final item in items) {
+      groupedByFarmer.putIfAbsent(item.farmerId, () => []).add(item);
+    }
+    groupedByFarmer.forEach((farmerId, cartItems) {
+      orders.add(
+        Order(
+          id: '',
+          items:
+              cartItems
+                  .map((cartItem) => OrderItem.fromCartItem(cartItem))
+                  .toList(),
+          userId: userId,
+          farmerId: farmerId,
+          paymentMeanId: paymentMeanId,
+          deliveryMeanId: deliveryMeanId,
+          status: status,
+          startDate: Timestamp.now(),
+        ),
+      );
+    });
+    return orders;
   }
 }

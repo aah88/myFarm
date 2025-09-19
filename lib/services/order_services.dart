@@ -12,14 +12,18 @@ class OrderService {
     String selectedDelivery,
     String selectedPayment,
     OrderStatus status,
+    String userId,
   ) async {
     // convert:
-    final order = cart.toOrder(
+    final orders = cart.toOrder(
       paymentMeanId: selectedPayment,
       deliveryMeanId: selectedDelivery,
       status: status,
+      userId: userId,
     );
-    await _db.collection('order').add(order.toMap());
+    for (final order in orders) {
+      await _db.collection('order').add(order.toMap());
+    }
   }
 
   Future<Order?> getOrderById(String id) async {
@@ -36,6 +40,25 @@ class OrderService {
 
   Future<List<Order>> getAllOrders() async {
     final snapshot = await _db.collection('order').get();
+    return snapshot.docs
+        .map((doc) => Order.fromMap(doc.data(), doc.id))
+        .toList();
+  }
+
+  Future<List<Order>> getAllFarmerSellOrders(String farmerId) async {
+    final snapshot =
+        await _db
+            .collection('order')
+            .where('farmerId', isEqualTo: farmerId)
+            .get();
+    return snapshot.docs
+        .map((doc) => Order.fromMap(doc.data(), doc.id))
+        .toList();
+  }
+
+  Future<List<Order>> getAllUserPurchaseOrders(String userId) async {
+    final snapshot =
+        await _db.collection('order').where('userId', isEqualTo: userId).get();
     return snapshot.docs
         .map((doc) => Order.fromMap(doc.data(), doc.id))
         .toList();

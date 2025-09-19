@@ -55,7 +55,10 @@ class _CartScreenState extends State<CartScreen> {
     return AppScaffold(
       currentTab: AppTab.cart,
       appBar: AppBar(
-        title: const Text('🛒 سلة المشتريات', style: TextStyle(color: Color(0xFF2E7D32))),
+        title: const Text(
+          '🛒 سلة المشتريات',
+          style: TextStyle(color: Color(0xFF2E7D32)),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
@@ -64,153 +67,174 @@ class _CartScreenState extends State<CartScreen> {
         elevation: 0,
         centerTitle: true,
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : cart.items.isEmpty
+      body:
+          _loading
+              ? const Center(child: CircularProgressIndicator())
+              : cart.items.isEmpty
               ? const _EmptyCart()
               : Column(
-                  children: [
-                    // القائمة
-                    Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: _refresh,
-                        child: ListView.separated(
-                          padding: const EdgeInsets.fromLTRB(
-                            Spacing.lg, Spacing.md, Spacing.lg, Spacing.md),
-                          itemCount: cart.items.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: Spacing.md),
-                          itemBuilder: (context, index) {
-                            final item = cart.items[index];
-                            final listing = _listingMap[item.listingId];
-                            if (listing == null) return const SizedBox.shrink();
+                children: [
+                  // القائمة
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: _refresh,
+                      child: ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(
+                          Spacing.lg,
+                          Spacing.md,
+                          Spacing.lg,
+                          Spacing.md,
+                        ),
+                        itemCount: cart.items.length,
+                        separatorBuilder:
+                            (_, __) => const SizedBox(height: Spacing.md),
+                        itemBuilder: (context, index) {
+                          final item = cart.items[index];
+                          final listing = _listingMap[item.listingId];
+                          if (listing == null) return const SizedBox.shrink();
 
-                            return Dismissible(
-                              key: ValueKey('cart-${item.listingId}'),
-                              direction: DismissDirection.endToStart,
-                              onDismissed: (_) =>
-                                  cartProvider.removeItem(item.listingId),
-                              background: const _DismissBg(),
-                              child: ListTile(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: Borders.rSm,
-                                  side: Borders.thin,
-                                ),
-                                tileColor: AppColors.white,
-                                leading: ClipRRect(
-                                  borderRadius: Borders.rSm,
-                                  child: _ProductImage(url: listing.productImageUrl),
-                                ),
-                                title: Text(
-                                  listing.productName,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              // ✅ الوحدة على سطر، السعر على سطر
-                                subtitle: Padding(
-                                  padding: const EdgeInsets.only(top: Spacing.xs),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'الوحدة: ${listing.unit}',
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        '${listing.price} ل.س',
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w700,
-                                          color: AppColors.green,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                trailing: ConstrainedBox(
-                                  constraints: const BoxConstraints(minWidth: 96),
-                                  child: _QtyInline(
-                                    qty: item.qty,
-                                    onDec: () {
-                                      if (item.qty > 1) {
-                                        cartProvider.updateQty(
-                                            item.listingId, item.qty - 1);
-                                      } else {
-                                        cartProvider.removeItem(item.listingId);
-                                      }
-                                    },
-                                    onInc: () => cartProvider.updateQty(
-                                        item.listingId, item.qty + 1),
-                                  ),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: Spacing.md,
-                                  vertical: Spacing.sm,
+                          return Dismissible(
+                            key: ValueKey('cart-${item.listingId}'),
+                            direction: DismissDirection.endToStart,
+                            onDismissed:
+                                (_) => cartProvider.removeItem(item.listingId),
+                            background: const _DismissBg(),
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: Borders.rSm,
+                                side: Borders.thin,
+                              ),
+                              tileColor: AppColors.white,
+                              leading: ClipRRect(
+                                borderRadius: Borders.rSm,
+                                child: _ProductImage(
+                                  url: listing.productImageUrl,
                                 ),
                               ),
-                            );
-                          },
-                        ),
+                              title: Text(
+                                listing.productName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              // ✅ الوحدة على سطر، السعر على سطر
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: Spacing.xs),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'الوحدة: ${listing.unit}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      '${listing.price} ل.س',
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.green,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              trailing: ConstrainedBox(
+                                constraints: const BoxConstraints(minWidth: 96),
+                                child: _QtyInline(
+                                  qty: item.qty,
+                                  onDec: () {
+                                    if (item.qty > 1) {
+                                      cartProvider.updateQty(
+                                        item.listingId,
+                                        item.farmerId,
+                                        item.qty - 1,
+                                      );
+                                    } else {
+                                      cartProvider.removeItem(item.listingId);
+                                    }
+                                  },
+                                  onInc:
+                                      () => cartProvider.updateQty(
+                                        item.listingId,
+                                        item.farmerId,
+                                        item.qty + 1,
+                                      ),
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: Spacing.md,
+                                vertical: Spacing.sm,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
+                  ),
 
-                    // شريط سفلي بسيط: الإجمالي + CTA
-                    if (cart.items.isNotEmpty)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          border: const Border(
-                            top: BorderSide(color: AppColors.gray200, width: 1),
+                  // شريط سفلي بسيط: الإجمالي + CTA
+                  if (cart.items.isNotEmpty)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        border: const Border(
+                          top: BorderSide(color: AppColors.gray200, width: 1),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, -2),
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 8,
-                              offset: const Offset(0, -2),
+                        ],
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Spacing.lg,
+                        vertical: Spacing.md,
+                      ),
+                      child: SafeArea(
+                        top: false,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'الإجمالي: ${cartProvider.totalPrice(_listingMap)} ل.س',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => OrderSummaryScreen(),
+                                  ),
+                                );
+
+                                // TODO: الدفع
+                              },
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(140, 44),
+                              ),
+                              child: const Text('إتمام الشراء'),
                             ),
                           ],
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.lg, vertical: Spacing.md),
-                        child: SafeArea(
-                          top: false,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  'الإجمالي: ${cartProvider.totalPrice(_listingMap)} ل.س',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (_) =>  OrderSummaryScreen()));
-                                  
-                                  // TODO: الدفع
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(140, 44),
-                                ),
-                                child: const Text('إتمام الشراء'),
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
+              ),
     );
   }
 }
@@ -224,12 +248,13 @@ class _ProductImage extends StatelessWidget {
     return SizedBox(
       width: 64,
       height: 64,
-      child: url.isNotEmpty
-          ? Image.asset(url, fit: BoxFit.cover)
-          : Container(
-              color: AppColors.gray100,
-              child: const Icon(Icons.image, color: Colors.grey),
-            ),
+      child:
+          url.isNotEmpty
+              ? Image.asset(url, fit: BoxFit.cover)
+              : Container(
+                color: AppColors.gray100,
+                child: const Icon(Icons.image, color: Colors.grey),
+              ),
     );
   }
 }
@@ -262,7 +287,11 @@ class _QtyInline extends StatelessWidget {
     );
   }
 
-  Widget _miniIconButton(IconData icon, VoidCallback onTap, {bool disabled = false}) {
+  Widget _miniIconButton(
+    IconData icon,
+    VoidCallback onTap, {
+    bool disabled = false,
+  }) {
     return IconButton(
       onPressed: disabled ? null : onTap,
       icon: Icon(icon, color: disabled ? Colors.grey : Colors.black87),
@@ -284,7 +313,7 @@ class _DismissBg extends StatelessWidget {
       alignment: Alignment.centerRight,
       padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
       decoration: BoxDecoration(
-        color:  AppColors.danger,
+        color: AppColors.danger,
         borderRadius: Borders.rSm,
       ),
       child: const Icon(Icons.delete, color: AppColors.white),
@@ -299,22 +328,31 @@ class _EmptyCart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: Spacing.xl, vertical: Spacing.xl),
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.xl,
+          vertical: Spacing.xl,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.shopping_cart_outlined, size: 72, color: Colors.grey),
+            const Icon(
+              Icons.shopping_cart_outlined,
+              size: 72,
+              color: Colors.grey,
+            ),
             const SizedBox(height: Spacing.md),
             const Text('السلة فارغة'),
             const SizedBox(height: Spacing.sm),
-            const Text('أضف منتجات إلى السلة لعرضها هنا.', style: TextStyle(color: Colors.grey)),
+            const Text(
+              'أضف منتجات إلى السلة لعرضها هنا.',
+              style: TextStyle(color: Colors.grey),
+            ),
             const SizedBox(height: Spacing.lg),
             OutlinedButton.icon(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => AllListingsScreen()),
-                );
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => AllListingsScreen()));
               },
               icon: const Icon(Icons.storefront_outlined),
               label: const Text('تصفح المنتجات'),
