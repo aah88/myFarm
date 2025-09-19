@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:flutter_application_1/models/order_status.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
@@ -180,7 +181,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       trailing: Text(
                         'ل.س ${lineTotal.toStringAsFixed(0)}',
                         style: const TextStyle(
-                          color: Color(0xFF2E7D32),
+                          color: AppColors.green,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -203,7 +204,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2E7D32),
+                  backgroundColor: AppColors.green,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),

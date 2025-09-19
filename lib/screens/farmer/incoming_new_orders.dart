@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_application_1/models/cart_model.dart';
@@ -34,7 +35,7 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
             // 🌿 Welcome Section
             Container(
               decoration: BoxDecoration(
-                color: Colors.green[700],
+                color: AppColors.green,
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(16),

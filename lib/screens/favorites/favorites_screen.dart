@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
 import '../../services/firebase_service.dart';
@@ -193,7 +194,7 @@ class _FavoriteCard extends StatelessWidget {
                         Text('$price ل.س',
                             style: const TextStyle(
                                 fontSize: 14,
-                                color: Colors.green,
+                                color: AppColors.green,
                                 fontWeight: FontWeight.bold)),
                       ],
                     ),

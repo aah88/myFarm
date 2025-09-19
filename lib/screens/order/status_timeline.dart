@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../models/order_status.dart';
 
 class OrderStatusTimeline extends StatelessWidget {
@@ -31,7 +31,7 @@ class OrderStatusTimeline extends StatelessWidget {
               children: [
                 Icon(
                   s.icon,
-                  color: isActive ? Colors.green : Colors.grey,
+                  color: isActive ? AppColors.green : Colors.grey,
                   size: 28,
                 ),
                 const SizedBox(height: 4),
@@ -39,7 +39,7 @@ class OrderStatusTimeline extends StatelessWidget {
                   s.label,
                   style: TextStyle(
                     fontSize: 12,
-                    color: isActive ? Colors.green : Colors.grey,
+                    color: isActive ? AppColors.green : Colors.grey,
                   ),
                 ),
               ],

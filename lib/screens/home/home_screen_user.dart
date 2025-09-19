@@ -369,7 +369,7 @@ class _CategoryChipSmall extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2E7D32),
+                color: AppColors.green,
               ),
             ),
           ],

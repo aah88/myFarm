@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +59,7 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
       appBar: AppBar(
         title: const Text(
           'إضافة منتج',
-          style: TextStyle(color: Color(0xFF2E7D32)),
+          style: TextStyle(color: AppColors.green),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -121,7 +122,7 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF2E7D32),
+                            color: AppColors.green,
                           ),
                           textAlign: TextAlign.right,
                         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
 
@@ -215,7 +216,7 @@ class _SectionHeader extends StatelessWidget {
         title,
         style: const TextStyle(
           fontWeight: FontWeight.w700,
-          color: Color(0xFF2E7D32),
+          color: AppColors.green,
         ),
       ),
     );
@@ -269,7 +270,7 @@ class _NotificationTile extends StatelessWidget {
               width: 8,
               height: 8,
               decoration: const BoxDecoration(
-                color: Color(0xFF2E7D32),
+                color: AppColors.green,
                 shape: BoxShape.circle,
               ),
             ),

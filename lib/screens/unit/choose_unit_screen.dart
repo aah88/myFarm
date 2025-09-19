@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import '../../models/local_data.dart';
 import 'package:provider/provider.dart';
@@ -143,7 +144,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
                               boxShadow: isSelected
                                   ? [
                                       BoxShadow(
-                                        color: const Color(0xFF2E7D32).withOpacity(0.08),
+                                        color: AppColors.green.withOpacity(0.08),
                                         blurRadius: 4,
                                         offset: const Offset(0, 2),
                                       ),
@@ -248,7 +249,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2E7D32),
+                  backgroundColor: AppColors.green,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),

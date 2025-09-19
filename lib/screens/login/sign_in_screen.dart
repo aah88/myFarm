@@ -122,7 +122,7 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sign In"),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.green,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -130,7 +130,7 @@ class _SignInPageState extends State<SignInPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.lock, size: 80, color: Colors.green),
+            const Icon(Icons.lock, size: 80, color: AppColors.green),
             const SizedBox(height: 20),
 
             TextField(

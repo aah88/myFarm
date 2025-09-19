@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../models/category_model.dart';
 import '../../providers/user_provider.dart';
 import '../../services/firebase_service.dart';
@@ -44,7 +44,7 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
     return Scaffold(
       // ليست تبويب رئيسي؛ صفحة فرعية ضمن تدفق إضافة منتج
       appBar: AppBar(
-        title: const Text('إضافة منتج', style: TextStyle(color: Color(0xFF2E7D32))),
+        title: const Text('إضافة منتج', style: TextStyle(color: AppColors.green)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
@@ -99,7 +99,7 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF2E7D32),
+                            color: AppColors.green,
                           ),
                         ),
                         SizedBox(height: 4),
@@ -309,7 +309,7 @@ class _CategoryCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14.5,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF2E7D32),
+                    color: AppColors.green,
                     height: 1.2,
                   ),
                 ),

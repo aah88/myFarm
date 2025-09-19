@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product_model.dart';
@@ -62,7 +63,7 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
       appBar: AppBar(
         title: const Text(
           'إضافة منتج',
-          style: TextStyle(color: Color(0xFF2E7D32)),
+          style: TextStyle(color: AppColors.green),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -117,7 +118,7 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2E7D32),
+                          color: AppColors.green,
                         ),
                       ),
                       SizedBox(height: 4),

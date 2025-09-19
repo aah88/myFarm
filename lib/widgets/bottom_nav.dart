@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 
 /// التبويبات الحالية
 enum AppTab { home, favorites, cart, notifications }
@@ -29,7 +30,7 @@ class BottomNav extends StatelessWidget {
     super.key,
     required this.current,
     this.showNotificationsDot = true,
-    this.activeColor = const Color(0xFF2E7D32),
+    this.activeColor = AppColors.green,
     this.inactiveColor = const Color(0xFFB6BAB5),
     this.backgroundColor = Colors.white,
     this.barHeight = 56,
@@ -132,7 +133,7 @@ class _NavItem extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.showDot = false,
-    this.activeColor = const Color(0xFF2E7D32),
+    this.activeColor = AppColors.green,
     this.inactiveColor = const Color(0xFFB6BAB5),
   });
 

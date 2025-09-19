@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
 
@@ -42,7 +43,7 @@ class _InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: const Color(0xFF2E7D32)),
+        Icon(icon, color: AppColors.green),
         const SizedBox(width: 10),
         Text('$label: ', style: const TextStyle(fontWeight: FontWeight.w700)),
         Expanded(child: Text(value)),

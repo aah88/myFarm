@@ -57,7 +57,7 @@ class _CartScreenState extends State<CartScreen> {
       appBar: AppBar(
         title: const Text(
           '🛒 سلة المشتريات',
-          style: TextStyle(color: Color(0xFF2E7D32)),
+          style: TextStyle(color: AppColors.green),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
