@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_application_1/models/cart_model.dart';
@@ -24,50 +25,85 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
   final String farmerImage =
       'https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
 
+  // ===== شريط الفلاتر (واجهة) =====
+  final List<String> _segments = const ['الكل','فواكه', 'خضار', 'بيض', 'لحم', 'اعشاب و ورقيات','حليب و مشتقاته' ];
+  String _selectedSegment = 'الكل'; // لتلوين الشريحة المختارة فقط الآن
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-                title: const Text(
+        title: const Text(
           'إدارة منتجاتك',
-          style: TextStyle(color: Color(0xFF2E7D32)),
-        )
+          style: TextStyle(color: AppColors.green),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            // 🌿 Welcome Section
+            // 🌿 نص إرشادي أعلى الصفحة
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'حدّث محاصيلك بسهولة:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2E7D32),
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                          "اضغط على أحد المنتجات أدناه لتعديل المنتج وإكمال العملية.",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black54,
-                          height: 1.25,
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                    ],
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'حدّث محاصيلك بسهولة:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.green,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "اختر أحد المنتجات أدناه لتعديل المنتج او حذفه.",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black54,
+                      height: 1.25,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                ],
               ),
             ),
 
-            // 🛒 Product Grid
+            // ===== شريط الفلاتر قبل المنتجات =====
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 6, 0, 8),
+              child: Wrap(
+                textDirection: TextDirection.rtl,   // حتى يبدأ من اليمين
+                alignment: WrapAlignment.start,     // محاذاة العناصر في كل سطر
+                runAlignment: WrapAlignment.start,  // محاذاة الأسطر عموديًا
+                spacing: 8,                         // مسافة بين الشرائح أفقياً
+                runSpacing: 8,                      // مسافة بين الأسطر عمودياً
+                children: _segments.map((label) {
+                  final bool selected = _selectedSegment == label;
+                  return ChoiceChip(
+                    label: Text(
+                      label,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: selected ? Colors.white : AppColors.green,
+                      ),
+                    ),
+                    selected: selected,
+                    onSelected: (_) => setState(() => _selectedSegment = label),
+                    shape: const StadiumBorder(),
+                    backgroundColor: const Color(0xFFF1F4F1),
+                    selectedColor: AppColors.green,
+                    side: BorderSide.none,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  );
+                }).toList(),
+              ),
+            ),
+
+            // 🛒 شبكة المنتجات
             Expanded(
               child: FutureBuilder<List<FullListing>>(
                 future: _firebaseService.getFarmerFullListings(
@@ -83,40 +119,49 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
                   }
 
                   final listings = snapshot.data!;
+                  // ملاحظة: شريط الفلاتر واجهة فقط؛ لو عندك حقل تصنيف بالـ FullListing
+                  // فعّل الفلترة هنا حسب _selectedSegment.
+
                   return Directionality(
                     textDirection: TextDirection.rtl,
                     child: GridView.builder(
                       padding: const EdgeInsets.only(top: 4),
                       gridDelegate:
                           const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent:
-                                250, // 👈 أقصى عرض للكارت الواحد
-                            childAspectRatio:
-                                0.9, // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                          ),
+                        maxCrossAxisExtent: 250, // 👈 أقصى عرض للكارت الواحد
+                        childAspectRatio:
+                            0.9, // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                      ),
                       itemCount: listings.length,
                       itemBuilder: (context, index) {
                         final listing = listings[index];
-                        return  ProductListingCard(
+                        return ProductListingCard(
                           imageUrl: listing.productImageUrl,
                           title: listing.productName,
                           rating: listing.rating,
                           price: listing.price,
                           farmerName: listing.farmerName,
                           distance: 0,
-                          action: ListingCardAction.edit, // action: ListingCardAction.add, // الافتراضي
+                          action: ListingCardAction
+                              .edit, // أو ListingCardAction.add للمشتري
                           onEdit: () {
-                            Navigator.pushNamed(context, '/edit-listing', arguments: listing.id)
-                              .then((_) => setState(() {}));
+                            Navigator.pushNamed(
+                              context,
+                              '/edit-listing',
+                              arguments: listing.id,
+                            ).then((_) => setState(() {}));
                           },
                           onAddToCart: () {},
 
-                          // ✅ زر الحذف
+                          // ✅ زر الحذف (اختياري، يظهر فقط إذا مرّرناه)
                           onDelete: () {
-                            Navigator.pushNamed(context, '/edit-listing', arguments: listing.id)
-                              .then((_) => setState(() {}));
+                            Navigator.pushNamed(
+                              context,
+                              '/edit-listing',
+                              arguments: listing.id,
+                            ).then((_) => setState(() {}));
                           },
                         );
                       },
