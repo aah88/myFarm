@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/order_status.dart';
+import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import 'package:provider/provider.dart';
 import '../../models/full_listing.dart';
@@ -218,6 +219,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                             _selectedDelivery!,
                             _selectedPayment!,
                             OrderStatus.pending,
+                            context.read<UserProvider>().userId!,
                           );
 
                           // 🔹 empty the cart after order confirmation

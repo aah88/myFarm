@@ -20,9 +20,8 @@ import '../category/choose_category_screen.dart';
 import '../product/choose_product_screen.dart';
 import '../product/product_detail_screen.dart';
 import '../customer/all_listings.dart';
-import '../../widgets/product_listing_card.dart'; 
-import '../../widgets/teaser_card.dart'; 
-
+import '../../widgets/product_listing_card.dart';
+import '../../widgets/teaser_card.dart';
 
 // Design tokens
 import '../../theme/design_tokens.dart';
@@ -77,8 +76,8 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Text( 
-                '  من المزرعة لبيتك!\n جودة عالية وسعر أقل دائمًا',
+                Text(
+                  '  من المزرعة لبيتك!\n جودة عالية وسعر أقل دائمًا',
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     color: Colors.white,
@@ -100,21 +99,33 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
               Text(
                 '  الأصناف',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.green,
-                    ),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.green,
+                ),
               ),
               TextButton.icon(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const ChooseCategoryScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const ChooseCategoryScreen(),
+                    ),
                   );
                 },
-                icon: const Icon(Icons.chevron_left, size: 18, color: AppColors.danger),
-                label: const Text('عرض الكل', style: TextStyle(color: AppColors.danger)),
+                icon: const Icon(
+                  Icons.chevron_left,
+                  size: 18,
+                  color: AppColors.danger,
+                ),
+                label: const Text(
+                  'عرض الكل',
+                  style: TextStyle(color: AppColors.danger),
+                ),
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.sm, vertical: Spacing.xs),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.sm,
+                    vertical: Spacing.xs,
+                  ),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
@@ -146,7 +157,8 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   itemCount: categories.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: Spacing.md),
+                  separatorBuilder:
+                      (_, __) => const SizedBox(width: Spacing.md),
                   itemBuilder: (context, i) {
                     final c = categories[i];
                     return _CategoryChipSmall(
@@ -155,12 +167,13 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                       onTap: () {
                         context.read<ListingProvider>().setCategoryId(c.id);
                         context.read<ListingProvider>().setUserId(
-                              context.read<UserProvider>().userId!,
-                            );
+                          context.read<UserProvider>().userId!,
+                        );
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ChooseProductScreen(categoryId: c.id),
+                            builder:
+                                (_) => ChooseProductScreen(categoryId: c.id),
                           ),
                         );
                       },
@@ -180,21 +193,33 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
               Text(
                 ' الأكثر مبيعاً',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.green,
-                    ),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.green,
+                ),
               ),
               TextButton.icon(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const AllListingsScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const AllListingsScreen(),
+                    ),
                   );
                 },
-                icon: const Icon(Icons.chevron_left, size: 18, color: AppColors.danger),
-                label: const Text('عرض الكل', style: TextStyle(color: AppColors.danger)),
+                icon: const Icon(
+                  Icons.chevron_left,
+                  size: 18,
+                  color: AppColors.danger,
+                ),
+                label: const Text(
+                  'عرض الكل',
+                  style: TextStyle(color: AppColors.danger),
+                ),
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.sm, vertical: Spacing.xs),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.sm,
+                    vertical: Spacing.xs,
+                  ),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
@@ -220,49 +245,58 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
               return Directionality(
                 textDirection: TextDirection.rtl,
                 child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.only(top: 4),
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 250, // 👈 أقصى عرض للكارت الواحد
-                  childAspectRatio: 0.9,   // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                itemCount: listings.length,
-                itemBuilder: (context, index) {
-                final listing = listings[index];
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.only(top: 4),
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 250, // 👈 أقصى عرض للكارت الواحد
+                    childAspectRatio: 0.9, // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  itemCount: listings.length,
+                  itemBuilder: (context, index) {
+                    final listing = listings[index];
 
-                return InkWell(
-                  borderRadius: BorderRadius.circular(8),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ProductDetailScreen(),
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ProductDetailScreen(),
+                          ),
+                        );
+                      },
+                      child: ProductListingCard(
+                        imageUrl: listing.productImageUrl,
+                        title: listing.productName,
+                        rating: listing.rating,
+                        price: listing.price,
+                        farmerName: listing.farmerName,
+                        distance:
+                            5.2, // replace with actual distance müss berechnet werden
+                        onAddToCart: () {
+                          context.read<CartProvider>().addItem(
+                            CartItem(
+                              listingId: listing.id,
+                              farmerId: listing.userId,
+                              qty: 1,
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "${listing.productName} تمت إضافته إلى السلة",
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     );
                   },
-                  child: ProductListingCard(
-                    imageUrl: listing.productImageUrl,
-                    title: listing.productName,
-                    rating: listing.rating,
-                    price: listing.price,
-                    farmerName: listing.farmerName,
-                    distance: 5.2,  // replace with actual distance müss berechnet werden
-                    onAddToCart: () {
-                      context.read<CartProvider>().addItem(
-                        CartItem(listingId: listing.id, qty: 1),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("${listing.productName} تمت إضافته إلى السلة")),
-                      );
-                    },
-                  ),
-                );
-              },
-              )
-             );
+                ),
+              );
             },
           ),
 
@@ -272,15 +306,17 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
           TeaserCard(
             leftTitle: 'اكتشف منتجات الموسم',
             leftBigText: 'خصم حتى 20%',
-            rightImage: const AssetImage('lib/assets/images/teaser_box_fruits_veg.webp'),
+            rightImage: const AssetImage(
+              'lib/assets/images/teaser_box_fruits_veg.webp',
+            ),
             leftStart: AppColors.green,
-            leftEnd:    AppColors.green,
+            leftEnd: AppColors.green,
             height: 150,
-            onTap: () { 
+            onTap: () {
               // افتح صفحة العروض/الموسمي
             },
           ),
-          const SizedBox(height: Spacing.lg), 
+          const SizedBox(height: Spacing.lg),
         ],
       ),
     );
@@ -334,7 +370,7 @@ class _CategoryChipSmall extends StatelessWidget {
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF2E7D32),
-              ), 
+              ),
             ),
           ],
         ),
@@ -342,4 +378,3 @@ class _CategoryChipSmall extends StatelessWidget {
     );
   }
 }
-

@@ -4,7 +4,6 @@ import 'package:flutter_application_1/models/full_listing.dart';
 import '../../models/cart_model.dart';
 import '../../models/listing_model.dart'; // <-- adjust to your actual path
 
-
 class CartProvider extends ChangeNotifier {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
@@ -37,6 +36,7 @@ class CartProvider extends ChangeNotifier {
       // Update quantity if already in cart
       updatedItems[index] = CartItem(
         listingId: updatedItems[index].listingId,
+        farmerId: updatedItems[index].farmerId,
         qty: updatedItems[index].qty + item.qty,
       );
     } else {
@@ -73,29 +73,37 @@ class CartProvider extends ChangeNotifier {
       debugPrint("Error saving cart: $e");
     }
   }
-  void updateQty(String listingId, int qty) {
-  final index = _cart.items.indexWhere((item) => item.listingId == listingId);
-  if (index != -1) {
-    _cart.items[index] = CartItem(listingId: listingId, qty: qty);
-    notifyListeners();
-  }
-}
 
-double totalPrice(Map<String, FullListing> listingMap) {
-  double total = 0;
-  for (var item in _cart.items) {
-    final listing = listingMap[item.listingId];
-    if (listing != null) {
-      total += (listing.price * item.qty);
+  void updateQty(String listingId, String farmerId, int qty) {
+    final index = _cart.items.indexWhere((item) => item.listingId == listingId);
+    if (index != -1) {
+      _cart.items[index] = CartItem(
+        listingId: listingId,
+        farmerId: farmerId,
+        qty: qty,
+      );
+      notifyListeners();
     }
   }
-  return total;
-}
 
-double itemTotal(String listingId, int qty, Map<String, FullListing> listingMap) {
-  final listing = listingMap[listingId];
-  if (listing == null) return 0;
-  return listing.price * qty;
-}
-}
+  double totalPrice(Map<String, FullListing> listingMap) {
+    double total = 0;
+    for (var item in _cart.items) {
+      final listing = listingMap[item.listingId];
+      if (listing != null) {
+        total += (listing.price * item.qty);
+      }
+    }
+    return total;
+  }
 
+  double itemTotal(
+    String listingId,
+    int qty,
+    Map<String, FullListing> listingMap,
+  ) {
+    final listing = listingMap[listingId];
+    if (listing == null) return 0;
+    return listing.price * qty;
+  }
+}

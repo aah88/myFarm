@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/providers/cart_provider.dart';
 import 'package:flutter_application_1/screens/auth/validation_per_phone.dart';
-import 'package:flutter_application_1/screens/cart/cart_screen.dart';
 import 'package:flutter_application_1/screens/home/home_screen_user.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
@@ -10,8 +9,6 @@ import '../../providers/user_provider.dart';
 import '../../screens/product/product_management_screen.dart';
 import '../../screens/category/category_management_screen.dart';
 import '../../screens/home/home_screen_farmer.dart';
-import '../../screens/home/home_screen_user.dart';
-import '../../screens/customer/all_listings.dart';
 import '../../services/firebase_service.dart';
 import 'sign_up_screen.dart';
 
@@ -27,7 +24,7 @@ class _SignInPageState extends State<SignInPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
-   final FirebaseService _firebaseService = FirebaseService();
+  final FirebaseService _firebaseService = FirebaseService();
 
   Future<void> _signIn() async {
     final email = _emailController.text.trim();
@@ -56,22 +53,27 @@ class _SignInPageState extends State<SignInPage> {
         }
         String uid = userCredential.user!.uid;
 
-        
         _showMessage("Sign in successful!");
         if (!mounted) return;
         context.read<UserProvider>().setUserId(uid);
         var userDetails = await _firebaseService.getUserById(uid);
-        
+
         //HERE ADD
         //1.Check if cart exist and get it, if not then create one for this user
         final cartProvider = Provider.of<CartProvider>(context, listen: false);
-        await cartProvider.loadCart(uid); 
+        await cartProvider.loadCart(uid);
         //
-           if(!mounted) return;
-       Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => userDetails!.isFarmer ? HomeScreenFarmer():HomeScreenUser()),
-  );
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) =>
+                    userDetails!.isFarmer
+                        ? HomeScreenFarmer()
+                        : HomeScreenUser(),
+          ),
+        );
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -103,9 +105,9 @@ class _SignInPageState extends State<SignInPage> {
 
   void _showMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   void _navigateToSignUp() {
@@ -155,42 +157,69 @@ class _SignInPageState extends State<SignInPage> {
             _isLoading
                 ? const CircularProgressIndicator()
                 : SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _signIn,
-                      child: const Text("Sign In", style: TextStyle(fontSize: 16)),
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _signIn,
+                    child: const Text(
+                      "Sign In",
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
+                ),
             const SizedBox(height: 12),
             ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  PhoneAuthPage())),
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => PhoneAuthPage()),
+                  ),
               child: const Text('تسجيل الدخول'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  HomeScreenFarmer())),
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => HomeScreenFarmer()),
+                  ),
               child: const Text('استعراض فلاح'),
             ),
             const SizedBox(height: 12),
-             ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) =>  HomeScreenUser())),
+            ElevatedButton(
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => HomeScreenUser()),
+                  ),
               child: const Text('استعراض مسنخدم'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProductManagementScreen())),
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ProductManagementScreen(),
+                    ),
+                  ),
               child: const Text('Add Product'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CategoryManagementScreen())),
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const CategoryManagementScreen(),
+                    ),
+                  ),
               child: const Text('Add Category'),
             ),
             TextButton(
               onPressed: _forgotPassword,
               child: const Text("Forgot Password?"),
             ),
-            
+
             const SizedBox(height: 20),
 
             Row(

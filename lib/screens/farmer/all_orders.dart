@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
@@ -23,7 +24,9 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text("📦 All Orders")),
       body: FutureBuilder<List<Order>>(
-        future: _orderService.getAllOrders(),
+        future: _orderService.getAllFarmerSellOrders(
+          context.read<UserProvider>().userId!,
+        ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
