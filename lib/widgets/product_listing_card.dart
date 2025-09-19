@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../config/app_config.dart';
 
+enum ListingCardAction { add, edit }
+
 class ProductListingCard extends StatelessWidget {
   final String imageUrl;
   final String title;
@@ -9,7 +11,10 @@ class ProductListingCard extends StatelessWidget {
   final double price;
   final String farmerName;
   final double distance;
+
   final VoidCallback onAddToCart;
+  final VoidCallback? onEdit;                 // جديد
+  final ListingCardAction action;             // جديد (افتراضي add)
 
   const ProductListingCard({
     super.key,
@@ -20,12 +25,20 @@ class ProductListingCard extends StatelessWidget {
     required this.farmerName,
     required this.distance,
     required this.onAddToCart,
+    this.onEdit,                               // جديد
+    this.action = ListingCardAction.add,       // جديد
   });
 
   bool get _isNetwork => imageUrl.startsWith('http');
 
   @override
+  @override
   Widget build(BuildContext context) {
+    // حدّد الأيقونة والحدث حسب الحالة
+    final IconData _actionIcon =
+        action == ListingCardAction.add ? Icons.add : Icons.edit_outlined;
+    final VoidCallback _actionTap =
+        action == ListingCardAction.add ? onAddToCart : (onEdit ?? onAddToCart);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
@@ -115,26 +128,23 @@ class ProductListingCard extends StatelessWidget {
               // ====== السعر + زر الإضافة ======
               Row(
                 children: [
-                  SizedBox(
-                    width: 36,
-                    height: 36,
-                    child: Material(
-                      color: AppColors.gray100,                
-                      shape: CircleBorder(
-                        side: BorderSide(
-                          color: AppColors.gray200, // لون الحد
-                          width: 1,                 // سماكة الحد
-                        ),
-                      ),
-                      child: InkWell(
-                        customBorder: const CircleBorder(),
-                        onTap: onAddToCart,
-                        child: const Center(
-                          child: Icon(Icons.add, color: AppColors.green),
-                        ),
-                      ),
-                    ),
-                  ),
+        SizedBox(
+          width: 36,
+          height: 36,
+          child: Material(
+            color: AppColors.gray100,
+            shape: CircleBorder(
+              side: BorderSide(color: AppColors.gray200, width: 1),
+            ),
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: _actionTap,
+              child: Center(
+                child: Icon(_actionIcon, color: AppColors.green),
+              ),
+            ),
+          ),
+        ),
                   const Spacer(),
                   Text(
                     AppConfig.formatPrice(price),

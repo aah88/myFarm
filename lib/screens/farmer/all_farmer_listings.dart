@@ -27,7 +27,12 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("كل المنتجات")),
+      appBar: AppBar(
+                title: const Text(
+          'إدارة منتجاتك',
+          style: TextStyle(color: Color(0xFF2E7D32)),
+        )
+      ),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -35,29 +40,32 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
             // 🌿 Welcome Section
             Container(
               decoration: BoxDecoration(
-                color: Colors.green[700],
                 borderRadius: BorderRadius.circular(12),
               ),
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Image.network(farmerImage, height: 60),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      'أهلاً بك!\nاختر منتجاً وأضفه إلى السلة',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        height: 1.5,
+              child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'حدّث محاصيلك بسهولة:',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2E7D32),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
+                      SizedBox(height: 4),
+                      Text(
+                          "اضغط على أحد المنتجات أدناه لتعديل المنتج وإكمال العملية.",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                          height: 1.25,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                    ],
               ),
             ),
-
-            const SizedBox(height: 16),
 
             // 🛒 Product Grid
             Expanded(
@@ -97,19 +105,12 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
                           rating: listing.rating,
                           price: listing.price,
                           farmerName: listing.farmerName,
-                          distance:
-                              5.2, // replace with actual distance müss berechnet werden
-                          onAddToCart: () {
-                            context.read<CartProvider>().addItem(
-                              CartItem(listingId: listing.id, qty: 1),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  "${listing.productName} تمت إضافته إلى السلة",
-                                ),
-                              ),
-                            );
+                          distance: 0,
+                          onAddToCart: () {}, // ممكن تركه فاضي
+                          action: ListingCardAction.edit,
+                          onEdit: () {
+                            // افتح شاشة التعديل مثلاً
+                            Navigator.pushNamed(context, '/edit-listing', arguments: listing.id);
                           },
                         );
                       },
