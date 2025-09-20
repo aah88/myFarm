@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
 import 'package:flutter_application_1/providers/full_listing_provider.dart';
-import 'package:flutter_application_1/screens/customer/all_listings.dart';
+import 'package:flutter_application_1/screens/customer/all_listings_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart_provider.dart';

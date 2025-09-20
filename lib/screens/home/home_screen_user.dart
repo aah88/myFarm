@@ -17,10 +17,10 @@ import '../../services/listing_services.dart';
 // UI & routing
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
-import '../category/choose_category_screen.dart';
-import '../product/choose_product_screen.dart';
-import '../product/product_detail_screen.dart';
-import '../customer/all_listings.dart';
+import '../product/choose_product_category_screen.dart';
+import '../product/choose_product_type_screen.dart';
+import '../customer/listing_detail_screen.dart';
+import '../customer/all_listings_screen.dart';
 import '../../widgets/product_listing_card.dart';
 import '../../widgets/teaser_card.dart';
 
@@ -110,9 +110,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const ChooseCategoryScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => ChooseCategoryScreen()),
                   );
                 },
                 icon: const Icon(

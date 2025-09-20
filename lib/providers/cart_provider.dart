@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
 import '../../models/cart_model.dart';
-import '../../models/listing_model.dart'; // <-- adjust to your actual path
 
 class CartProvider extends ChangeNotifier {
   final FirebaseFirestore _db = FirebaseFirestore.instance;

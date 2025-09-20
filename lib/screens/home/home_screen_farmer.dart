@@ -4,14 +4,14 @@ import 'package:provider/provider.dart';
 import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
-import '../category/choose_category_screen.dart';
+import '../product/choose_product_category_screen.dart';
 import '../../services/product_services.dart';
 
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
-import '../customer/all_listings.dart';
-import '../farmer/all_farmer_listings.dart';
-import '../farmer/all_orders.dart';
+import '../customer/all_listings_screen.dart';
+import '../farmer/all_farmer_listings_screen.dart';
+import '../farmer/all_orders_screen.dart';
 
 // 🧩 Tokens
 import '../../theme/design_tokens.dart';
@@ -185,7 +185,7 @@ class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ChooseCategoryScreen(),
+                    builder: (context) => ChooseCategoryScreen(),
                   ),
                 );
               },

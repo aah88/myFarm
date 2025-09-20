@@ -1,96 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
+import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product_model.dart';
+import '../../providers/listing_provider.dart';
 import '../../services/product_services.dart';
 import '../../widgets/product_card.dart';
-import '../../screens/product/choose_sub_product_screen.dart';
-import '../../providers/listing_provider.dart';
+import 'choose_product_unit_screen.dart';
 
-// نضيف شريط التنقل السفلي فقط
-import '../../widgets/bottom_nav.dart';
+/// Screen for choosing a *sub-product* of a given parent product.
+/// - Fetches sub-products for the provided `parentProductId`.
+/// - Shows a scrollable header (title + helper text).
+/// - Uses a responsive grid that adapts columns to screen width.
+/// - AnimatedSwitcher to transition between Loading / Empty / Grid states.
+/// - Each grid tile fades in and slides up slightly (staggered).
+class ChooseSubProductScreen extends StatefulWidget {
+  const ChooseSubProductScreen({
+    super.key,
+    required this.parentProductId,
+    this.firebaseProductService, // optional DI for tests
+  });
 
-class ChooseProductScreen extends StatefulWidget {
-  final String categoryId; // ID of the selected category
-
-  const ChooseProductScreen({required this.categoryId, super.key});
+  final String parentProductId;
+  final ProductService? firebaseProductService;
 
   @override
-  State<ChooseProductScreen> createState() => _ChooseProductScreenState();
+  State<ChooseSubProductScreen> createState() => _ChooseSubProductScreenState();
 }
 
-class _ChooseProductScreenState extends State<ChooseProductScreen> {
-  final ProductService _firebaseProductService = ProductService();
-  late Future<List<Product>> _productsFuture;
+class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
+  late final ProductService _firebaseProductService =
+      widget.firebaseProductService ?? ProductService();
 
-  /// الحروف العربية + "الكل"
-  static const List<String> _letters = [
-    'أ',
-    'ب',
-    'ت',
-    'ث',
-    'ج',
-    'ح',
-    'خ',
-    'د',
-    'ذ',
-    'ر',
-    'ز',
-    'س',
-    'ش',
-    'ص',
-    'ض',
-    'ط',
-    'ظ',
-    'ع',
-    'غ',
-    'ف',
-    'ق',
-    'ك',
-    'ل',
-    'م',
-    'ن',
-    'ه',
-    'و',
-    'ي',
-    'الكل',
-  ];
-
-  String _selectedLetter = 'الكل';
-  List<Product> _allRootProducts = [];
-
-  /// لتطبيع أول حرف للمقارنة
-  final Map<String, String> _charMap = const {
-    'أ': 'ا',
-    'إ': 'ا',
-    'آ': 'ا',
-    'ى': 'ي',
-  };
+  // Cache the future so we don't refetch on every rebuild
+  late Future<List<Product>> _futureProducts;
 
   @override
   void initState() {
     super.initState();
-    _productsFuture = _firebaseProductService.getProductsByCategory(
-      widget.categoryId,
+    _futureProducts = _firebaseProductService.getProductsByProductParent(
+      widget.parentProductId,
     );
   }
 
-  String _normalize(String s) {
-    if (s.trim().isEmpty) return '';
-    final first = s.trim()[0];
-    return _charMap[first] ?? first;
-  }
-
-  bool _matchesLetter(String name) {
-    if (_selectedLetter == 'الكل') return true;
-    return _normalize(name) == _normalize(_selectedLetter);
+  /// Optional: Pull-to-refresh handler (re-fetch the same future)
+  Future<void> _refresh() async {
+    setState(() {
+      _futureProducts = _firebaseProductService.getProductsByProductParent(
+        widget.parentProductId,
+      );
+    });
+    await _futureProducts;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ليست تبويب رئيسي، فقط صفحة فرعية
+      // Simple app bar
       appBar: AppBar(
         title: const Text(
           'إضافة منتج',
@@ -104,104 +71,94 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
         elevation: 0,
         centerTitle: true,
       ),
-      body: FutureBuilder<List<Product>>(
-        future: _productsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  'حدث خطأ: ${snapshot.error}',
-                  textAlign: TextAlign.center,
+
+      // FutureBuilder drives the UI (Loading / Error / Empty / Data)
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: FutureBuilder<List<Product>>(
+          future: _futureProducts,
+          builder: (context, snapshot) {
+            // Decide which *content widget* to render inside the switcher
+            Widget content;
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Loading: show a lightweight skeleton grid
+              content = const _LoadingSkeleton();
+            } else if (snapshot.hasError) {
+              // Error: show message in a friendly card
+              content = _ErrorState(message: 'حدث خطأ: ${snapshot.error}');
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              // Empty: no sub-products found
+              content = const _EmptyState();
+            } else {
+              // Success: build the responsive grid with fade-in tiles
+              final products = snapshot.data!;
+              content = _ResponsiveFadedGrid(
+                products: products,
+                onTapProduct: (product) {
+                  // NOTE: If your listing requires the *sub-product id*, prefer product.id.
+                  context.read<ListingProvider>().setProductId(product.id);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ChooseUnitScreen()),
+                  );
+                },
+              );
+            }
+
+            // The "page" is a CustomScrollView with a header sliver and a sliver for content.
+            // The content area uses AnimatedSwitcher so transitions between states are smooth.
+            return CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // Header (scrolls away with the content)
+                const SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Section title
+                        Text(
+                          "اختر الصنف المناسب:",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.green,
+                          ),
+                          textAlign: TextAlign.right,
+                        ),
+                        SizedBox(height: 4),
+                        // Helper line under the title
+                        Text(
+                          "اضغط على أحد المنتجات أدناه لاختيار الصنف وإكمال العملية.",
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                          textAlign: TextAlign.right,
+                        ),
+                        SizedBox(height: 12),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+
+                // Animated content area (Loading / Error / Empty / Grid)
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  sliver: SliverToBoxAdapter(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      switchInCurve: Curves.easeOut,
+                      switchOutCurve: Curves.easeIn,
+                      child: content,
+                    ),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              ],
             );
-          }
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('لا توجد منتجات متاحة حالياً.'));
-          }
-
-          if (_allRootProducts.isEmpty) {
-            _allRootProducts =
-                snapshot.data!.where((p) => p.parentProduct.isEmpty).toList();
-          }
-
-          final products =
-              _allRootProducts.where((p) => _matchesLetter(p.name)).toList();
-
-          return CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              const SliverPadding(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                sliver: SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'اختر المنتج المناسب:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.green,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'استخدم الحروف لتصفية القائمة، ثم اختر المنتج للمتابعة.',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black54,
-                          height: 1.25,
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                    ],
-                  ),
-                ),
-              ),
-
-              // شريط الحروف
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverToBoxAdapter(
-                  child: _LettersBar(
-                    letters: _letters,
-                    selectedLetter: _selectedLetter,
-                    onLetterSelected:
-                        (letter) => setState(() => _selectedLetter = letter),
-                  ),
-                ),
-              ),
-
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverToBoxAdapter(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
-                    switchInCurve: Curves.easeOut,
-                    switchOutCurve: Curves.easeIn,
-                    child:
-                        products.isEmpty
-                            ? const _EmptyState(key: ValueKey('empty'))
-                            : _ResponsiveFadedGrid(
-                              key: const ValueKey('grid'),
-                              products: products,
-                            ),
-                  ),
-                ),
-              ),
-
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
-            ],
-          );
-        },
+          },
+        ),
       ),
       // ✅ BottomNav بدون تفعيل أي تبويب
       bottomNavigationBar: const BottomNav(current: null),
@@ -209,101 +166,112 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
   }
 }
 
-// ====== بقية الويدجتات المساعدة كما هي ======
+/// === Content states & helpers ===
 
-class _LettersBar extends StatelessWidget {
-  final List<String> letters;
-  final String selectedLetter;
-  final ValueChanged<String> onLetterSelected;
-
-  const _LettersBar({
-    required this.letters,
-    required this.selectedLetter,
-    required this.onLetterSelected,
-  });
+/// Loading skeleton: shows grey boxes where tiles would be.
+/// Gives user a hint of layout while data loads.
+class _LoadingSkeleton extends StatelessWidget {
+  const _LoadingSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const double letterSize = 37;
-    const double allWidth = 45;
+    return LayoutBuilder(
+      builder: (context, c) {
+        const double maxTileWidth = 180;
+        final int crossAxisCount = (c.maxWidth / maxTileWidth).floor().clamp(
+          2,
+          8,
+        );
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Wrap(
-        spacing: 6,
-        runSpacing: 6,
-        children: [
-          for (final letter in letters)
-            InkWell(
-              onTap: () => onLetterSelected(letter),
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                width: letter == 'الكل' ? allWidth : letterSize,
-                height: letterSize,
-                alignment: Alignment.center,
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: crossAxisCount * 4, // a few rows of placeholders
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: 0.9,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemBuilder:
+              (_, __) => Container(
                 decoration: BoxDecoration(
-                  color:
-                      selectedLetter == letter
-                          ? const Color(0xFFECF1E8)
-                          : Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFFE8EBE6)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
-                      blurRadius: 3,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
-                ),
-                child: Text(
-                  letter,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight:
-                        selectedLetter == letter
-                            ? FontWeight.bold
-                            : FontWeight.w500,
-                    color: const Color(0xFF70756B),
-                  ),
+                  color: const Color(0xFFF4F6F2),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
-            ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
 
+/// Friendly empty state
 class _EmptyState extends StatelessWidget {
   const _EmptyState({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Center(
+      key: ValueKey('empty'),
       child: Padding(
         padding: EdgeInsets.all(20),
-        child: Text('لا توجد منتجات بهذا الحرف.'),
+        child: Text('لا توجد منتجات متاحة حالياً.'),
       ),
     );
   }
 }
 
+/// Error card with message
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({super.key, required this.message});
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      key: const ValueKey('error'),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFECF1E8),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 14),
+        ),
+      ),
+    );
+  }
+}
+
+/// Responsive grid that adapts to width and applies a fade-in-up animation
+/// to each tile with a subtle stagger.
 class _ResponsiveFadedGrid extends StatelessWidget {
-  const _ResponsiveFadedGrid({super.key, required this.products});
+  const _ResponsiveFadedGrid({
+    super.key,
+    required this.products,
+    required this.onTapProduct,
+  });
 
   final List<Product> products;
+  final void Function(Product) onTapProduct;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context, constraints) {
+      builder: (context, c) {
+        // Compute columns similar to SliverGridDelegateWithMaxCrossAxisExtent
         const double maxTileWidth = 180;
-        final int crossAxisCount = (constraints.maxWidth / maxTileWidth)
-            .floor()
-            .clamp(2, 8);
+        final int crossAxisCount = (c.maxWidth / maxTileWidth).floor().clamp(
+          2,
+          8,
+        );
 
         return GridView.builder(
+          key: const ValueKey('grid'),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: products.length,
@@ -315,27 +283,16 @@ class _ResponsiveFadedGrid extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             final product = products[index];
-            final int delayMs = 40 * (index % 8);
+            final int delayMs = 40 * (index % 8); // small stagger
 
             return _FadeInUp(
               delay: Duration(milliseconds: delayMs),
               child: ProductCard(
-                categoryId: product.id,
+                categoryId: product.category.id,
                 title: product.name,
-                imageUrl: product.imageUrl,
                 parentProductId: product.id,
-                onTap: () {
-                  context.read<ListingProvider>().setProductId(product.id);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => ChooseSubProductScreen(
-                            parentProductId: product.id,
-                          ),
-                    ),
-                  );
-                },
+                imageUrl: product.imageUrl,
+                onTap: () => onTapProduct(product),
               ),
             );
           },
@@ -345,6 +302,7 @@ class _ResponsiveFadedGrid extends StatelessWidget {
   }
 }
 
+/// Reusable fade + slight slide-up animation used for each grid tile.
 class _FadeInUp extends StatefulWidget {
   const _FadeInUp({
     required this.child,

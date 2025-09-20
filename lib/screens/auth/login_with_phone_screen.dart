@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../profile/farmer_profile_screen.dart';
+import '../home/home_screen_farmer.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -14,10 +14,16 @@ class LoginScreen extends StatelessWidget {
           children: [
             const Text('أدخل رقم الهاتف لتسجيل الدخول'),
             const SizedBox(height: 20),
-            const TextField(decoration: InputDecoration(labelText: 'رقم الهاتف')),
+            const TextField(
+              decoration: InputDecoration(labelText: 'رقم الهاتف'),
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FarmerProfileScreen())),
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const HomeScreenFarmer()),
+                  ),
               child: const Text('تسجيل الدخول (تمثيلي)'),
             ),
           ],

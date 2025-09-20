@@ -6,9 +6,9 @@ import 'package:flutter_application_1/screens/home/home_screen_user.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
 import '../../providers/user_provider.dart';
-import '../../screens/product/product_management_screen.dart';
-import '../../screens/category/category_management_screen.dart';
-import '../../screens/home/home_screen_farmer.dart';
+import '../admin/product_management_screen.dart';
+import '../admin/category_management_screen.dart';
+import '../home/home_screen_farmer.dart';
 import '../../services/user_services.dart';
 import 'sign_up_screen.dart';
 

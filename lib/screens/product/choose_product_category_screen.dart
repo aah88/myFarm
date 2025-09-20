@@ -4,7 +4,7 @@ import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../models/category_model.dart';
 import '../../providers/user_provider.dart';
 import '../../services/product_services.dart';
-import '../../screens/product/choose_product_screen.dart';
+import 'choose_product_type_screen.dart';
 import '../../providers/listing_provider.dart';
 
 // ✅ نستخدم BottomNav فقط بدون AppScaffold

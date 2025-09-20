@@ -31,10 +31,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final priceStyle = Theme.of(context)
-        .textTheme
-        .titleLarge!
-        .copyWith(fontWeight: FontWeight.w700);
+    final priceStyle = Theme.of(
+      context,
+    ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700);
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -72,10 +71,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   Expanded(
                     child: Text(
                       '15000 ليرة',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(fontWeight: FontWeight.w700),
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -92,12 +90,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('تمت إضافة $_qty إلى السلة')),
+                            SnackBar(
+                              content: Text('تمت إضافة $_qty إلى السلة'),
+                            ),
                           );
                         },
                         child: const Text(
                           'أضف إلى السلة',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -128,10 +131,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         controller: _pageCtrl,
                         itemCount: _assetImages.length,
                         onPageChanged: (i) => setState(() => _page = i),
-                        itemBuilder: (_, i) => Ink.image(
-                          image: AssetImage(_assetImages[i]),
-                          fit: BoxFit.cover,
-                        ),
+                        itemBuilder:
+                            (_, i) => Ink.image(
+                              image: AssetImage(_assetImages[i]),
+                              fit: BoxFit.cover,
+                            ),
                       ),
                       Positioned(
                         bottom: 12,
@@ -168,49 +172,52 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       children: [
                         Text(
                           'منتج بلاستيك',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
+                          style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: Colors.black54),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'بندورة حمراء بلدية',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge             
-                              ?.copyWith(fontWeight: FontWeight.w700, color: AppColors.green),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.green,
+                          ),
                         ),
 
                         const SizedBox(height: 4),
-                         Text('5 كيلو', style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                          '5 كيلو',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ],
                     ),
                   ),
                   const SizedBox(width: 8),
                   Row(
-                  children: [
-                    _QtyButton(
-                      icon: Icons.remove,
-                      onTap: () => setState(() {
-                        if (_qty > 1) _qty--;
-                      }),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      child: Text(
-                        '$_qty',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w600),
+                    children: [
+                      _QtyButton(
+                        icon: Icons.remove,
+                        onTap:
+                            () => setState(() {
+                              if (_qty > 1) _qty--;
+                            }),
                       ),
-                    ),
-                    _QtyButton(icon: Icons.add, onTap: () => setState(() => _qty++)),
-                  ],
-                ),
-
-                 
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: Text(
+                          '$_qty',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      _QtyButton(
+                        icon: Icons.add,
+                        onTap: () => setState(() => _qty++),
+                      ),
+                    ],
+                  ),
                 ],
               ),
 
@@ -220,8 +227,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               Text(
                 'بندورة طازجة مزروعة محلياً في تربة عضوية نقية، ناضجة وقطوفة يومياً لتصل إليك بأعلى جودة وطعم غني. مثالية للسلطات، الصلصات، والطبخ اليومي...',
                 maxLines: _expanded ? null : 3,
-                overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
+                overflow:
+                    _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(height: 1.5),
               ),
               Align(
                 alignment: Alignment.centerLeft,
@@ -247,7 +257,7 @@ class _InfoStrip extends StatelessWidget {
   final String farmName;
   final String region;
   final double rating;
-  final Color color;   // لون الأيقونات/النص
+  final Color color; // لون الأيقونات/النص
   final Color bkColor; // لون الخلفية الجديد
 
   const _InfoStrip({
@@ -287,8 +297,11 @@ class _InfoStrip extends StatelessWidget {
             children: [
               const Icon(Icons.star_rounded, size: 20, color: Colors.amber),
               const SizedBox(width: 6),
-              Text(rating.toStringAsFixed(
-                  rating.truncateToDouble() == rating ? 0 : 1)),
+              Text(
+                rating.toStringAsFixed(
+                  rating.truncateToDouble() == rating ? 0 : 1,
+                ),
+              ),
             ],
           ),
           divider,
@@ -299,7 +312,11 @@ class _InfoStrip extends StatelessWidget {
                 Icon(Icons.place_rounded, size: 20, color: color),
                 const SizedBox(width: 6),
                 Flexible(
-                  child: Text(region, style: textStyle, overflow: TextOverflow.ellipsis),
+                  child: Text(
+                    region,
+                    style: textStyle,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
@@ -312,7 +329,11 @@ class _InfoStrip extends StatelessWidget {
                 Icon(Icons.home_outlined, size: 20, color: color),
                 const SizedBox(width: 6),
                 Flexible(
-                  child: Text(farmName, style: textStyle, overflow: TextOverflow.ellipsis),
+                  child: Text(
+                    farmName,
+                    style: textStyle,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
