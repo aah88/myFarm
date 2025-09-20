@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import '../../models/category_model.dart';
-import '../../services/firebase_service.dart';
+import '../../services/product_services.dart';
 
 class CategoryManagementScreen extends StatefulWidget {
   const CategoryManagementScreen({super.key});
 
   @override
-  State<CategoryManagementScreen> createState() => _CategoryManagementScreenState();
+  State<CategoryManagementScreen> createState() =>
+      _CategoryManagementScreenState();
 }
 
 class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
-  final FirebaseService _firebaseService = FirebaseService();
+  final ProductService _firebaseProductService = ProductService();
 
   final _nameController = TextEditingController();
   final _imageUrlController = TextEditingController();
-
 
   late Future<List<ProductCategory>> _categoriesFuture;
 
   @override
   void initState() {
     super.initState();
-    _categoriesFuture = _firebaseService.getCategory();
+    _categoriesFuture = _firebaseProductService.getCategory();
   }
 
   void _addCategory() async {
@@ -29,12 +29,12 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
       final newCategory = ProductCategory(
         id: '',
         name: _nameController.text,
-        imageUrl: _imageUrlController.text
+        imageUrl: _imageUrlController.text,
       );
 
-      await _firebaseService.addCategory(newCategory);
+      await _firebaseProductService.addCategory(newCategory);
       setState(() {
-        _categoriesFuture = _firebaseService.getCategory();
+        _categoriesFuture = _firebaseProductService.getCategory();
       });
       _nameController.clear();
       _imageUrlController.clear();
@@ -53,7 +53,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
               controller: _nameController,
               decoration: const InputDecoration(labelText: 'اسم الفئة'),
             ),
-              ElevatedButton(
+            ElevatedButton(
               onPressed: _addCategory,
               child: const Text('إضافة الفئة'),
             ),
@@ -62,7 +62,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
               decoration: const InputDecoration(labelText: 'صورة'),
               keyboardType: TextInputType.url,
             ),
-         
+
             const Divider(),
 
             Expanded(
@@ -82,9 +82,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                     itemCount: categories.length,
                     itemBuilder: (context, index) {
                       final item = categories[index];
-                      return ListTile(
-                        title: Text(item.name),
-                      );
+                      return ListTile(title: Text(item.name));
                     },
                   );
                 },

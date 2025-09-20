@@ -1,11 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import '../../models/local_data.dart';
 import 'package:provider/provider.dart';
 import '../../providers/listing_provider.dart';
-import '../../services/firebase_service.dart';
+import '../../services/listing_services.dart';
 
 class ChooseUnitScreen extends StatefulWidget {
   const ChooseUnitScreen({super.key});
@@ -17,7 +16,7 @@ class ChooseUnitScreen extends StatefulWidget {
 class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
   int? selectedIndex; // Stores the selected unit index
   String? dropdownValue; // Stores the selected dropdown value
-  final FirebaseService _firebaseService = FirebaseService();
+  final ListingService _firebaseListingService = ListingService();
 
   // Controllers for input fields
   final TextEditingController _priceController = TextEditingController();
@@ -33,7 +32,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
 
   // Add new listing to Firebase
   Future<void> _addListing(newListing) async {
-    await _firebaseService.addListing(newListing);
+    await _firebaseListingService.addListing(newListing);
   }
 
   // Handle finishing process and validating inputs
@@ -55,7 +54,6 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
     context.read<ListingProvider>().setUnit(selectedUnit);
     context.read<ListingProvider>().setPrice(double.parse(price));
     context.read<ListingProvider>().setQty(int.parse(qty));
-  
 
     // Save to Firebase
     _addListing(context.read<ListingProvider>().listing);
@@ -135,21 +133,27 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFFECF1E8) : Colors.transparent,
+                              color:
+                                  isSelected
+                                      ? const Color(0xFFECF1E8)
+                                      : Colors.transparent,
                               border: Border.all(
                                 color: borderColor,
                                 width: 1.2,
                               ),
                               borderRadius: BorderRadius.circular(10),
-                              boxShadow: isSelected
-                                  ? [
-                                      BoxShadow(
-                                        color: AppColors.green.withOpacity(0.08),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ]
-                                  : const [],
+                              boxShadow:
+                                  isSelected
+                                      ? [
+                                        BoxShadow(
+                                          color: AppColors.green.withOpacity(
+                                            0.08,
+                                          ),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ]
+                                      : const [],
                             ),
                             child: AnimatedOpacity(
                               duration: const Duration(milliseconds: 120),
@@ -192,7 +196,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
               decoration: const InputDecoration(
                 labelText: "السعر",
                 hintText: "أدخل السعر",
-              )
+              ),
             ),
 
             const SizedBox(height: 16),
@@ -220,9 +224,13 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.list_alt, color: Color(0xFF91958E)),
               ),
-              items: _grades
-                  .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
-                  .toList(),
+              items:
+                  _grades
+                      .map(
+                        (e) =>
+                            DropdownMenuItem<String>(value: e, child: Text(e)),
+                      )
+                      .toList(),
               onChanged: (value) {
                 setState(() {
                   dropdownValue = value;
@@ -237,7 +245,8 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
               TextField(
                 controller: _extraTextController,
                 decoration: InputDecoration(
-                  labelText: "معلومات اضافية عن محتوى ال ${units[selectedIndex!].name}",
+                  labelText:
+                      "معلومات اضافية عن محتوى ال ${units[selectedIndex!].name}",
                   hintText: "أدخل المعلومات الإضافية",
                 ),
               ),
@@ -266,7 +275,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
         ),
       ),
       // ✅ BottomNav بدون تفعيل أي تبويب
-      bottomNavigationBar: const BottomNav (current: null),
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }

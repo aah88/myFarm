@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import '../../models/product_model.dart';
 import '../../models/category_model.dart';
-import '../../services/firebase_service.dart';
+import '../../services/product_services.dart';
 
 class ProductManagementScreen extends StatefulWidget {
   const ProductManagementScreen({super.key});
 
   @override
-  State<ProductManagementScreen> createState() => _ProductManagementScreenState();
+  State<ProductManagementScreen> createState() =>
+      _ProductManagementScreenState();
 }
 
 class _ProductManagementScreenState extends State<ProductManagementScreen> {
   ProductCategory? selectedCategory;
   Product? selectedProduct;
-  final FirebaseService _firebaseService = FirebaseService();
+  final ProductService _firebaseProductService = ProductService();
 
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -25,13 +26,12 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
   @override
   void initState() {
     super.initState();
-    _productsFuture = _firebaseService.getProducts();
-    _categoriesStream = _firebaseService.categoryStream();
+    _productsFuture = _firebaseProductService.getProducts();
+    _categoriesStream = _firebaseProductService.categoryStream();
   }
 
   void _addProduct() async {
     if (_nameController.text.isNotEmpty && selectedCategory != null) {
-      
       final newProduct = Product(
         id: '',
         name: _nameController.text,
@@ -40,9 +40,9 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         parentProduct: selectedProduct!.id,
         imageUrl: _imageUrlController.text,
       );
-      await _firebaseService.addProduct(newProduct);
+      await _firebaseProductService.addProduct(newProduct);
       setState(() {
-        _productsFuture = _firebaseService.getProducts();
+        _productsFuture = _firebaseProductService.getProducts();
         selectedCategory = null;
         selectedProduct = null;
       });
@@ -62,11 +62,11 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         child: Column(
           children: [
             TextField(
-              controller: _nameController,                      
+              controller: _nameController,
               decoration: const InputDecoration(
                 labelText: "المنتج",
                 hintText: "أدخل المنتج",
-              )
+              ),
             ),
             const SizedBox(height: 16),
 
@@ -75,11 +75,11 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
               decoration: const InputDecoration(
                 labelText: "وصف المنتج",
                 hintText: "أدخل وصف المنتج",
-              )
+              ),
             ),
 
             const SizedBox(height: 16),
-            
+
             StreamBuilder<List<ProductCategory>>(
               stream: _categoriesStream,
               builder: (context, snapshot) {
@@ -90,14 +90,18 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                 final categories = snapshot.data!;
 
                 return DropdownButtonFormField<ProductCategory>(
-                  decoration: const InputDecoration(labelText: 'الفئة', hintText: "اختر من القائمة",),
+                  decoration: const InputDecoration(
+                    labelText: 'الفئة',
+                    hintText: "اختر من القائمة",
+                  ),
                   value: selectedCategory,
-                  items: categories.map((cat) {
-                    return DropdownMenuItem<ProductCategory>(
-                      value: cat,
-                      child: Text(cat.name),
-                    );
-                  }).toList(),
+                  items:
+                      categories.map((cat) {
+                        return DropdownMenuItem<ProductCategory>(
+                          value: cat,
+                          child: Text(cat.name),
+                        );
+                      }).toList(),
                   onChanged: (ProductCategory? newValue) {
                     setState(() {
                       selectedCategory = newValue;
@@ -107,7 +111,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
               },
             ),
             const SizedBox(height: 16),
-            
+
             FutureBuilder<List<Product>>(
               future: _productsFuture,
               builder: (context, snapshot) {
@@ -115,19 +119,21 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                   return const CircularProgressIndicator();
                 }
 
-                final products = snapshot.data!
-                                   .where((product) =>product.parentProduct =="")
-                                   .toList();
+                final products =
+                    snapshot.data!
+                        .where((product) => product.parentProduct == "")
+                        .toList();
 
                 return DropdownButtonFormField<Product>(
                   decoration: const InputDecoration(labelText: 'المنتج الأب'),
                   value: selectedProduct,
-                  items: products.map((prod) {
-                    return DropdownMenuItem<Product>(
-                      value: prod,
-                      child: Text(prod.name),
-                    );
-                  }).toList(),
+                  items:
+                      products.map((prod) {
+                        return DropdownMenuItem<Product>(
+                          value: prod,
+                          child: Text(prod.name),
+                        );
+                      }).toList(),
                   onChanged: (Product? newValue) {
                     setState(() {
                       selectedProduct = newValue;

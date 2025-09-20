@@ -5,7 +5,7 @@ import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
 import '../category/choose_category_screen.dart';
-import '../../services/firebase_service.dart';
+import '../../services/product_services.dart';
 
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
@@ -24,7 +24,7 @@ class HomeScreenFarmer extends StatefulWidget {
 }
 
 class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
-  final FirebaseService _firebaseService = FirebaseService();
+  final ProductService _firebaseProductService = ProductService();
 
   @override
   void initState() {
@@ -234,7 +234,7 @@ class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
 
           // المنتجات (سلايدر)
           FutureBuilder<List<Product>>(
-            future: _firebaseService.getProducts(),
+            future: _firebaseProductService.getProducts(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());

@@ -11,7 +11,8 @@ import 'package:flutter_application_1/models/cart_model.dart';
 import '../../providers/user_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/listing_provider.dart';
-import '../../services/firebase_service.dart';
+import '../../services/product_services.dart';
+import '../../services/listing_services.dart';
 
 // UI & routing
 import '../../widgets/app_scaffold.dart';
@@ -34,13 +35,14 @@ class HomeScreenUser extends StatefulWidget {
 }
 
 class _HomeScreenUserState extends State<HomeScreenUser> {
-  final FirebaseService _firebaseService = FirebaseService();
+  final ProductService _firebaseProductService = ProductService();
+  final ListingService _firebaseListingService = ListingService();
   late Future<List<ProductCategory>> _futureCategories;
 
   @override
   void initState() {
     super.initState();
-    _futureCategories = _firebaseService.getCategory();
+    _futureCategories = _firebaseProductService.getCategory();
 
     // تهيئة مزودي المستخدم والسلة
     Future.microtask(() {
@@ -231,7 +233,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
 
           // ====== شبكة المنتجات (مثل الصورة) ======
           FutureBuilder<List<FullListing>>(
-            future: _firebaseService.getFullListings(),
+            future: _firebaseListingService.getFullListings(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());

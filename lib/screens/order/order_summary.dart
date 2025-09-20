@@ -8,7 +8,7 @@ import '../../models/full_listing.dart';
 import '../../providers/cart_provider.dart';
 import '../../models/local_data.dart';
 import '../../providers/full_listing_provider.dart';
-import '../../services/firebase_service.dart';
+import '../../services/order_services.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
   const OrderSummaryScreen({super.key});
@@ -215,7 +215,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         ? null
                         : () async {
                           //TODO AAH
-                          await FirebaseService().createOrder(
+                          await OrderService().createOrder(
                             cart,
                             _selectedDelivery!,
                             _selectedPayment!,

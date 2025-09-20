@@ -3,7 +3,7 @@ import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product_model.dart';
-import '../../services/firebase_service.dart';
+import '../../services/product_services.dart';
 import '../../widgets/product_card.dart';
 import '../../screens/product/choose_sub_product_screen.dart';
 import '../../providers/listing_provider.dart';
@@ -21,14 +21,40 @@ class ChooseProductScreen extends StatefulWidget {
 }
 
 class _ChooseProductScreenState extends State<ChooseProductScreen> {
-  final FirebaseService _firebaseService = FirebaseService();
+  final ProductService _firebaseProductService = ProductService();
   late Future<List<Product>> _productsFuture;
 
   /// الحروف العربية + "الكل"
   static const List<String> _letters = [
-    'أ','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش',
-    'ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي',
-    'الكل'
+    'أ',
+    'ب',
+    'ت',
+    'ث',
+    'ج',
+    'ح',
+    'خ',
+    'د',
+    'ذ',
+    'ر',
+    'ز',
+    'س',
+    'ش',
+    'ص',
+    'ض',
+    'ط',
+    'ظ',
+    'ع',
+    'غ',
+    'ف',
+    'ق',
+    'ك',
+    'ل',
+    'م',
+    'ن',
+    'ه',
+    'و',
+    'ي',
+    'الكل',
   ];
 
   String _selectedLetter = 'الكل';
@@ -36,13 +62,18 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
 
   /// لتطبيع أول حرف للمقارنة
   final Map<String, String> _charMap = const {
-    'أ': 'ا', 'إ': 'ا', 'آ': 'ا', 'ى': 'ي'
+    'أ': 'ا',
+    'إ': 'ا',
+    'آ': 'ا',
+    'ى': 'ي',
   };
 
   @override
   void initState() {
     super.initState();
-    _productsFuture = _firebaseService.getProductsByCategory(widget.categoryId);
+    _productsFuture = _firebaseProductService.getProductsByCategory(
+      widget.categoryId,
+    );
   }
 
   String _normalize(String s) {
@@ -95,14 +126,12 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
           }
 
           if (_allRootProducts.isEmpty) {
-            _allRootProducts = snapshot.data!
-                .where((p) => p.parentProduct.isEmpty)
-                .toList();
+            _allRootProducts =
+                snapshot.data!.where((p) => p.parentProduct.isEmpty).toList();
           }
 
-          final products = _allRootProducts
-              .where((p) => _matchesLetter(p.name))
-              .toList();
+          final products =
+              _allRootProducts.where((p) => _matchesLetter(p.name)).toList();
 
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
@@ -143,8 +172,8 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
                   child: _LettersBar(
                     letters: _letters,
                     selectedLetter: _selectedLetter,
-                    onLetterSelected: (letter) =>
-                        setState(() => _selectedLetter = letter),
+                    onLetterSelected:
+                        (letter) => setState(() => _selectedLetter = letter),
                   ),
                 ),
               ),
@@ -158,12 +187,13 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
                     duration: const Duration(milliseconds: 250),
                     switchInCurve: Curves.easeOut,
                     switchOutCurve: Curves.easeIn,
-                    child: products.isEmpty
-                        ? const _EmptyState(key: ValueKey('empty'))
-                        : _ResponsiveFadedGrid(
-                            key: const ValueKey('grid'),
-                            products: products,
-                          ),
+                    child:
+                        products.isEmpty
+                            ? const _EmptyState(key: ValueKey('empty'))
+                            : _ResponsiveFadedGrid(
+                              key: const ValueKey('grid'),
+                              products: products,
+                            ),
                   ),
                 ),
               ),
@@ -212,9 +242,10 @@ class _LettersBar extends StatelessWidget {
                 height: letterSize,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: selectedLetter == letter
-                      ? const Color(0xFFECF1E8)
-                      : Colors.white,
+                  color:
+                      selectedLetter == letter
+                          ? const Color(0xFFECF1E8)
+                          : Colors.white,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: const Color(0xFFE8EBE6)),
                   boxShadow: [
@@ -230,7 +261,9 @@ class _LettersBar extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight:
-                        selectedLetter == letter ? FontWeight.bold : FontWeight.w500,
+                        selectedLetter == letter
+                            ? FontWeight.bold
+                            : FontWeight.w500,
                     color: const Color(0xFF70756B),
                   ),
                 ),
@@ -257,10 +290,7 @@ class _EmptyState extends StatelessWidget {
 }
 
 class _ResponsiveFadedGrid extends StatelessWidget {
-  const _ResponsiveFadedGrid({
-    super.key,
-    required this.products,
-  });
+  const _ResponsiveFadedGrid({super.key, required this.products});
 
   final List<Product> products;
 
@@ -269,8 +299,9 @@ class _ResponsiveFadedGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         const double maxTileWidth = 180;
-        final int crossAxisCount =
-            (constraints.maxWidth / maxTileWidth).floor().clamp(2, 8);
+        final int crossAxisCount = (constraints.maxWidth / maxTileWidth)
+            .floor()
+            .clamp(2, 8);
 
         return GridView.builder(
           shrinkWrap: true,
@@ -298,9 +329,10 @@ class _ResponsiveFadedGrid extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ChooseSubProductScreen(
-                        parentProductId: product.id,
-                      ),
+                      builder:
+                          (context) => ChooseSubProductScreen(
+                            parentProductId: product.id,
+                          ),
                     ),
                   );
                 },
@@ -331,13 +363,18 @@ class _FadeInUp extends StatefulWidget {
 
 class _FadeInUpState extends State<_FadeInUp>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _c =
-      AnimationController(vsync: this, duration: widget.duration);
-  late final Animation<double> _opacity =
-      CurvedAnimation(parent: _c, curve: Curves.easeOut);
-  late final Animation<Offset> _offset =
-      Tween(begin: const Offset(0, 0.06), end: Offset.zero)
-          .animate(CurvedAnimation(parent: _c, curve: Curves.easeOut));
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: widget.duration,
+  );
+  late final Animation<double> _opacity = CurvedAnimation(
+    parent: _c,
+    curve: Curves.easeOut,
+  );
+  late final Animation<Offset> _offset = Tween(
+    begin: const Offset(0, 0.06),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(parent: _c, curve: Curves.easeOut));
 
   @override
   void initState() {

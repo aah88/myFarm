@@ -6,7 +6,7 @@ import 'package:flutter_application_1/screens/customer/all_listings.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart_provider.dart';
-import '../../services/firebase_service.dart';
+import '../../services/listing_services.dart';
 
 // مهم: AppScaffold يضيف BottomNav، ونحتاج AppTab من bottom_nav.dart
 import '../../widgets/app_scaffold.dart';
@@ -24,7 +24,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final FirebaseService _firebaseService = FirebaseService();
+  final ListingService _firebaseListingService = ListingService();
   bool _loading = true;
   Map<String, FullListing> _listingMap = {};
 
@@ -37,7 +37,9 @@ class _CartScreenState extends State<CartScreen> {
   Future<void> _loadListingDetails() async {
     final cart = context.read<CartProvider>().cart;
     final listingIds = cart.items.map((item) => item.listingId).toList();
-    final listings = await _firebaseService.getFullListingsByIds(listingIds);
+    final listings = await _firebaseListingService.getFullListingsByIds(
+      listingIds,
+    );
 
     _listingMap = {for (var l in listings) l.id: l};
 

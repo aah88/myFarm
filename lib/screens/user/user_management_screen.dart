@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/user_model.dart';
-import '../../services/firebase_service.dart';
+import '../../services/user_services.dart';
 
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key});
@@ -10,7 +10,7 @@ class UserManagementScreen extends StatefulWidget {
 }
 
 class _UserManagementScreenState extends State<UserManagementScreen> {
-  final FirebaseService _firebaseService = FirebaseService();
+  final UserService _firebaseUserService = UserService();
 
   final _nameController = TextEditingController();
   final _usernameController = TextEditingController();
@@ -19,7 +19,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   final _phoneController = TextEditingController();
   final _profileImageController = TextEditingController();
 
-
   @override
   void initState() {
     super.initState();
@@ -27,20 +26,19 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
   void _addUser() async {
     if (_nameController.text.isNotEmpty) {
-      
       final newUser = AppUser(
         id: '',
         username: _usernameController.text,
         name: _nameController.text,
-        email:_emailController.text,
+        email: _emailController.text,
         address: _addressController.text,
         phone: _phoneController.text,
         rating: 0.0,
         profileImage: _profileImageController.text,
         createdAt: DateTime.now(),
-        isFarmer: false
+        isFarmer: false,
       );
-      await _firebaseService.addUser(newUser);
+      await _firebaseUserService.addUser(newUser);
 
       _nameController.clear();
       _emailController.clear();
@@ -48,7 +46,6 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       _phoneController.clear();
       _profileImageController.clear();
       _usernameController.clear();
-      
     }
   }
 
@@ -85,10 +82,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
             ),
 
             const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _addUser,
-              child: const Text('إضافة'),
-            ),
+            ElevatedButton(onPressed: _addUser, child: const Text('إضافة')),
           ],
         ),
       ),

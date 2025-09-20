@@ -8,7 +8,7 @@ import 'package:flutter_application_1/widgets/bottom_nav.dart';
 
 import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
-import '../../services/firebase_service.dart';
+import '../../services/listing_services.dart';
 import '../../widgets/product_listing_card.dart'; // ✅ الكارت الجديد
 
 class AllFarmerListingsScreen extends StatefulWidget {
@@ -20,13 +20,21 @@ class AllFarmerListingsScreen extends StatefulWidget {
 }
 
 class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
-  final FirebaseService _firebaseService = FirebaseService();
+  final ListingService _firebaseListingService = ListingService();
 
   final String farmerImage =
       'https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
 
   // ===== شريط الفلاتر (واجهة) =====
-  final List<String> _segments = const ['الكل','فواكه', 'خضار', 'بيض', 'لحم', 'اعشاب و ورقيات','حليب و مشتقاته' ];
+  final List<String> _segments = const [
+    'الكل',
+    'فواكه',
+    'خضار',
+    'بيض',
+    'لحم',
+    'اعشاب و ورقيات',
+    'حليب و مشتقاته',
+  ];
   String _selectedSegment = 'الكل'; // لتلوين الشريحة المختارة فقط الآن
 
   @override
@@ -76,37 +84,39 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 6, 0, 8),
               child: Wrap(
-                textDirection: TextDirection.rtl,   // حتى يبدأ من اليمين
-                alignment: WrapAlignment.start,     // محاذاة العناصر في كل سطر
-                runAlignment: WrapAlignment.start,  // محاذاة الأسطر عموديًا
-                spacing: 8,                         // مسافة بين الشرائح أفقياً
-                runSpacing: 8,                      // مسافة بين الأسطر عمودياً
-                children: _segments.map((label) {
-                  final bool selected = _selectedSegment == label;
-                  return ChoiceChip(
-                    label: Text(
-                      label,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: selected ? Colors.white : AppColors.green,
-                      ),
-                    ),
-                    selected: selected,
-                    onSelected: (_) => setState(() => _selectedSegment = label),
-                    shape: const StadiumBorder(),
-                    backgroundColor: const Color(0xFFF1F4F1),
-                    selectedColor: AppColors.green,
-                    side: BorderSide.none,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  );
-                }).toList(),
+                textDirection: TextDirection.rtl, // حتى يبدأ من اليمين
+                alignment: WrapAlignment.start, // محاذاة العناصر في كل سطر
+                runAlignment: WrapAlignment.start, // محاذاة الأسطر عموديًا
+                spacing: 8, // مسافة بين الشرائح أفقياً
+                runSpacing: 8, // مسافة بين الأسطر عمودياً
+                children:
+                    _segments.map((label) {
+                      final bool selected = _selectedSegment == label;
+                      return ChoiceChip(
+                        label: Text(
+                          label,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: selected ? Colors.white : AppColors.green,
+                          ),
+                        ),
+                        selected: selected,
+                        onSelected:
+                            (_) => setState(() => _selectedSegment = label),
+                        shape: const StadiumBorder(),
+                        backgroundColor: const Color(0xFFF1F4F1),
+                        selectedColor: AppColors.green,
+                        side: BorderSide.none,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      );
+                    }).toList(),
               ),
             ),
 
             // 🛒 شبكة المنتجات
             Expanded(
               child: FutureBuilder<List<FullListing>>(
-                future: _firebaseService.getFarmerFullListings(
+                future: _firebaseListingService.getFarmerFullListings(
                   context.read<UserProvider>().userId!,
                 ),
                 builder: (context, snapshot) {
@@ -128,12 +138,13 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
                       padding: const EdgeInsets.only(top: 4),
                       gridDelegate:
                           const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 250, // 👈 أقصى عرض للكارت الواحد
-                        childAspectRatio:
-                            0.9, // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                      ),
+                            maxCrossAxisExtent:
+                                250, // 👈 أقصى عرض للكارت الواحد
+                            childAspectRatio:
+                                0.9, // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
                       itemCount: listings.length,
                       itemBuilder: (context, index) {
                         final listing = listings[index];
@@ -144,8 +155,9 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
                           price: listing.price,
                           farmerName: listing.farmerName,
                           distance: 0,
-                          action: ListingCardAction
-                              .edit, // أو ListingCardAction.add للمشتري
+                          action:
+                              ListingCardAction
+                                  .edit, // أو ListingCardAction.add للمشتري
                           onEdit: () {
                             Navigator.pushNamed(
                               context,

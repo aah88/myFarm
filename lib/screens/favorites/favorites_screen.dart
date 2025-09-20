@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
-import '../../services/firebase_service.dart';
+import '../../services/listing_services.dart';
 import '../../models/listing_model.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  final FirebaseService _firebaseService = FirebaseService();
+  final ListingService _firebaseListingService = ListingService();
 
   bool _loading = true;
   List<String> _ids = [];
@@ -39,7 +39,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       return;
     }
 
-    final listings = await _firebaseService.getListingsByIds(_ids);
+    final listings = await _firebaseListingService.getListingsByIds(_ids);
     _listingMap = {for (var l in listings) l.id: l};
 
     if (mounted) setState(() => _loading = false);
@@ -62,8 +62,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-        currentTab: AppTab.favorites,      
-        appBar: AppBar(
+      currentTab: AppTab.favorites,
+      appBar: AppBar(
         title: const Text('المفضلة'),
         actions: [
           if (_ids.isNotEmpty)
@@ -79,35 +79,36 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             ),
         ],
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : _ids.isEmpty
+      body:
+          _loading
+              ? const Center(child: CircularProgressIndicator())
+              : _ids.isEmpty
               ? const _EmptyState()
               : RefreshIndicator(
-                  onRefresh: _refresh,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
-                    itemCount: _ids.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      final id = _ids[index];
-                      final listing = _listingMap[id];
-                      if (listing == null) {
-                        // لو ما قدر يجلب العنصر، نخفيه بهدوء
-                        return const SizedBox.shrink();
-                      }
+                onRefresh: _refresh,
+                child: ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
+                  itemCount: _ids.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final id = _ids[index];
+                    final listing = _listingMap[id];
+                    if (listing == null) {
+                      // لو ما قدر يجلب العنصر، نخفيه بهدوء
+                      return const SizedBox.shrink();
+                    }
 
-                      return _FavoriteCard(
-                        listing: listing,
-                        onRemove: () => _removeFromFavorites(id),
-                        onOpen: () {
-                          // افتح تفاصيل العرض لو عندك شاشة لذلك:
-                          // Navigator.push(context, MaterialPageRoute(builder: (_) => ListingDetailsScreen(listing: listing)));
-                        },
-                      );
-                    },
-                  ),
+                    return _FavoriteCard(
+                      listing: listing,
+                      onRemove: () => _removeFromFavorites(id),
+                      onOpen: () {
+                        // افتح تفاصيل العرض لو عندك شاشة لذلك:
+                        // Navigator.push(context, MaterialPageRoute(builder: (_) => ListingDetailsScreen(listing: listing)));
+                      },
+                    );
+                  },
                 ),
+              ),
     );
   }
 }
@@ -130,7 +131,8 @@ class _FavoriteCard extends StatelessWidget {
     final price = _try(() => listing.price)?.toString() ?? '—';
     final imageUrl = _try(() => (listing as dynamic).imageUrl as String?) ?? '';
     final productName =
-        _try(() => (listing as dynamic).productName as String?) ?? 'Product name';
+        _try(() => (listing as dynamic).productName as String?) ??
+        'Product name';
     final farmerName =
         _try(() => (listing as dynamic).farmerName as String?) ?? 'المزارع';
 
@@ -159,14 +161,20 @@ class _FavoriteCard extends StatelessWidget {
               // الصورة
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: imageUrl.isNotEmpty
-                    ? Image.network(imageUrl, height: 72, width: 72, fit: BoxFit.cover)
-                    : Container(
-                        height: 72,
-                        width: 72,
-                        color: const Color(0xFFF1F3F0),
-                        child: const Icon(Icons.image, color: Colors.grey),
-                      ),
+                child:
+                    imageUrl.isNotEmpty
+                        ? Image.network(
+                          imageUrl,
+                          height: 72,
+                          width: 72,
+                          fit: BoxFit.cover,
+                        )
+                        : Container(
+                          height: 72,
+                          width: 72,
+                          color: const Color(0xFFF1F3F0),
+                          child: const Icon(Icons.image, color: Colors.grey),
+                        ),
               ),
               const SizedBox(width: 12),
 
@@ -175,11 +183,15 @@ class _FavoriteCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(productName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(
+                      productName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 2),
                     Text(
                       farmerName,
@@ -188,14 +200,22 @@ class _FavoriteCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Text('الوحدة: $unit',
-                            style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                        Text(
+                          'الوحدة: $unit',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
                         const SizedBox(width: 12),
-                        Text('$price ل.س',
-                            style: const TextStyle(
-                                fontSize: 14,
-                                color: AppColors.green,
-                                fontWeight: FontWeight.bold)),
+                        Text(
+                          '$price ل.س',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppColors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -241,8 +261,10 @@ class _EmptyState extends StatelessWidget {
             SizedBox(height: 12),
             Text('لا توجد عناصر في المفضلة'),
             SizedBox(height: 4),
-            Text('أضف منتجات إلى المفضلة لعرضها هنا.',
-                style: TextStyle(color: Colors.grey)),
+            Text(
+              'أضف منتجات إلى المفضلة لعرضها هنا.',
+              style: TextStyle(color: Colors.grey),
+            ),
           ],
         ),
       ),

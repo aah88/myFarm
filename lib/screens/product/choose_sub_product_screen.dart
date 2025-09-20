@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/product_model.dart';
 import '../../providers/listing_provider.dart';
-import '../../services/firebase_service.dart';
+import '../../services/product_services.dart';
 import '../../widgets/product_card.dart';
 import '../unit/choose_unit_screen.dart';
 
@@ -19,19 +19,19 @@ class ChooseSubProductScreen extends StatefulWidget {
   const ChooseSubProductScreen({
     super.key,
     required this.parentProductId,
-    this.firebaseService, // optional DI for tests
+    this.firebaseProductService, // optional DI for tests
   });
 
   final String parentProductId;
-  final FirebaseService? firebaseService;
+  final ProductService? firebaseProductService;
 
   @override
   State<ChooseSubProductScreen> createState() => _ChooseSubProductScreenState();
 }
 
 class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
-  late final FirebaseService _firebaseService =
-      widget.firebaseService ?? FirebaseService();
+  late final ProductService _firebaseProductService =
+      widget.firebaseProductService ?? ProductService();
 
   // Cache the future so we don't refetch on every rebuild
   late Future<List<Product>> _futureProducts;
@@ -39,15 +39,17 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
   @override
   void initState() {
     super.initState();
-    _futureProducts =
-        _firebaseService.getProductsByProductParent(widget.parentProductId);
+    _futureProducts = _firebaseProductService.getProductsByProductParent(
+      widget.parentProductId,
+    );
   }
 
   /// Optional: Pull-to-refresh handler (re-fetch the same future)
   Future<void> _refresh() async {
     setState(() {
-      _futureProducts =
-          _firebaseService.getProductsByProductParent(widget.parentProductId);
+      _futureProducts = _firebaseProductService.getProductsByProductParent(
+        widget.parentProductId,
+      );
     });
     await _futureProducts;
   }
@@ -130,10 +132,7 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
                         // Helper line under the title
                         Text(
                           "اضغط على أحد المنتجات أدناه لاختيار الصنف وإكمال العملية.",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black54,
-                          ),
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
                           textAlign: TextAlign.right,
                         ),
                         SizedBox(height: 12),
@@ -161,8 +160,8 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
           },
         ),
       ),
-            // ✅ BottomNav بدون تفعيل أي تبويب
-      bottomNavigationBar: const BottomNav (current: null),
+      // ✅ BottomNav بدون تفعيل أي تبويب
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }
@@ -179,8 +178,10 @@ class _LoadingSkeleton extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, c) {
         const double maxTileWidth = 180;
-        final int crossAxisCount =
-            (c.maxWidth / maxTileWidth).floor().clamp(2, 8);
+        final int crossAxisCount = (c.maxWidth / maxTileWidth).floor().clamp(
+          2,
+          8,
+        );
 
         return GridView.builder(
           shrinkWrap: true,
@@ -192,12 +193,13 @@ class _LoadingSkeleton extends StatelessWidget {
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
           ),
-          itemBuilder: (_, __) => Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFF4F6F2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
+          itemBuilder:
+              (_, __) => Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF4F6F2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
         );
       },
     );
@@ -263,8 +265,10 @@ class _ResponsiveFadedGrid extends StatelessWidget {
       builder: (context, c) {
         // Compute columns similar to SliverGridDelegateWithMaxCrossAxisExtent
         const double maxTileWidth = 180;
-        final int crossAxisCount =
-            (c.maxWidth / maxTileWidth).floor().clamp(2, 8);
+        final int crossAxisCount = (c.maxWidth / maxTileWidth).floor().clamp(
+          2,
+          8,
+        );
 
         return GridView.builder(
           key: const ValueKey('grid'),
@@ -317,13 +321,18 @@ class _FadeInUp extends StatefulWidget {
 
 class _FadeInUpState extends State<_FadeInUp>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _c =
-      AnimationController(vsync: this, duration: widget.duration);
-  late final Animation<double> _opacity =
-      CurvedAnimation(parent: _c, curve: Curves.easeOut);
-  late final Animation<Offset> _offset =
-      Tween(begin: const Offset(0, 0.06), end: Offset.zero)
-          .animate(CurvedAnimation(parent: _c, curve: Curves.easeOut));
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: widget.duration,
+  );
+  late final Animation<double> _opacity = CurvedAnimation(
+    parent: _c,
+    curve: Curves.easeOut,
+  );
+  late final Animation<Offset> _offset = Tween(
+    begin: const Offset(0, 0.06),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(parent: _c, curve: Curves.easeOut));
 
   @override
   void initState() {

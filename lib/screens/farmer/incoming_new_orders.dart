@@ -7,7 +7,7 @@ import 'package:flutter_application_1/models/full_listing.dart';
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
 
 import '../../providers/cart_provider.dart';
-import '../../services/firebase_service.dart';
+import '../../services/listing_services.dart';
 import '../../widgets/product_listing_card.dart'; // ✅ الكارت الجديد
 
 //TODO AHMAD
@@ -19,7 +19,7 @@ class AllListingsScreen extends StatefulWidget {
 }
 
 class _AllListingsScreenState extends State<AllListingsScreen> {
-  final FirebaseService _firebaseService = FirebaseService();
+  final ListingService _firebaseListingService = ListingService();
 
   final String farmerImage =
       'https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
@@ -62,7 +62,7 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
             // 🛒 Product Grid
             Expanded(
               child: FutureBuilder<List<FullListing>>(
-                future: _firebaseService.getFullListings(),
+                future: _firebaseListingService.getFullListings(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());

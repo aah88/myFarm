@@ -9,7 +9,7 @@ import '../../providers/user_provider.dart';
 import '../../screens/product/product_management_screen.dart';
 import '../../screens/category/category_management_screen.dart';
 import '../../screens/home/home_screen_farmer.dart';
-import '../../services/firebase_service.dart';
+import '../../services/user_services.dart';
 import 'sign_up_screen.dart';
 
 class SignInPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _SignInPageState extends State<SignInPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
-  final FirebaseService _firebaseService = FirebaseService();
+  final UserService _firebaseUserService = UserService();
 
   Future<void> _signIn() async {
     final email = _emailController.text.trim();
@@ -55,7 +55,7 @@ class _SignInPageState extends State<SignInPage> {
 
         _showMessage("Sign in successful!");
 
-        var userDetails = await _firebaseService.getUserById(uid);
+        var userDetails = await _firebaseUserService.getUserById(uid);
 
         if (!mounted) return;
         context.read<UserProvider>().setUserId(uid);

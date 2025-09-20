@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../models/category_model.dart';
 import '../../providers/user_provider.dart';
-import '../../services/firebase_service.dart';
+import '../../services/product_services.dart';
 import '../../screens/product/choose_product_screen.dart';
 import '../../providers/listing_provider.dart';
 
@@ -11,9 +11,7 @@ import '../../providers/listing_provider.dart';
 import '../../widgets/bottom_nav.dart';
 
 class ChooseCategoryScreen extends StatefulWidget {
-  const ChooseCategoryScreen({super.key, this.firebaseService});
-
-  final FirebaseService? firebaseService;
+  const ChooseCategoryScreen({super.key});
 
   @override
   State<ChooseCategoryScreen> createState() => _ChooseCategoryScreenState();
@@ -21,20 +19,19 @@ class ChooseCategoryScreen extends StatefulWidget {
 
 class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
     with TickerProviderStateMixin {
-  late final FirebaseService _firebaseService =
-      widget.firebaseService ?? FirebaseService();
+  late final ProductService _firebaseProductService = ProductService();
 
   late Future<List<ProductCategory>> _futureCategories;
 
   @override
   void initState() {
     super.initState();
-    _futureCategories = _firebaseService.getCategory();
+    _futureCategories = _firebaseProductService.getCategory();
   }
 
   Future<void> _refresh() async {
     setState(() {
-      _futureCategories = _firebaseService.getCategory();
+      _futureCategories = _firebaseProductService.getCategory();
     });
     await _futureCategories;
   }
@@ -44,7 +41,10 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
     return Scaffold(
       // ليست تبويب رئيسي؛ صفحة فرعية ضمن تدفق إضافة منتج
       appBar: AppBar(
-        title: const Text('إضافة منتج', style: TextStyle(color: AppColors.green)),
+        title: const Text(
+          'إضافة منتج',
+          style: TextStyle(color: AppColors.green),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
@@ -73,8 +73,8 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
                 onTapCategory: (cat) {
                   context.read<ListingProvider>().setCategoryId(cat.id);
                   context.read<ListingProvider>().setUserId(
-                        context.read<UserProvider>().userId!,
-                      );
+                    context.read<UserProvider>().userId!,
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -140,8 +140,10 @@ class _LoadingSkeleton extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, c) {
         const double maxTileWidth = 180;
-        final int crossAxisCount =
-            (c.maxWidth / maxTileWidth).floor().clamp(2, 8);
+        final int crossAxisCount = (c.maxWidth / maxTileWidth).floor().clamp(
+          2,
+          8,
+        );
 
         return GridView.builder(
           shrinkWrap: true,
@@ -153,12 +155,13 @@ class _LoadingSkeleton extends StatelessWidget {
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
           ),
-          itemBuilder: (_, __) => Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFF4F6F2),
-              borderRadius: BorderRadius.circular(14),
-            ),
-          ),
+          itemBuilder:
+              (_, __) => Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF4F6F2),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
         );
       },
     );
@@ -217,8 +220,10 @@ class _ResponsiveFadedGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, c) {
         const double maxTileWidth = 180;
-        final int crossAxisCount =
-            (c.maxWidth / maxTileWidth).floor().clamp(2, 8);
+        final int crossAxisCount = (c.maxWidth / maxTileWidth).floor().clamp(
+          2,
+          8,
+        );
 
         return GridView.builder(
           shrinkWrap: true,
@@ -289,18 +294,17 @@ class _CategoryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(14)),
-                child: Image.asset(
-                  imageUrl,
-                  height: 110,
-                  fit: BoxFit.contain,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(14),
                 ),
+                child: Image.asset(imageUrl, height: 110, fit: BoxFit.contain),
               ),
               const SizedBox(height: 8),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
+                ),
                 child: Text(
                   title,
                   maxLines: 2,
@@ -340,13 +344,18 @@ class _FadeInUp extends StatefulWidget {
 
 class _FadeInUpState extends State<_FadeInUp>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _c =
-      AnimationController(vsync: this, duration: widget.duration);
-  late final Animation<double> _opacity =
-      CurvedAnimation(parent: _c, curve: Curves.easeOut);
-  late final Animation<Offset> _offset =
-      Tween(begin: const Offset(0, 0.06), end: Offset.zero)
-          .animate(CurvedAnimation(parent: _c, curve: Curves.easeOut));
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: widget.duration,
+  );
+  late final Animation<double> _opacity = CurvedAnimation(
+    parent: _c,
+    curve: Curves.easeOut,
+  );
+  late final Animation<Offset> _offset = Tween(
+    begin: const Offset(0, 0.06),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(parent: _c, curve: Curves.easeOut));
 
   @override
   void initState() {
