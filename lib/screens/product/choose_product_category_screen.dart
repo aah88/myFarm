@@ -133,7 +133,7 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
 }
 
 class _LoadingSkeleton extends StatelessWidget {
-  const _LoadingSkeleton({super.key});
+  const _LoadingSkeleton();
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +169,7 @@ class _LoadingSkeleton extends StatelessWidget {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState({super.key});
+  const _EmptyState();
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +183,7 @@ class _EmptyState extends StatelessWidget {
 }
 
 class _ErrorState extends StatelessWidget {
-  const _ErrorState({super.key, required this.message});
+  const _ErrorState({required this.message});
   final String message;
 
   @override
@@ -207,7 +207,6 @@ class _ErrorState extends StatelessWidget {
 
 class _ResponsiveFadedGrid extends StatelessWidget {
   const _ResponsiveFadedGrid({
-    super.key,
     required this.categories,
     required this.onTapCategory,
   });
@@ -283,7 +282,7 @@ class _CategoryCard extends StatelessWidget {
             border: Border.all(color: const Color(0xFFE8EBE6), width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -331,7 +330,6 @@ class _FadeInUp extends StatefulWidget {
     required this.child,
     this.duration = const Duration(milliseconds: 280),
     this.delay = Duration.zero,
-    super.key,
   });
 
   final Widget child;

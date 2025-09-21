@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
-
-import 'package:flutter_application_1/models/cart_model.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
 
-import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../services/listing_services.dart';
 import '../../widgets/product_listing_card.dart'; // ✅ الكارت الجديد

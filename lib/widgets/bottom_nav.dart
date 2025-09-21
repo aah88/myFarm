@@ -7,10 +7,14 @@ enum AppTab { home, favorites, cart, notifications }
 extension on AppTab {
   String get route {
     switch (this) {
-      case AppTab.home:          return '/home';
-      case AppTab.favorites:     return '/favorites';
-      case AppTab.cart:          return '/cart';
-      case AppTab.notifications: return '/notifications';
+      case AppTab.home:
+        return '/home';
+      case AppTab.favorites:
+        return '/favorites';
+      case AppTab.cart:
+        return '/cart';
+      case AppTab.notifications:
+        return '/notifications';
     }
   }
 }
@@ -52,7 +56,7 @@ class BottomNav extends StatelessWidget {
       ),
       _NavSpec(
         tab: AppTab.favorites,
-        activeIcon: Icons.favorite,                // filled
+        activeIcon: Icons.favorite, // filled
         inactiveIcon: Icons.favorite_border_rounded, // outline
       ),
       _NavSpec(
@@ -70,37 +74,42 @@ class BottomNav extends StatelessWidget {
         color: backgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 16,
             offset: const Offset(0, -2),
           ),
         ],
       ),
       child: Row(
-        children: items.map((spec) {
-          final selected = (current != null && current == spec.tab);
-          return Expanded(
-            child: _NavItem(
-              icon: selected ? spec.activeIcon : spec.inactiveIcon,
-              selected: selected,
-              showDot: spec.showDot && spec.tab == AppTab.notifications,
-              activeColor: activeColor,
-              inactiveColor: inactiveColor,
-              onTap: () {
-                if (selected) return;
+        children:
+            items.map((spec) {
+              final selected = (current != null && current == spec.tab);
+              return Expanded(
+                child: _NavItem(
+                  icon: selected ? spec.activeIcon : spec.inactiveIcon,
+                  selected: selected,
+                  showDot: spec.showDot && spec.tab == AppTab.notifications,
+                  activeColor: activeColor,
+                  inactiveColor: inactiveColor,
+                  onTap: () {
+                    if (selected) return;
 
-                if (spec.tab == AppTab.home) {
-                  // Home يرجع للجذر (أنظف)
-                  Navigator.of(context, rootNavigator: true)
-                      .pushNamedAndRemoveUntil('/home', (route) => false);
-                } else {
-                  Navigator.of(context, rootNavigator: true)
-                      .pushReplacementNamed(spec.tab.route);
-                }
-              },
-            ),
-          );
-        }).toList(),
+                    if (spec.tab == AppTab.home) {
+                      // Home يرجع للجذر (أنظف)
+                      Navigator.of(
+                        context,
+                        rootNavigator: true,
+                      ).pushNamedAndRemoveUntil('/home', (route) => false);
+                    } else {
+                      Navigator.of(
+                        context,
+                        rootNavigator: true,
+                      ).pushReplacementNamed(spec.tab.route);
+                    }
+                  },
+                ),
+              );
+            }).toList(),
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../widgets/app_scaffold.dart';
-import '../../widgets/bottom_nav.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   final Map<String, Object?> order;
@@ -9,9 +8,9 @@ class OrderDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customer = order['customer']?.toString() ?? 'غير معروف'; 
-    final item     = order['item']?.toString() ?? '—';
-    final qty      = int.tryParse('${order['qty']}') ?? 0;
+    final customer = order['customer']?.toString() ?? 'غير معروف';
+    final item = order['item']?.toString() ?? '—';
+    final qty = int.tryParse('${order['qty']}') ?? 0;
 
     return AppScaffold(
       currentTab: null,
@@ -37,7 +36,11 @@ class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  const _InfoRow({required this.icon, required this.label, required this.value});
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {

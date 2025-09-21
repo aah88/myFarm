@@ -146,8 +146,8 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
                                   isSelected
                                       ? [
                                         BoxShadow(
-                                          color: AppColors.green.withOpacity(
-                                            0.08,
+                                          color: AppColors.green.withValues(
+                                            alpha: 0.08,
                                           ),
                                           blurRadius: 4,
                                           offset: const Offset(0, 2),
@@ -215,7 +215,7 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
 
             // ==== Dropdown Menu for Grade Selection ====
             DropdownButtonFormField<String>(
-              value: dropdownValue,
+              initialValue: dropdownValue,
               borderRadius: BorderRadius.circular(12),
               dropdownColor: Colors.white,
               decoration: const InputDecoration(

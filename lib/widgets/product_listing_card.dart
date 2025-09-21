@@ -14,8 +14,9 @@ class ProductListingCard extends StatelessWidget {
   final double distance;
 
   final VoidCallback onAddToCart; // لزر الإضافة
-  final VoidCallback? onEdit;     // لزر التعديل (اختياري)
-  final VoidCallback? onDelete;   // 💡 جديد: اختياري، لإظهار زر الحذف أعلى البطاقة
+  final VoidCallback? onEdit; // لزر التعديل (اختياري)
+  final VoidCallback?
+  onDelete; // 💡 جديد: اختياري، لإظهار زر الحذف أعلى البطاقة
 
   final ListingCardAction action;
 
@@ -29,7 +30,7 @@ class ProductListingCard extends StatelessWidget {
     required this.distance,
     required this.onAddToCart,
     this.onEdit,
-    this.onDelete,                  // ليس إلزاميًا
+    this.onDelete, // ليس إلزاميًا
     this.action = ListingCardAction.add,
   });
 
@@ -51,7 +52,7 @@ class ProductListingCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -69,9 +70,18 @@ class ProductListingCard extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(6),
-                      child: _isNetwork
-                          ? Image.network(imageUrl, fit: BoxFit.contain, width: double.infinity)
-                          : Image.asset(imageUrl, fit: BoxFit.contain, width: double.infinity),
+                      child:
+                          _isNetwork
+                              ? Image.network(
+                                imageUrl,
+                                fit: BoxFit.contain,
+                                width: double.infinity,
+                              )
+                              : Image.asset(
+                                imageUrl,
+                                fit: BoxFit.contain,
+                                width: double.infinity,
+                              ),
                     ),
 
                     // 🗑️ يظهر فقط إن كان onDelete != null — أعلى يمين
@@ -91,7 +101,11 @@ class ProductListingCard extends StatelessWidget {
                                 width: 32,
                                 height: 32,
                                 child: Center(
-                                  child: Icon(Icons.delete_outline, size: 18, color: Color(0xFFD32F2F)),
+                                  child: Icon(
+                                    Icons.delete_outline,
+                                    size: 18,
+                                    color: Color(0xFFD32F2F),
+                                  ),
                                 ),
                               ),
                             ),
@@ -104,7 +118,10 @@ class ProductListingCard extends StatelessWidget {
                       bottom: 5,
                       left: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(6),
@@ -112,11 +129,18 @@ class ProductListingCard extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.star, size: 16, color: Color(0xFFFFC107)),
+                            const Icon(
+                              Icons.star,
+                              size: 16,
+                              color: Color(0xFFFFC107),
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               rating.toStringAsFixed(1),
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ],
                         ),
@@ -135,7 +159,11 @@ class ProductListingCard extends StatelessWidget {
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF70756B)),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF70756B),
+                  ),
                   textAlign: TextAlign.right,
                 ),
               ),
@@ -158,7 +186,9 @@ class ProductListingCard extends StatelessWidget {
                         child: InkWell(
                           customBorder: const CircleBorder(),
                           onTap: mainTap,
-                          child: Center(child: Icon(mainIcon, color: AppColors.green)),
+                          child: Center(
+                            child: Icon(mainIcon, color: AppColors.green),
+                          ),
                         ),
                       ),
                     ),
@@ -166,7 +196,10 @@ class ProductListingCard extends StatelessWidget {
                   const Spacer(),
                   Text(
                     AppConfig.formatPrice(price),
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ),

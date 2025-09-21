@@ -43,7 +43,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           children: [
             /// --- DELIVERY METHOD ---
             DropdownButtonFormField<String>(
-              value: _selectedDelivery,
+              initialValue: _selectedDelivery,
               borderRadius: BorderRadius.circular(12),
               hint: const Text("اختر وسيلة التوصيل"),
               decoration: const InputDecoration(
@@ -71,7 +71,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
 
             /// --- PAYMENT METHOD ---
             DropdownButtonFormField<String>(
-              value: _selectedPayment,
+              initialValue: _selectedPayment,
               borderRadius: BorderRadius.circular(12),
               dropdownColor: Colors.white,
               decoration: const InputDecoration(

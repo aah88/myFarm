@@ -250,7 +250,7 @@ class _LettersBar extends StatelessWidget {
                   border: Border.all(color: const Color(0xFFE8EBE6)),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
+                      color: Colors.black.withValues(alpha: 0.03),
                       blurRadius: 3,
                       offset: const Offset(0, 1),
                     ),
@@ -350,7 +350,6 @@ class _FadeInUp extends StatefulWidget {
     required this.child,
     this.duration = const Duration(milliseconds: 280),
     this.delay = Duration.zero,
-    super.key,
   });
 
   final Widget child;

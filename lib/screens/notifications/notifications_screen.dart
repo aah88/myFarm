@@ -108,9 +108,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               onPressed: _markAllRead,
             ),
           PopupMenuButton<String>(
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: 'clear', child: Text('مسح الكل')),
-            ],
+            itemBuilder:
+                (context) => [
+                  const PopupMenuItem(value: 'clear', child: Text('مسح الكل')),
+                ],
             onSelected: (v) {
               if (v == 'clear') {
                 setState(() => _items.clear());
@@ -119,33 +120,34 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
         ],
       ),
-      body: _items.isEmpty
-          ? const _EmptyState()
-          : RefreshIndicator(
-              onRefresh: _refresh,
-              child: ListView.builder(
-                padding: const EdgeInsets.only(bottom: 16),
-                itemCount: grouped.length,
-                itemBuilder: (context, index) {
-                  final entry = grouped[index];
-                  if (entry.isHeader) {
-                    return _SectionHeader(title: entry.header!);
-                  } else {
-                    final n = entry.notification!;
-                    return Dismissible(
-                      key: ValueKey(n.id),
-                      direction: DismissDirection.endToStart,
-                      background: _deleteBg(),
-                      onDismissed: (_) => _delete(n.id),
-                      child: _NotificationTile(
-                        n: n,
-                        onToggleRead: () => _toggleRead(n),
-                      ),
-                    );
-                  }
-                },
+      body:
+          _items.isEmpty
+              ? const _EmptyState()
+              : RefreshIndicator(
+                onRefresh: _refresh,
+                child: ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  itemCount: grouped.length,
+                  itemBuilder: (context, index) {
+                    final entry = grouped[index];
+                    if (entry.isHeader) {
+                      return _SectionHeader(title: entry.header!);
+                    } else {
+                      final n = entry.notification!;
+                      return Dismissible(
+                        key: ValueKey(n.id),
+                        direction: DismissDirection.endToStart,
+                        background: _deleteBg(),
+                        onDismissed: (_) => _delete(n.id),
+                        child: _NotificationTile(
+                          n: n,
+                          onToggleRead: () => _toggleRead(n),
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
     );
   }
 
@@ -187,11 +189,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       a.year == b.year && a.month == b.month && a.day == b.day;
 
   Widget _deleteBg() => Container(
-        color: Colors.red.withOpacity(0.1),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        alignment: Alignment.centerRight,
-        child: const Icon(Icons.delete_outline, color: Colors.red),
-      );
+    color: Colors.red.withValues(alpha: 0.1),
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    alignment: Alignment.centerRight,
+    child: const Icon(Icons.delete_outline, color: Colors.red),
+  );
 }
 
 class _RowEntry {
@@ -206,7 +208,7 @@ class _RowEntry {
 
 class _SectionHeader extends StatelessWidget {
   final String title;
-  const _SectionHeader({super.key, required this.title});
+  const _SectionHeader({required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -227,11 +229,7 @@ class _NotificationTile extends StatelessWidget {
   final AppNotification n;
   final VoidCallback onToggleRead;
 
-  const _NotificationTile({
-    super.key,
-    required this.n,
-    required this.onToggleRead,
-  });
+  const _NotificationTile({required this.n, required this.onToggleRead});
 
   @override
   Widget build(BuildContext context) {
@@ -252,11 +250,7 @@ class _NotificationTile extends StatelessWidget {
           fontWeight: n.isRead ? FontWeight.w500 : FontWeight.w800,
         ),
       ),
-      subtitle: Text(
-        n.body,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
+      subtitle: Text(n.body, maxLines: 2, overflow: TextOverflow.ellipsis),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -325,7 +319,11 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: const [
-            Icon(Icons.notifications_none_rounded, size: 64, color: Colors.grey),
+            Icon(
+              Icons.notifications_none_rounded,
+              size: 64,
+              color: Colors.grey,
+            ),
             SizedBox(height: 12),
             Text('لا توجد إشعارات حالياً'),
             SizedBox(height: 4),

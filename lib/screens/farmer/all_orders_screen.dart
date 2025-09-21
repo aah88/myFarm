@@ -85,6 +85,7 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
           );
         },
       ),
+      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }

@@ -25,7 +25,7 @@ class AppColors {
   static const Color gray100 = Color(0xFFF7F8F6);
   static const Color gray200 = Color(0xFFE8EBE6);
   static const Color gray400 = Color(0xFFB6BAB5);
-  static const Color text = Colors.black87; 
+  static const Color text = Colors.black87;
   static const Color danger = Color(0xFFEF574B);
   static const Color white = Colors.white;
 }
@@ -34,7 +34,7 @@ class AppColors {
 class Shadows {
   static List<BoxShadow> cardSm = [
     BoxShadow(
-      color: Colors.black.withOpacity(0.05),
+      color: Colors.black.withValues(alpha: 0.05),
       blurRadius: 6,
       offset: const Offset(0, 2),
     ),
@@ -42,7 +42,7 @@ class Shadows {
 
   static List<BoxShadow> cardXs = [
     BoxShadow(
-      color: Colors.black.withOpacity(0.03),
+      color: Colors.black.withValues(alpha: 0.03),
       blurRadius: 4,
       offset: const Offset(0, 1),
     ),

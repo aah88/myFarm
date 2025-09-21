@@ -171,7 +171,7 @@ class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
 /// Loading skeleton: shows grey boxes where tiles would be.
 /// Gives user a hint of layout while data loads.
 class _LoadingSkeleton extends StatelessWidget {
-  const _LoadingSkeleton({super.key});
+  const _LoadingSkeleton();
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +208,7 @@ class _LoadingSkeleton extends StatelessWidget {
 
 /// Friendly empty state
 class _EmptyState extends StatelessWidget {
-  const _EmptyState({super.key});
+  const _EmptyState();
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +224,7 @@ class _EmptyState extends StatelessWidget {
 
 /// Error card with message
 class _ErrorState extends StatelessWidget {
-  const _ErrorState({super.key, required this.message});
+  const _ErrorState({required this.message});
   final String message;
 
   @override
@@ -251,7 +251,6 @@ class _ErrorState extends StatelessWidget {
 /// to each tile with a subtle stagger.
 class _ResponsiveFadedGrid extends StatelessWidget {
   const _ResponsiveFadedGrid({
-    super.key,
     required this.products,
     required this.onTapProduct,
   });
@@ -308,7 +307,6 @@ class _FadeInUp extends StatefulWidget {
     required this.child,
     this.duration = const Duration(milliseconds: 280),
     this.delay = Duration.zero,
-    super.key,
   });
 
   final Widget child;

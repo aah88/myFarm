@@ -9,7 +9,7 @@ class TeaserCard extends StatelessWidget {
     this.leftBigText = '20% OFF',
     required this.rightImage,
     this.leftStart = AppColors.green,
-    this.leftEnd   = AppColors.green,
+    this.leftEnd = AppColors.green,
     this.height = 150,
     this.onTap,
   });
@@ -34,7 +34,7 @@ class TeaserCard extends StatelessWidget {
           border: Border.all(color: AppColors.gray200),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(.06),
+              color: Colors.black.withValues(alpha: .06),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -54,7 +54,10 @@ class TeaserCard extends StatelessWidget {
                     colors: [leftStart, leftEnd],
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,

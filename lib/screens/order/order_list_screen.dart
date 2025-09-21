@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/order/order_details_screen.dart';
 import '../../widgets/app_scaffold.dart';
-import '../../widgets/bottom_nav.dart';
 
 class OrderListScreen extends StatelessWidget {
   const OrderListScreen({super.key});
@@ -9,11 +8,12 @@ class OrderListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final orders = [
-      {'customer': 'سارة', 'item': 'تفاح',  'qty': 4},
+      {'customer': 'سارة', 'item': 'تفاح', 'qty': 4},
       {'customer': 'خالد', 'item': 'بطاطا', 'qty': 2},
     ];
 
-    return Scaffold(
+    return AppScaffold(
+      currentTab: null,
       appBar: AppBar(title: const Text('الطلبات')),
       body: ListView.separated(
         itemCount: orders.length,
@@ -37,6 +37,5 @@ class OrderListScreen extends StatelessWidget {
         },
       ),
     );
-
   }
 }

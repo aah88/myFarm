@@ -35,7 +35,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
     );
   }
 
-   void verifyCode() async {
+  void verifyCode() async {
     if (verificationId == null) {
       setState(() {
         _errorMessage = 'Please request verification code first.';
@@ -62,7 +62,9 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
   void _goToNextPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreenFarmer()),//ProductManagementScreen()
+      MaterialPageRoute(
+        builder: (context) => HomeScreenFarmer(),
+      ), //ProductManagementScreen()
     );
   }
 
@@ -75,23 +77,29 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
         child: Column(
           children: [
             Text('أدخل رقم الهاتف لتسجيل الدخول'),
-            SizedBox(height: 20), 
-            TextField(controller:   _phoneController, decoration: InputDecoration(labelText: 'رقم الهاتف')),
+            SizedBox(height: 20),
+            TextField(
+              controller: _phoneController,
+              decoration: InputDecoration(labelText: 'رقم الهاتف'),
+            ),
             SizedBox(height: 10),
             ElevatedButton(onPressed: sendCode, child: Text("Send Code")),
             SizedBox(height: 10),
-            TextField(controller: _codeController, decoration: InputDecoration(labelText: 'Verification code')),
+            TextField(
+              controller: _codeController,
+              decoration: InputDecoration(labelText: 'Verification code'),
+            ),
             ElevatedButton(onPressed: verifyCode, child: Text("Verify Code")),
             if (_errorMessage != null) ...[
-            const SizedBox(height: 16),
-            Text(
-              _errorMessage!,
-              style: const TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 16),
+              Text(
+                _errorMessage!,
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
+            ],
           ],
         ),
       ),

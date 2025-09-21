@@ -31,10 +31,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final priceStyle = Theme.of(
-      context,
-    ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700);
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(

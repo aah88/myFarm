@@ -51,7 +51,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(borderRadius: Borders.rSm),
           // ⬇️ خط أصغر ومتناسق
           textStyle: const TextStyle(
-            fontSize: 14,           // كان 15-16
+            fontSize: 14, // كان 15-16
             fontWeight: FontWeight.w600,
             height: 1.2,
           ),
@@ -76,7 +76,7 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           foregroundColor: AppColors.danger,
           textStyle: const TextStyle(
-            fontSize: 13,           // أصغر قليلًا للـ text buttons
+            fontSize: 13, // أصغر قليلًا للـ text buttons
             fontWeight: FontWeight.w600,
             height: 1.2,
           ),
@@ -90,19 +90,16 @@ class AppTheme {
           borderRadius: Borders.rSm,
           side: Borders.thin,
         ),
-        shadowColor: Colors.black.withOpacity(0.05),
+        shadowColor: Colors.black.withValues(alpha: 0.05),
         margin: EdgeInsets.zero,
       ),
 
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: const TextStyle(
           color: Color(0xFF91958E),
-        fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.bold,
         ),
-        hintStyle: const TextStyle(
-          color: Colors.grey,
-          fontSize: 14,
-        ),
+        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Color(0xFFE8EBE6), width: 1.5),
           borderRadius: BorderRadius.circular(10),
@@ -111,7 +108,10 @@ class AppTheme {
           borderSide: const BorderSide(color: AppColors.green, width: 2),
           borderRadius: BorderRadius.circular(10),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 10,
+        ),
       ),
     );
   }

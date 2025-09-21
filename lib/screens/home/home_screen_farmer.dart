@@ -32,12 +32,12 @@ class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
 
     Future.microtask(() {
       if (!mounted) return; // ✅ guard against context after dispose
+      //TODO Löschen AAH
+      final userProvider = context.read<UserProvider>();
+      userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
 
-      // final userProvider = context.read<UserProvider>();
-      // userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
-
-      // final cartProvider = context.read<CartProvider>();
-      // cartProvider.loadCart('TeGmDtcpChIKwJYGF3zTcD804o2');
+      final cartProvider = context.read<CartProvider>();
+      cartProvider.loadCart('TeGmDtcpChIKwJYGF3zTcD804o2');
     });
   }
 
