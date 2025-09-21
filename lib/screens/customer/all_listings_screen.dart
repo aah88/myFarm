@@ -63,8 +63,6 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
             LettersBar(
               selectedLetter: _selectedLetter,
               onLetterSelected: (letter) => setState(() => _selectedLetter = letter),
-              activeTextColor: AppColors.green,                 // نص الحرف الفعّال أخضر
-              selectedBgColor: AppColors.green.withOpacity(0.08), // خلفية فاتحة (اختياري)
             ),
             const SizedBox(height: 12),
 
