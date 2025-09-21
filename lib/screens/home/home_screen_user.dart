@@ -47,11 +47,12 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
     // تهيئة مزودي المستخدم والسلة
     Future.microtask(() {
       if (!mounted) return;
-      // final userProvider = context.read<UserProvider>();
-      // userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
+      //TODO AAH
+      final userProvider = context.read<UserProvider>();
+      userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
 
-      // final cartProvider = context.read<CartProvider>();
-      // cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
+      final cartProvider = context.read<CartProvider>();
+      cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
     });
   }
 

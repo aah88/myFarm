@@ -9,6 +9,7 @@ import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import '../../providers/cart_provider.dart';
 import '../../services/listing_services.dart';
 import '../../widgets/product_listing_card.dart'; // ✅ الكارت الجديد
+import 'package:flutter_application_1/widgets/letters_bar.dart';
 
 class AllListingsScreen extends StatefulWidget {
   const AllListingsScreen({super.key});
@@ -19,9 +20,9 @@ class AllListingsScreen extends StatefulWidget {
 
 class _AllListingsScreenState extends State<AllListingsScreen> {
   final ListingService _firebaseListingService = ListingService();
+  final String farmerImage ='https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
 
-  final String farmerImage =
-      'https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
+  String _selectedLetter = defaultSelectedLetter;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +59,15 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
 
             const SizedBox(height: 16),
 
+            // 🔠 Letters Bar
+            LettersBar(
+              selectedLetter: _selectedLetter,
+              onLetterSelected: (letter) => setState(() => _selectedLetter = letter),
+              activeTextColor: AppColors.green,                 // نص الحرف الفعّال أخضر
+              selectedBgColor: AppColors.green.withOpacity(0.08), // خلفية فاتحة (اختياري)
+            ),
+            const SizedBox(height: 12),
+
             // 🛒 Product Grid
             Expanded(
               child: FutureBuilder<List<FullListing>>(
@@ -70,32 +80,39 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(child: Text('لا توجد منتجات متاحة'));
                   }
-
+          
                   final listings = snapshot.data!;
+                  final filtered = filterBySelectedLetter<FullListing>(
+                    listings,
+                    (l) => l.productName,
+                    _selectedLetter,
+                  );
+
+                  // حالة عدم وجود نتائج للحرف المختار
+                  if (filtered.isEmpty) {
+                    return const Center(child: Text('لا توجد منتجات بهذا الحرف.'));
+                  }
+                                    
                   return Directionality(
                     textDirection: TextDirection.rtl,
                     child: GridView.builder(
                       padding: const EdgeInsets.only(top: 4),
-                      gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent:
-                                250, // 👈 أقصى عرض للكارت الواحد
-                            childAspectRatio:
-                                0.9, // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
+                      gridDelegate:const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 250, // 👈 أقصى عرض للكارت الواحد
+                            childAspectRatio: 0.9, // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
                           ),
-                      itemCount: listings.length,
+                      itemCount: filtered.length,
                       itemBuilder: (context, index) {
-                        final listing = listings[index];
+                        final listing = filtered[index];
                         return ProductListingCard(
                           imageUrl: listing.productImageUrl,
                           title: listing.productName,
                           rating: listing.rating,
                           price: listing.price,
                           farmerName: listing.farmerName,
-                          distance:
-                              5.2, // replace with actual distance müss berechnet werden
+                          distance:5.2, // replace with actual distance müss berechnet werden
                           onAddToCart: () {
                             context.read<CartProvider>().addItem(
                               CartItem(
