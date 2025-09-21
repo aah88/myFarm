@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../models/product_model.dart';
 import '../../services/product_services.dart';
 import '../../widgets/product_card.dart';
+import '../../widgets/letters_bar.dart';
 import 'choose_product_screen.dart';
 import '../../providers/listing_provider.dart';
 
@@ -24,49 +25,9 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
   final ProductService _firebaseProductService = ProductService();
   late Future<List<Product>> _productsFuture;
 
-  /// الحروف العربية + "الكل"
-  static const List<String> _letters = [
-    'أ',
-    'ب',
-    'ت',
-    'ث',
-    'ج',
-    'ح',
-    'خ',
-    'د',
-    'ذ',
-    'ر',
-    'ز',
-    'س',
-    'ش',
-    'ص',
-    'ض',
-    'ط',
-    'ظ',
-    'ع',
-    'غ',
-    'ف',
-    'ق',
-    'ك',
-    'ل',
-    'م',
-    'ن',
-    'ه',
-    'و',
-    'ي',
-    'الكل',
-  ];
-
-  String _selectedLetter = 'الكل';
+  String _selectedLetter = defaultSelectedLetter; 
   List<Product> _allRootProducts = [];
 
-  /// لتطبيع أول حرف للمقارنة
-  final Map<String, String> _charMap = const {
-    'أ': 'ا',
-    'إ': 'ا',
-    'آ': 'ا',
-    'ى': 'ي',
-  };
 
   @override
   void initState() {
@@ -74,17 +35,6 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
     _productsFuture = _firebaseProductService.getProductsByCategory(
       widget.categoryId,
     );
-  }
-
-  String _normalize(String s) {
-    if (s.trim().isEmpty) return '';
-    final first = s.trim()[0];
-    return _charMap[first] ?? first;
-  }
-
-  bool _matchesLetter(String name) {
-    if (_selectedLetter == 'الكل') return true;
-    return _normalize(name) == _normalize(_selectedLetter);
   }
 
   @override
@@ -126,12 +76,14 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
           }
 
           if (_allRootProducts.isEmpty) {
-            _allRootProducts =
-                snapshot.data!.where((p) => p.parentProduct.isEmpty).toList();
+            _allRootProducts = snapshot.data!.where((p) => p.parentProduct.isEmpty).toList();
           }
 
-          final products =
-              _allRootProducts.where((p) => _matchesLetter(p.name)).toList();
+          final products = filterBySelectedLetter<Product>(
+            _allRootProducts,
+            (p) => p.name,
+            _selectedLetter,
+          );
 
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
@@ -169,11 +121,9 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(
-                  child: _LettersBar(
-                    letters: _letters,
+                  child: LettersBar(
                     selectedLetter: _selectedLetter,
-                    onLetterSelected:
-                        (letter) => setState(() => _selectedLetter = letter),
+                    onLetterSelected: (letter) => setState(() => _selectedLetter = letter),
                   ),
                 ),
               ),
@@ -209,71 +159,6 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
   }
 }
 
-// ====== بقية الويدجتات المساعدة كما هي ======
-
-class _LettersBar extends StatelessWidget {
-  final List<String> letters;
-  final String selectedLetter;
-  final ValueChanged<String> onLetterSelected;
-
-  const _LettersBar({
-    required this.letters,
-    required this.selectedLetter,
-    required this.onLetterSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const double letterSize = 37;
-    const double allWidth = 45;
-
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Wrap(
-        spacing: 6,
-        runSpacing: 6,
-        children: [
-          for (final letter in letters)
-            InkWell(
-              onTap: () => onLetterSelected(letter),
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                width: letter == 'الكل' ? allWidth : letterSize,
-                height: letterSize,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color:
-                      selectedLetter == letter
-                          ? const Color(0xFFECF1E8)
-                          : Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFFE8EBE6)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.03),
-                      blurRadius: 3,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
-                ),
-                child: Text(
-                  letter,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight:
-                        selectedLetter == letter
-                            ? FontWeight.bold
-                            : FontWeight.w500,
-                    color: const Color(0xFF70756B),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
 
 class _EmptyState extends StatelessWidget {
   const _EmptyState({super.key});
