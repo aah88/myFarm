@@ -3,10 +3,10 @@ import '../../services/auth_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  SignUpScreenState createState() => SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _nameController = TextEditingController();
@@ -34,15 +34,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
 
     setState(() => _loading = false);
-    if(!mounted) return;
+    if (!mounted) return;
     if (error == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('تم التسجيل! تحقق من بريدك الإلكتروني للتأكيد.')),
+        SnackBar(
+          content: Text('تم التسجيل! تحقق من بريدك الإلكتروني للتأكيد.'),
+        ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
     }
   }
 
@@ -56,12 +58,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(controller: _usernameController, decoration: InputDecoration(labelText: 'اسم المستخدم')),
-              TextFormField(controller: _nameController, decoration: InputDecoration(labelText: 'اسم')),
-              TextFormField(controller: _emailController, decoration: InputDecoration(labelText: 'البريد الإلكتروني')),
-              TextFormField(controller: _passwordController, decoration: InputDecoration(labelText: 'كلمة المرور'), obscureText: true),
-              TextFormField(controller: _addressController, decoration: InputDecoration(labelText: 'العنوان')),
-              TextFormField(controller: _phoneController, decoration: InputDecoration(labelText: 'رقم الهاتف')),
+              TextFormField(
+                controller: _usernameController,
+                decoration: InputDecoration(labelText: 'اسم المستخدم'),
+              ),
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'اسم'),
+              ),
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(labelText: 'البريد الإلكتروني'),
+              ),
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(labelText: 'كلمة المرور'),
+                obscureText: true,
+              ),
+              TextFormField(
+                controller: _addressController,
+                decoration: InputDecoration(labelText: 'العنوان'),
+              ),
+              TextFormField(
+                controller: _phoneController,
+                decoration: InputDecoration(labelText: 'رقم الهاتف'),
+              ),
               SizedBox(height: 20),
               _loading
                   ? CircularProgressIndicator()

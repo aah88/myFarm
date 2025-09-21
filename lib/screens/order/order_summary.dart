@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:flutter_application_1/models/order_status.dart';
@@ -214,24 +216,30 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     (_selectedDelivery == null || _selectedPayment == null)
                         ? null
                         : () async {
-                          //TODO AAH
+                          final ctx = context;
+                          // Create order
+                          final userId = ctx.read<UserProvider>().userId!;
                           await OrderService().createOrder(
                             cart,
                             _selectedDelivery!,
                             _selectedPayment!,
                             OrderStatus.pending,
-                            context.read<UserProvider>().userId!,
+                            userId,
                           );
+
+                          // If the widget got disposed while waiting, stop here
+                          if (!mounted) return;
 
                           // 🔹 empty the cart after order confirmation
                           cartProvider.clearCart();
 
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          // Show confirmation
+                          ScaffoldMessenger.of(ctx).showSnackBar(
                             const SnackBar(content: Text("✅ تم تأكيد الطلب")),
                           );
 
-                          Navigator.pop(context); // go back after confirmation
+                          // Navigate back
+                          Navigator.pop(ctx);
                         },
                 child: const Text(
                   "تأكيد الطلب",

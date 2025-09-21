@@ -4,10 +4,10 @@ import '../home/home_screen_farmer.dart';
 
 class PhoneAuthPage extends StatefulWidget {
   @override
-  _PhoneAuthPageState createState() => _PhoneAuthPageState();
+  PhoneAuthPageState createState() => PhoneAuthPageState();
 }
 
-class _PhoneAuthPageState extends State<PhoneAuthPage> {
+class PhoneAuthPageState extends State<PhoneAuthPage> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
 
