@@ -47,11 +47,11 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
     // تهيئة مزودي المستخدم والسلة
     Future.microtask(() {
       if (!mounted) return;
-      // final userProvider = context.read<UserProvider>();
-      // userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
+      final userProvider = context.read<UserProvider>();
+      userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
 
-      // final cartProvider = context.read<CartProvider>();
-      // cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
+      final cartProvider = context.read<CartProvider>();
+      cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
     });
   }
 
@@ -282,6 +282,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                             CartItem(
                               listingId: listing.id,
                               farmerId: listing.userId,
+                              price: listing.price,
                               qty: 1,
                             ),
                           );

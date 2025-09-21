@@ -36,6 +36,7 @@ class CartProvider extends ChangeNotifier {
       updatedItems[index] = CartItem(
         listingId: updatedItems[index].listingId,
         farmerId: updatedItems[index].farmerId,
+        price: updatedItems[index].price,
         qty: updatedItems[index].qty + item.qty,
       );
     } else {
@@ -73,12 +74,13 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  void updateQty(String listingId, String farmerId, int qty) {
+  void updateQty(String listingId, String farmerId, double price, int qty) {
     final index = _cart.items.indexWhere((item) => item.listingId == listingId);
     if (index != -1) {
       _cart.items[index] = CartItem(
         listingId: listingId,
         farmerId: farmerId,
+        price: price,
         qty: qty,
       );
       notifyListeners();

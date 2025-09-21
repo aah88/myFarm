@@ -102,6 +102,7 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                               CartItem(
                                 listingId: listing.id,
                                 farmerId: listing.userId,
+                                price: listing.price,
                                 qty: 1,
                               ),
                             );

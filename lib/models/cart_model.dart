@@ -37,11 +37,13 @@ class Cart {
 class CartItem {
   final String listingId;
   final String farmerId;
+  final double price;
   final int qty;
 
   CartItem({
     required this.listingId,
     required this.farmerId,
+    required this.price,
     required this.qty,
   });
 
@@ -49,15 +51,21 @@ class CartItem {
     return CartItem(
       listingId: data['listingId'] ?? '',
       farmerId: data['farmerId'],
+      price: data['price'] ?? 0.0,
       qty: (data['qty'] ?? 0).toInt(),
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {"listingId": listingId, farmerId: "farmerId", "qty": qty};
+    return {
+      "listingId": listingId,
+      "price": price,
+      farmerId: "farmerId",
+      "qty": qty,
+    };
   }
 
   factory CartItem.empty() {
-    return CartItem(listingId: '', farmerId: '', qty: 0);
+    return CartItem(listingId: '', farmerId: '', price: 0.0, qty: 0);
   }
 }

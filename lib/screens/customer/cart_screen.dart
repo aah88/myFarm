@@ -201,6 +201,7 @@ class _CartScreenState extends State<CartScreen> {
                                             cartProvider.updateQty(
                                               cartItem.listingId,
                                               cartItem.farmerId,
+                                              cartItem.price,
                                               cartItem.qty - 1,
                                             );
                                           } else {
@@ -240,6 +241,7 @@ class _CartScreenState extends State<CartScreen> {
                                             () => cartProvider.updateQty(
                                               cartItem.listingId,
                                               cartItem.farmerId,
+                                              cartItem.price,
                                               cartItem.qty + 1,
                                             ),
                                         padding: EdgeInsets.zero,

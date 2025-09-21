@@ -110,26 +110,32 @@ class Order {
 class OrderItem {
   final String listingId;
   final int qty;
+  final double price;
 
-  OrderItem({required this.listingId, required this.qty});
+  OrderItem({required this.listingId, required this.price, required this.qty});
 
   factory OrderItem.fromMap(Map<String, dynamic> data) {
     return OrderItem(
       listingId: data['listingId'] ?? '',
       qty: (data['qty'] ?? 0).toInt(),
+      price: data['price'] ?? 0.0,
     );
   }
 
   factory OrderItem.fromCartItem(CartItem cartItem) {
-    return OrderItem(listingId: cartItem.listingId, qty: cartItem.qty);
+    return OrderItem(
+      listingId: cartItem.listingId,
+      price: cartItem.price,
+      qty: cartItem.qty,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return {"listingId": listingId, "qty": qty};
+    return {"listingId": listingId, "price": price, "qty": qty};
   }
 
   factory OrderItem.empty() {
-    return OrderItem(listingId: '', qty: 0);
+    return OrderItem(listingId: '', price: 0.0, qty: 0);
   }
 }
 
@@ -141,11 +147,16 @@ extension CartToOrder on Cart {
     required OrderStatus status,
     required userId,
   }) {
+    //The order as placed by the user can include many lissting, each belong a farmer,
+    //the System will internally split this order into 2, one for each farmer.
+    //the time of placing the order will be the same for all and it will be used to
+    //
     final Map<String, List<CartItem>> groupedByFarmer = {};
     final List<Order> orders = [];
     for (final item in items) {
       groupedByFarmer.putIfAbsent(item.farmerId, () => []).add(item);
     }
+    final timeOfOrder = Timestamp.now();
     groupedByFarmer.forEach((farmerId, cartItems) {
       orders.add(
         Order(
@@ -159,7 +170,7 @@ extension CartToOrder on Cart {
           paymentMeanId: paymentMeanId,
           deliveryMeanId: deliveryMeanId,
           status: status,
-          startDate: Timestamp.now(),
+          startDate: timeOfOrder,
         ),
       );
     });
