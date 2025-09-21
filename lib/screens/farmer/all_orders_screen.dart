@@ -62,7 +62,7 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
                         return ListTile(
                           title: Text("Order #${order.id}"),
                           subtitle: Text(
-                            "${order.items.length} items • Status: ${order.status.name} • Date: ${order.startDate.toDate().toString().split(' ').first}",
+                            "الإجمالي•: ${order.totalPrice()} ل.س• حالة الطلب: ${order.status.name} • تاريخ: ${order.startDate.toDate().toString().split(' ').first}",
                           ),
                         );
                       },
@@ -72,10 +72,8 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
                               return ListTile(
                                 leading: const Icon(Icons.shopping_cart),
                                 title: Text(item.listingId),
-                                subtitle: Text("x${item.qty}"),
-                                trailing: Text(
-                                  "22", //"$${item.price.toStringAsFixed(2)}",
-                                ),
+                                subtitle: Text("${item.qty}"),
+                                trailing: Text("${item.price}"),
                               );
                             }).toList(),
                       ),

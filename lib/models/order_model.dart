@@ -105,6 +105,14 @@ class Order {
       startDate: startDate ?? this.startDate,
     );
   }
+
+  double totalPrice() {
+    double total = 0;
+    for (var item in items) {
+      total += (item.price * item.qty);
+    }
+    return total;
+  }
 }
 
 class OrderItem {
