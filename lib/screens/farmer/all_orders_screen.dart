@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
 
 import '../../services/order_services.dart';
-import '../../models/order_model.dart'; // ✅ الكارت الجديد
+import '../../models/order_model.dart';
 
 class AllOrdersFarmerScreen extends StatefulWidget {
   const AllOrdersFarmerScreen({super.key});
@@ -15,8 +15,7 @@ class AllOrdersFarmerScreen extends StatefulWidget {
 }
 
 class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
-  final OrderService _orderService =
-      OrderService(); // wrapper for getAllOrders()
+  final OrderService _orderService = OrderService();
   final List<String> _expandedOrderIds = [];
 
   @override
@@ -42,10 +41,10 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
 
           return SingleChildScrollView(
             child: ExpansionPanelList(
-              expansionCallback: (index, isExpanded) {
+              expansionCallback: (index, _) {
                 setState(() {
                   final orderId = orders[index].id;
-                  if (isExpanded) {
+                  if (_expandedOrderIds.contains(orderId)) {
                     _expandedOrderIds.remove(orderId);
                   } else {
                     _expandedOrderIds.add(orderId);
@@ -62,7 +61,7 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
                         return ListTile(
                           title: Text("Order #${order.id}"),
                           subtitle: Text(
-                            "الإجمالي•: ${order.totalPrice()} ل.س• حالة الطلب: ${order.status.name} • تاريخ: ${order.startDate.toDate().toString().split(' ').first}",
+                            "الإجمالي: ${order.totalPrice()} ل.س • حالة: ${order.status.name} • تاريخ: ${order.startDate.toDate().toString().split(' ').first}",
                           ),
                         );
                       },
@@ -72,8 +71,8 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
                               return ListTile(
                                 leading: const Icon(Icons.shopping_cart),
                                 title: Text(item.listingId),
-                                subtitle: Text("${item.qty}"),
-                                trailing: Text("${item.price}"),
+                                subtitle: Text("الكمية: ${item.qty}"),
+                                trailing: Text("${item.price} ل.س"),
                               );
                             }).toList(),
                       ),
