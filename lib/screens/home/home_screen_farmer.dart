@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
+import '../farmer/incoming_new_orders.dart';
 import '../product/choose_product_category_screen.dart';
 import '../../services/product_services.dart';
 
@@ -131,7 +132,9 @@ class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => AllListingsScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => AllNewOrdersFarmerScreen(),
+                    ),
                   );
                 },
               ),

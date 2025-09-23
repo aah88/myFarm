@@ -44,6 +44,24 @@ class OrderService {
         .toList();
   }
 
+  Future<List<Order>> getOnlyNewFarmerSellOrders(String farmerId) async {
+    final snapshot =
+        await _db
+            .collection('order')
+            .where('farmerId', isEqualTo: farmerId)
+            .get();
+
+    return snapshot.docs
+        .map((doc) => Order.fromMap(doc.data(), doc.id))
+        .where(
+          (order) =>
+              order.status != OrderStatus.completed &&
+              order.status != OrderStatus.failed &&
+              order.status != OrderStatus.cancelled,
+        )
+        .toList();
+  }
+
   Future<List<Order>> getAllFarmerSellOrders(String farmerId) async {
     final snapshot =
         await _db

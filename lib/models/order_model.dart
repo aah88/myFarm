@@ -145,6 +145,9 @@ class OrderItem {
   factory OrderItem.empty() {
     return OrderItem(listingId: '', price: 0.0, qty: 0);
   }
+  double totalItemPrice() {
+    return qty * price;
+  }
 }
 
 //Extension

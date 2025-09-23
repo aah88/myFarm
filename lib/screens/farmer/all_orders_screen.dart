@@ -72,7 +72,9 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
                                 leading: const Icon(Icons.shopping_cart),
                                 title: Text(item.listingId),
                                 subtitle: Text("الكمية: ${item.qty}"),
-                                trailing: Text("${item.price} ل.س"),
+                                trailing: Text(
+                                  "الإجمالي: ${item.totalItemPrice()} ل.س",
+                                ),
                               );
                             }).toList(),
                       ),
