@@ -13,16 +13,17 @@ import '../../providers/listing_provider.dart';
 import '../../widgets/bottom_nav.dart';
 import 'package:flutter_application_1/widgets/section_header.dart';
 
-class ChooseProductScreen extends StatefulWidget {
+class ChooseProductTypeScreen extends StatefulWidget {
   final String categoryId; // ID of the selected category
 
-  const ChooseProductScreen({required this.categoryId, super.key});
+  const ChooseProductTypeScreen({required this.categoryId, super.key});
 
   @override
-  State<ChooseProductScreen> createState() => _ChooseProductScreenState();
+  State<ChooseProductTypeScreen> createState() =>
+      _ChooseProductTypeScreenState();
 }
 
-class _ChooseProductScreenState extends State<ChooseProductScreen> {
+class _ChooseProductTypeScreenState extends State<ChooseProductTypeScreen> {
   final ProductService _firebaseProductService = ProductService();
   late Future<List<Product>> _productsFuture;
 
@@ -192,9 +193,8 @@ class _ResponsiveFadedGrid extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (context) => ChooseSubProductScreen(
-                            parentProductId: product.id,
-                          ),
+                          (context) =>
+                              ChooseProductScreen(parentProductId: product.id),
                     ),
                   );
                 },

@@ -78,7 +78,8 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ChooseProductScreen(categoryId: cat.id),
+                      builder:
+                          (_) => ChooseProductTypeScreen(categoryId: cat.id),
                     ),
                   );
                 },

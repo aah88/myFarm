@@ -15,8 +15,8 @@ import 'choose_product_unit_screen.dart';
 /// - Uses a responsive grid that adapts columns to screen width.
 /// - AnimatedSwitcher to transition between Loading / Empty / Grid states.
 /// - Each grid tile fades in and slides up slightly (staggered).
-class ChooseSubProductScreen extends StatefulWidget {
-  const ChooseSubProductScreen({
+class ChooseProductScreen extends StatefulWidget {
+  const ChooseProductScreen({
     super.key,
     required this.parentProductId,
     this.firebaseProductService, // optional DI for tests
@@ -26,10 +26,10 @@ class ChooseSubProductScreen extends StatefulWidget {
   final ProductService? firebaseProductService;
 
   @override
-  State<ChooseSubProductScreen> createState() => _ChooseSubProductScreenState();
+  State<ChooseProductScreen> createState() => _ChooseProductScreenState();
 }
 
-class _ChooseSubProductScreenState extends State<ChooseSubProductScreen> {
+class _ChooseProductScreenState extends State<ChooseProductScreen> {
   late final ProductService _firebaseProductService =
       widget.firebaseProductService ?? ProductService();
 
