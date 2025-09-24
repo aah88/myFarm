@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/customer/listing_detail_screen.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
 
@@ -102,30 +103,42 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final listing = filtered[index];
-                        return ProductListingCard(
-                          imageUrl: listing.productImageUrl,
-                          title: listing.productName,
-                          rating: listing.rating,
-                          price: listing.price,
-                          farmerName: listing.farmerName,
-                          distance:5.2, // replace with actual distance müss berechnet werden
-                          onAddToCart: () {
-                            context.read<CartProvider>().addItem(
-                              CartItem(
-                                listingId: listing.id,
-                                farmerId: listing.userId,
-                                price: listing.price,
-                                qty: 1,
-                              ),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  "${listing.productName} تمت إضافته إلى السلة",
-                                ),
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ProductDetailScreen(),
                               ),
                             );
                           },
+                          child: ProductListingCard(
+                            imageUrl: listing.productImageUrl,
+                            title: listing.productName,
+                            rating: listing.rating,
+                            price: listing.price,
+                            farmerName: listing.farmerName,
+                            distance:
+                                5.2, // replace with actual distance müss berechnet werden
+                            onAddToCart: () {
+                              context.read<CartProvider>().addItem(
+                                CartItem(
+                                  listingId: listing.id,
+                                  farmerId: listing.userId,
+                                  price: listing.price,
+                                  qty: 1,
+                                ),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "${listing.productName} تمت إضافته إلى السلة",
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         );
                       },
                       childCount: filtered.length,
