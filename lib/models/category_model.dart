@@ -5,38 +5,30 @@ class ProductCategory {
   final String name;
   final String imageUrl;
 
-
-  
-ProductCategory({required this.id,
+  ProductCategory({
+    required this.id,
     required this.name,
     required this.imageUrl,
-    });
+  });
 
   factory ProductCategory.fromMap(Map<String, dynamic> data, String id) {
-    return 
-ProductCategory(
+    return ProductCategory(
       id: id,
       name: data['name'] ?? '',
-      imageUrl: data['imageUrl'] ?? '',
-      
+      imageUrl: data['imageUrl'] ?? 'lib/assets/images/placeholder.webp',
     );
   }
 
-   factory ProductCategory.fromFirestore(DocumentSnapshot doc) {
+  factory ProductCategory.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return ProductCategory(
       id: doc.id,
       name: data['name'] ?? '',
-      imageUrl: data['imageUrl'] ?? '',
-
+      imageUrl: data['imageUrl'] ?? 'lib/assets/images/placeholder.webp',
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'id':id,
-      'name': name,
-      'imageUrl':imageUrl
-    };
+    return {'id': id, 'name': name, 'imageUrl': imageUrl};
   }
 }

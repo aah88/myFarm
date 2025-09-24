@@ -25,7 +25,9 @@ class Product {
       description: data['description'] ?? '',
       category: ProductCategory.fromMap(data['category'], id),
       parentProduct: data['parent_product'] ?? '', // may be null
-      imageUrl: data['imageUrl'] ?? '', // may be null
+      imageUrl:
+          data['imageUrl'] ??
+          'lib/assets/images/placeholder.webp', // may be null
     );
   }
 
@@ -40,7 +42,8 @@ class Product {
         data['category']['id'],
       ),
       parentProduct: data['parent_product'] ?? '', // optional
-      imageUrl: data['imageUrl'] ?? '', // optional
+      imageUrl:
+          data['imageUrl'] ?? 'lib/assets/images/placeholder.webp', // optional
     );
   }
 

@@ -10,7 +10,6 @@ class FullListing {
   final String productName;
   final String productImageUrl;
   final int minimumQty;
-  
 
   FullListing({
     required this.id,
@@ -23,27 +22,33 @@ class FullListing {
     required this.rating,
     required this.productName,
     required this.productImageUrl,
-    required this.minimumQty
+    required this.minimumQty,
   });
 
   /// Optional: create from Firestore data
-  factory FullListing.fromMap(Map<String, dynamic> listingData, Map<String, dynamic> productData, Map<String, dynamic> userData, String id) {
+  factory FullListing.fromMap(
+    Map<String, dynamic> listingData,
+    Map<String, dynamic> productData,
+    Map<String, dynamic> userData,
+    String id,
+  ) {
     return FullListing(
       id: id,
       userId: listingData['userId'] ?? '',
-      unit:listingData['unit']??'',
+      unit: listingData['unit'] ?? '',
       farmerName: userData['name'] ?? '',
       minimumQty: listingData['minimumQty'] ?? 0,
       productId: listingData['productId'] ?? '',
       qty: listingData['qty'] ?? 0,
       price: listingData['price'] ?? 0.0,
-      rating: listingData['rating']?? 0.0,
+      rating: listingData['rating'] ?? 0.0,
       productName: productData['name'] ?? '',
-      productImageUrl: productData['imageUrl'] ?? '',
+      productImageUrl:
+          productData['imageUrl'] ?? 'lib/assets/images/placeholder.webp',
     );
   }
 
- factory FullListing.empty() {
+  factory FullListing.empty() {
     return FullListing(
       id: '',
       productId: '',
@@ -58,7 +63,7 @@ class FullListing {
       productImageUrl: '',
     );
   }
-    FullListing copyWith({
+  FullListing copyWith({
     String? id,
     String? userId,
     String? productId,

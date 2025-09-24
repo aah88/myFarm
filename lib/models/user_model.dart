@@ -4,15 +4,16 @@ class AppUser {
   final String id;
   final String name;
   final String username;
-  final String email; 
-   final String address;
+  final String email;
+  final String address;
   final String phone;
   final double rating;
   final String profileImage;
   final bool isFarmer;
-  final DateTime  createdAt;
+  final DateTime createdAt;
 
-  AppUser({required this.id,
+  AppUser({
+    required this.id,
     required this.name,
     required this.username,
     required this.email,
@@ -20,22 +21,23 @@ class AppUser {
     required this.phone,
     required this.createdAt,
     required this.rating,
-     required this.isFarmer,
-    required this.profileImage
-    });
+    required this.isFarmer,
+    required this.profileImage,
+  });
 
   factory AppUser.fromMap(Map<String, dynamic> data, String id) {
     return AppUser(
       id: id,
-      name: data['name']??'',
+      name: data['name'] ?? '',
       username: data['username'] ?? '',
-      email: data['email']?? '',
-      address: data['address']?? '',
-      phone: data['phone']?? '',
-      rating: data['rating']??0.0,
-      profileImage: data['profileImage']??'',
-      isFarmer: data['isFarmer']??false,
-      createdAt:data['createdAt'].toDate()?? FieldValue.serverTimestamp(),
+      email: data['email'] ?? '',
+      address: data['address'] ?? '',
+      phone: data['phone'] ?? '',
+      rating: data['rating'] ?? 0.0,
+      profileImage:
+          data['profileImage'] ?? 'lib/assets/images/placeholder.webp',
+      isFarmer: data['isFarmer'] ?? false,
+      createdAt: data['createdAt'].toDate() ?? FieldValue.serverTimestamp(),
     );
   }
 
@@ -48,18 +50,17 @@ class AppUser {
       'phone': phone,
       'createdAt': createdAt,
       'profileImage': profileImage,
-      'rating':rating,
-      'isFarmer':isFarmer
-
+      'rating': rating,
+      'isFarmer': isFarmer,
     };
   }
 
-   factory AppUser.empty() {
+  factory AppUser.empty() {
     return AppUser(
-      name:'',
+      name: '',
       id: '',
       email: '',
-      username:'',
+      username: '',
       address: '',
       phone: '',
       rating: 0.0,
