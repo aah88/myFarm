@@ -43,6 +43,21 @@ class FullListing {
     );
   }
 
+ factory FullListing.empty() {
+    return FullListing(
+      id: '',
+      productId: '',
+      farmerName: '',
+      userId: '',
+      unit: '',
+      qty: 0,
+      price: 0.0,
+      rating: 0,
+      minimumQty: 0,
+      productName: '',
+      productImageUrl: '',
+    );
+  }
     FullListing copyWith({
     String? id,
     String? userId,

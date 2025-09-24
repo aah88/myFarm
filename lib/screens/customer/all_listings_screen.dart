@@ -10,99 +10,97 @@ import '../../providers/cart_provider.dart';
 import '../../services/listing_services.dart';
 import '../../widgets/product_listing_card.dart'; // ✅ الكارت الجديد
 import 'package:flutter_application_1/widgets/letters_bar.dart';
+import 'package:flutter_application_1/widgets/section_header.dart'; 
 
 class AllListingsScreen extends StatefulWidget {
-  const AllListingsScreen({super.key});
+  
+  const AllListingsScreen({super.key, this.categoryId});
+  final String? categoryId; // ID of the selected category
 
   @override
   State<AllListingsScreen> createState() => _AllListingsScreenState();
 }
 
 class _AllListingsScreenState extends State<AllListingsScreen> {
+
   final ListingService _firebaseListingService = ListingService();
   final String farmerImage ='https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
 
   String _selectedLetter = defaultSelectedLetter;
 
+    late Future<List<FullListing>> _fullListingFuture;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _fullListingFuture = widget.categoryId == null ?  _firebaseListingService.getFullListings(): _firebaseListingService.getFullListingsByCategory(widget.categoryId!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("كل المنتجات")),
-      body: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            // 🌿 Welcome Section
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.green,
-                borderRadius: BorderRadius.circular(12),
+      appBar: AppBar(title: const Text("كل المنتجات",style: TextStyle(color: AppColors.green),)),
+      body: FutureBuilder<List<FullListing>>(
+        future: _fullListingFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('حدث خطأ: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('لا توجد منتجات متاحة'));
+          }
+
+          final listings = snapshot.data!;
+          final filtered = filterBySelectedLetter<FullListing>(
+            listings,
+            (l) => l.productName,
+            _selectedLetter,
+          );
+
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+
+              // 🏷️ العنوان القابل لإعادة الاستخدام
+              const SliverSectionHeader(
+                title: 'اختر منتجك بسهولة:',
+                subtitle: 'استخدم شريط الحروف لتصفية القائمة و الانتقال إلى المنتج الذي تريده بسرعة',
               ),
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Image.network(farmerImage, height: 60),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      'أهلاً بك!\nاختر منتجاً وأضفه إلى السلة',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        height: 1.5,
-                      ),
-                    ),
+
+              // 🔠 شريط الحروف
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverToBoxAdapter(
+                  child: LettersBar(
+                    selectedLetter: _selectedLetter,
+                    onLetterSelected: (letter) => setState(() => _selectedLetter = letter),
                   ),
-                ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 16),
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-            // 🔠 Letters Bar
-            LettersBar(
-              selectedLetter: _selectedLetter,
-              onLetterSelected: (letter) => setState(() => _selectedLetter = letter),
-            ),
-            const SizedBox(height: 12),
-
-            // 🛒 Product Grid
-            Expanded(
-              child: FutureBuilder<List<FullListing>>(
-                future: _firebaseListingService.getFullListings(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('حدث خطأ: ${snapshot.error}'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('لا توجد منتجات متاحة'));
-                  }
-          
-                  final listings = snapshot.data!;
-                  final filtered = filterBySelectedLetter<FullListing>(
-                    listings,
-                    (l) => l.productName,
-                    _selectedLetter,
-                  );
-
-                  // حالة عدم وجود نتائج للحرف المختار
-                  if (filtered.isEmpty) {
-                    return const Center(child: Text('لا توجد منتجات بهذا الحرف.'));
-                  }
-                                    
-                  return Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: GridView.builder(
-                      padding: const EdgeInsets.only(top: 4),
-                      gridDelegate:const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 250, // 👈 أقصى عرض للكارت الواحد
-                            childAspectRatio: 0.9, // 👈 اضبط حسب ارتفاع/عرض الكارت عندك
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                          ),
-                      itemCount: filtered.length,
-                      itemBuilder: (context, index) {
+              // 🧺 حالة عدم وجود نتائج للحرف المختار
+              if (filtered.isEmpty)
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: Text('لا توجد منتجات بهذا الحرف.')),
+                )
+              else
+                // 🛒 شبكة المنتجات (SliverGrid بدل GridView داخل Sliver)
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  sliver: SliverGrid(
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 250,
+                      childAspectRatio: 0.9,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
                         final listing = filtered[index];
                         return ProductListingCard(
                           imageUrl: listing.productImageUrl,
@@ -130,14 +128,17 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                           },
                         );
                       },
+                      childCount: filtered.length,
                     ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+                  ),
+                ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+            ],
+          );
+        },
       ),
+
       bottomNavigationBar: const BottomNav(current: null),
     );
   }

@@ -222,6 +222,9 @@ class ListingService {
             .collection('listing')
             .where('categoryId', isEqualTo: categoryId)
             .get();
+    if (listingSnapshot.docs.isEmpty) {
+    return const <FullListing>[];
+  }
     // 2. Extract all unique productIds and userIds
     final productIds =
         listingSnapshot.docs
@@ -269,5 +272,6 @@ class ListingService {
         listingDoc.id,
       );
     }).toList();
-  }
+   }
+  
 }

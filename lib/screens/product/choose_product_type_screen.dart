@@ -11,6 +11,7 @@ import '../../providers/listing_provider.dart';
 
 // نضيف شريط التنقل السفلي فقط
 import '../../widgets/bottom_nav.dart';
+import 'package:flutter_application_1/widgets/section_header.dart'; 
 
 class ChooseProductScreen extends StatefulWidget {
   final String categoryId; // ID of the selected category
@@ -88,6 +89,13 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
+             
+              // 🏷️ العنوان القابل لإعادة الاستخدام
+              const SliverSectionHeader(
+                title: 'اختر منتجك بسهولة:',
+                subtitle: 'استخدم شريط الحروف لتصفية القائمة و الانتقال إلى المنتج الذي تريده بسرعة',
+              ),
+ 
               const SliverPadding(
                 padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                 sliver: SliverToBoxAdapter(

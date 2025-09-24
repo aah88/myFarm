@@ -161,12 +161,12 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                   separatorBuilder:
                       (_, __) => const SizedBox(width: Spacing.md),
                   itemBuilder: (context, i) {
-                    final c = categories[i];
+                    final category = categories[i];
                     return _CategoryChipSmall(
-                      title: c.name,
-                      imageUrl: c.imageUrl,
+                      title: category.name,
+                      imageUrl: category.imageUrl,
                       onTap: () {
-                        context.read<ListingProvider>().setCategoryId(c.id);
+                        context.read<ListingProvider>().setCategoryId(category.id);
                         context.read<ListingProvider>().setUserId(
                           context.read<UserProvider>().userId!,
                         );
@@ -174,7 +174,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                           context,
                           MaterialPageRoute(
                             builder:
-                                (_) => ChooseProductScreen(categoryId: c.id),
+                                (_) => AllListingsScreen(categoryId: category.id),                                
                           ),
                         );
                       },
