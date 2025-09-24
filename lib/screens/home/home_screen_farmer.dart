@@ -256,7 +256,7 @@ class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
                         return Padding(
                           padding: const EdgeInsets.only(right: Spacing.md),
                           child: ProductCard(
-                            imageUrl: product.imageUrl,
+                            imageUrl: product.imageUrl!,
                             title: product.name,
                           ),
                         );

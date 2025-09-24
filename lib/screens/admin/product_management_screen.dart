@@ -30,27 +30,35 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     _categoriesStream = _firebaseProductService.categoryStream();
   }
 
-  void _addProduct() async {
-    if (_nameController.text.isNotEmpty && selectedCategory != null) {
-      final newProduct = Product(
-        id: '',
-        name: _nameController.text,
-        description: _descriptionController.text,
-        category: selectedCategory!,
-        parentProduct: selectedProduct!.id,
-        imageUrl: _imageUrlController.text,
-      );
-      await _firebaseProductService.addProduct(newProduct);
-      setState(() {
-        _productsFuture = _firebaseProductService.getProducts();
-        selectedCategory = null;
-        selectedProduct = null;
-      });
-
-      _nameController.clear();
-      _descriptionController.clear();
-      _imageUrlController.clear();
+  Future<void> _addProduct() async {
+    // minimal validation: require name + category
+    if (_nameController.text.trim().isEmpty || selectedCategory == null) {
+      return;
     }
+
+    final imageUrlText = _imageUrlController.text.trim();
+    final String? imageUrl = imageUrlText.isEmpty ? null : imageUrlText;
+
+    final newProduct = Product(
+      id: '', // let your service assign the ID
+      name: _nameController.text.trim(),
+      description: _descriptionController.text.trim(),
+      category: selectedCategory!, // required
+      parentProduct: selectedProduct?.id, // may be null
+      imageUrl: imageUrl, // may be null
+    );
+
+    await _firebaseProductService.addProduct(newProduct);
+
+    setState(() {
+      _productsFuture = _firebaseProductService.getProducts();
+      selectedCategory = null;
+      selectedProduct = null;
+    });
+
+    _nameController.clear();
+    _descriptionController.clear();
+    _imageUrlController.clear();
   }
 
   @override
@@ -77,9 +85,9 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                 hintText: "أدخل وصف المنتج",
               ),
             ),
-
             const SizedBox(height: 16),
 
+            // Category picker
             StreamBuilder<List<ProductCategory>>(
               stream: _categoriesStream,
               builder: (context, snapshot) {
@@ -88,13 +96,12 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                 }
 
                 final categories = snapshot.data!;
-
                 return DropdownButtonFormField<ProductCategory>(
                   decoration: const InputDecoration(
                     labelText: 'الفئة',
                     hintText: "اختر من القائمة",
                   ),
-                  initialValue: selectedCategory,
+                  value: selectedCategory,
                   items:
                       categories.map((cat) {
                         return DropdownMenuItem<ProductCategory>(
@@ -103,15 +110,14 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                         );
                       }).toList(),
                   onChanged: (ProductCategory? newValue) {
-                    setState(() {
-                      selectedCategory = newValue;
-                    });
+                    setState(() => selectedCategory = newValue);
                   },
                 );
               },
             ),
             const SizedBox(height: 16),
 
+            // Parent product picker (optional)
             FutureBuilder<List<Product>>(
               future: _productsFuture,
               builder: (context, snapshot) {
@@ -119,14 +125,17 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                   return const CircularProgressIndicator();
                 }
 
+                // top-level products: parentProduct == null
                 final products =
                     snapshot.data!
-                        .where((product) => product.parentProduct == "")
+                        .where((p) => p.parentProduct == null)
                         .toList();
 
                 return DropdownButtonFormField<Product>(
-                  decoration: const InputDecoration(labelText: 'المنتج الأب'),
-                  initialValue: selectedProduct,
+                  decoration: const InputDecoration(
+                    labelText: 'المنتج الأب (اختياري)',
+                  ),
+                  value: selectedProduct,
                   items:
                       products.map((prod) {
                         return DropdownMenuItem<Product>(
@@ -135,17 +144,20 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                         );
                       }).toList(),
                   onChanged: (Product? newValue) {
-                    setState(() {
-                      selectedProduct = newValue;
-                    });
+                    setState(() => selectedProduct = newValue);
                   },
                 );
               },
             ),
             const SizedBox(height: 16),
+
+            // Optional image URL
             TextField(
               controller: _imageUrlController,
-              decoration: const InputDecoration(labelText: 'صورة'),
+              decoration: const InputDecoration(
+                labelText: 'صورة (اختياري)',
+                hintText: 'https://...',
+              ),
               keyboardType: TextInputType.url,
             ),
 
@@ -155,6 +167,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
               child: const Text('إضافة المنتج'),
             ),
             const Divider(),
+
+            // List of products
             Expanded(
               child: FutureBuilder<List<Product>>(
                 future: _productsFuture,
@@ -175,6 +189,10 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       return ListTile(
                         title: Text(item.name),
                         subtitle: Text(item.category.name),
+                        trailing:
+                            (item.imageUrl != null && item.imageUrl!.isNotEmpty)
+                                ? const Icon(Icons.image)
+                                : const SizedBox.shrink(),
                       );
                     },
                   );

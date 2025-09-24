@@ -290,7 +290,7 @@ class _ResponsiveFadedGrid extends StatelessWidget {
                 categoryId: product.category.id,
                 title: product.name,
                 parentProductId: product.id,
-                imageUrl: product.imageUrl,
+                imageUrl: product.imageUrl!,
                 onTap: () => onTapProduct(product),
               ),
             );

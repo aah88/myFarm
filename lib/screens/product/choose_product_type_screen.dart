@@ -11,7 +11,7 @@ import '../../providers/listing_provider.dart';
 
 // نضيف شريط التنقل السفلي فقط
 import '../../widgets/bottom_nav.dart';
-import 'package:flutter_application_1/widgets/section_header.dart'; 
+import 'package:flutter_application_1/widgets/section_header.dart';
 
 class ChooseProductScreen extends StatefulWidget {
   final String categoryId; // ID of the selected category
@@ -26,9 +26,8 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
   final ProductService _firebaseProductService = ProductService();
   late Future<List<Product>> _productsFuture;
 
-  String _selectedLetter = defaultSelectedLetter; 
+  String _selectedLetter = defaultSelectedLetter;
   List<Product> _allRootProducts = [];
-
 
   @override
   void initState() {
@@ -77,7 +76,8 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
           }
 
           if (_allRootProducts.isEmpty) {
-            _allRootProducts = snapshot.data!.where((p) => p.parentProduct.isEmpty).toList();
+            _allRootProducts =
+                snapshot.data!.where((p) => p.parentProduct!.isEmpty).toList();
           }
 
           final products = filterBySelectedLetter<Product>(
@@ -89,13 +89,13 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-             
               // 🏷️ العنوان القابل لإعادة الاستخدام
               const SliverSectionHeader(
                 title: 'اختر منتجك بسهولة:',
-                subtitle: 'استخدم شريط الحروف لتصفية القائمة و الانتقال إلى المنتج الذي تريده بسرعة',
+                subtitle:
+                    'استخدم شريط الحروف لتصفية القائمة و الانتقال إلى المنتج الذي تريده بسرعة',
               ),
- 
+
               const SliverPadding(
                 padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                 sliver: SliverToBoxAdapter(
@@ -131,7 +131,8 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
                 sliver: SliverToBoxAdapter(
                   child: LettersBar(
                     selectedLetter: _selectedLetter,
-                    onLetterSelected: (letter) => setState(() => _selectedLetter = letter),
+                    onLetterSelected:
+                        (letter) => setState(() => _selectedLetter = letter),
                   ),
                 ),
               ),
@@ -166,7 +167,6 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
     );
   }
 }
-
 
 class _EmptyState extends StatelessWidget {
   const _EmptyState({super.key});
@@ -215,7 +215,7 @@ class _ResponsiveFadedGrid extends StatelessWidget {
               child: ProductCard(
                 categoryId: product.id,
                 title: product.name,
-                imageUrl: product.imageUrl,
+                imageUrl: product.imageUrl!,
                 parentProductId: product.id,
                 onTap: () {
                   context.read<ListingProvider>().setProductId(product.id);
