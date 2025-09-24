@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_application_1/widgets/section_header.dart';
+import 'package:flutter_application_1/widgets/category_card.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../models/category_model.dart';
@@ -89,34 +92,13 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
             return CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                const SliverPadding(
-                  padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  sliver: SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'اختر الفئة المناسبة:',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.green,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          'اختر فئة المنتج للمتابعة واختيار المنتج ثم الوحدة.',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black54,
-                            height: 1.25,
-                          ),
-                        ),
-                        SizedBox(height: 12),
-                      ],
-                    ),
-                  ),
+
+                  //  العنوان
+                const SliverSectionHeader(
+                  title: 'اختر الفئة المناسبة:',
+                  subtitle:'اختر فئة المنتج للمتابعة واختيار المنتج.',
                 ),
+
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   sliver: SliverToBoxAdapter(child: content),
@@ -241,7 +223,7 @@ class _ResponsiveFadedGrid extends StatelessWidget {
 
             return _FadeInUp(
               delay: Duration(milliseconds: delayMs),
-              child: _CategoryCard(
+              child: CategoryCard(
                 title: cat.name,
                 imageUrl: cat.imageUrl,
                 onTap: () => onTapCategory(cat),
@@ -254,77 +236,6 @@ class _ResponsiveFadedGrid extends StatelessWidget {
   }
 }
 
-class _CategoryCard extends StatelessWidget {
-  const _CategoryCard({
-    required this.title,
-    required this.imageUrl,
-    required this.onTap,
-  });
-
-  final String title;
-  final String imageUrl;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final r = BorderRadius.circular(14);
-
-    return Material(
-      color: Colors.white,
-      elevation: 0,
-      borderRadius: r,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: r,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: r,
-            border: Border.all(color: const Color(0xFFE8EBE6), width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(14),
-                ),
-                child: Image.asset(imageUrl, height: 110, fit: BoxFit.contain),
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 8,
-                ),
-                child: Text(
-                  title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.green,
-                    height: 1.2,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class _FadeInUp extends StatefulWidget {
   const _FadeInUp({

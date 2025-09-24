@@ -90,11 +90,11 @@ class _AllCategoryScreenState extends State<AllCategoryScreen>
               physics: const BouncingScrollPhysics(),
               slivers: [
 
-                //  العنوان
-              const SliverSectionHeader(
-                title: 'اختر الفئة المناسبة:',
-                subtitle:'اختر فئة المنتج للمتابعة واختيار المنتج.',
-              ),
+                  //  العنوان
+                const SliverSectionHeader(
+                  title: 'اختر الفئة المناسبة:',
+                  subtitle:'اختر فئة المنتج للمتابعة واختيار المنتج.',
+                ),
 
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
