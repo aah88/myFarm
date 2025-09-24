@@ -1,5 +1,6 @@
 // lib/screens/home/home_screen_farmer.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/customer/all_category_screen.dart';
 import 'package:provider/provider.dart';
 
 // Models
@@ -110,7 +111,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => ChooseCategoryScreen()),
+                    MaterialPageRoute(builder: (_) => AllCategoryScreen()),
                   );
                 },
                 icon: const Icon(

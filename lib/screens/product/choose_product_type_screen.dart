@@ -74,12 +74,10 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('لا توجد منتجات متاحة حالياً.'));
           }
-
           if (_allRootProducts.isEmpty) {
             _allRootProducts =
                 snapshot.data!.where((p) => p.parentProduct!.isEmpty).toList();
           }
-
           final products = filterBySelectedLetter<Product>(
             _allRootProducts,
             (p) => p.name,
@@ -94,35 +92,6 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
                 title: 'اختر منتجك بسهولة:',
                 subtitle:
                     'استخدم شريط الحروف لتصفية القائمة و الانتقال إلى المنتج الذي تريده بسرعة',
-              ),
-
-              const SliverPadding(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                sliver: SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'اختر المنتج المناسب:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.green,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'استخدم الحروف لتصفية القائمة، ثم اختر المنتج للمتابعة.',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black54,
-                          height: 1.25,
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                    ],
-                  ),
-                ),
               ),
 
               // شريط الحروف
