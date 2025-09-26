@@ -25,6 +25,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   String? _selectedDelivery;
   String? _selectedPayment;
   Map<String, FullListing> _listingMap = {};
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -217,44 +218,52 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                   ),
                 ),
                 onPressed:
-                    (_selectedDelivery == null || _selectedPayment == null)
+                    (_selectedDelivery == null ||
+                            _selectedPayment == null ||
+                            _isSubmitting) // disable while submitting
                         ? null
                         : () async {
-                          final ctx = context;
-                          // Create order
-                          final userId = ctx.read<UserProvider>().userId!;
-                          await OrderService().createOrder(
-                            cart,
-                            _selectedDelivery!,
-                            _selectedPayment!,
-                            OrderStatus.pending,
-                            userId,
-                          );
-
-                          // If the widget got disposed while waiting, stop here
-                          if (!mounted) return;
-                          //Reduce qty in all corresponding listing
-                          for (final cartItem in cart.items) {
-                            await ListingService().finalizeSingleListing(
-                              listingId: cartItem.listingId,
-                              qtyToBuy: cartItem.qty,
+                          setState(() => _isSubmitting = true);
+                          try {
+                            final ctx = context;
+                            final userId = ctx.read<UserProvider>().userId!;
+                            await OrderService().createOrder(
+                              cart,
+                              _selectedDelivery!,
+                              _selectedPayment!,
+                              OrderStatus.pending,
+                              userId,
                             );
+                            if (!mounted) return;
+                            for (final cartItem in cart.items) {
+                              await ListingService().finalizeSingleListing(
+                                listingId: cartItem.listingId,
+                                qtyToBuy: cartItem.qty,
+                              );
+                            }
+                            cartProvider.clearCart();
+                            ScaffoldMessenger.of(ctx).showSnackBar(
+                              const SnackBar(content: Text("✅ تم تأكيد الطلب")),
+                            );
+                            Navigator.pop(ctx);
+                          } finally {
+                            if (mounted) setState(() => _isSubmitting = false);
                           }
-                          // 🔹 empty the cart after order confirmation
-                          cartProvider.clearCart();
-
-                          // Show confirmation
-                          ScaffoldMessenger.of(ctx).showSnackBar(
-                            const SnackBar(content: Text("✅ تم تأكيد الطلب")),
-                          );
-
-                          // Navigate back
-                          Navigator.pop(ctx);
                         },
-                child: const Text(
-                  "تأكيد الطلب",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
+                child:
+                    _isSubmitting
+                        ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                        : const Text(
+                          "تأكيد الطلب",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
               ),
             ),
           ],
