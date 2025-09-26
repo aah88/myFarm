@@ -24,6 +24,9 @@ class BottomNav extends StatelessWidget {
   final AppTab? current;
   final bool showNotificationsDot;
 
+  /// عدد العناصر في السلة (لإظهار الشارة)
+  final int cartPadgeCount;
+
   /// ألوان وخلفية وارتفاع الشريط
   final Color activeColor;
   final Color inactiveColor;
@@ -34,6 +37,7 @@ class BottomNav extends StatelessWidget {
     super.key,
     required this.current,
     this.showNotificationsDot = true,
+    this.cartPadgeCount = 0,
     this.activeColor = AppColors.green,
     this.inactiveColor = const Color(0xFFB6BAB5),
     this.backgroundColor = Colors.white,
@@ -44,7 +48,7 @@ class BottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     // لكل تبويب: أيقونة مفعّلة (filled) وأيقونة غير مفعّلة (outline)
     final items = <_NavSpec>[
-      _NavSpec(
+      const _NavSpec(
         tab: AppTab.home,
         activeIcon: Icons.home_rounded,
         inactiveIcon: Icons.home_outlined,
@@ -53,8 +57,9 @@ class BottomNav extends StatelessWidget {
         tab: AppTab.cart,
         activeIcon: Icons.shopping_cart_rounded,
         inactiveIcon: Icons.shopping_cart_outlined,
+        badgeCount: cartPadgeCount, // ← شارة السلة
       ),
-      _NavSpec(
+      const _NavSpec(
         tab: AppTab.favorites,
         activeIcon: Icons.favorite, // filled
         inactiveIcon: Icons.favorite_border_rounded, // outline
@@ -88,7 +93,10 @@ class BottomNav extends StatelessWidget {
                 child: _NavItem(
                   icon: selected ? spec.activeIcon : spec.inactiveIcon,
                   selected: selected,
+                  // نقطة الإشعارات فقط لتبويب الإشعارات
                   showDot: spec.showDot && spec.tab == AppTab.notifications,
+                  // الشارة الرقمية فقط لتبويب السلة
+                  badgeCount: spec.tab == AppTab.cart ? spec.badgeCount : 0,
                   activeColor: activeColor,
                   inactiveColor: inactiveColor,
                   onTap: () {
@@ -120,12 +128,14 @@ class _NavSpec {
   final IconData activeIcon;
   final IconData inactiveIcon;
   final bool showDot;
+  final int badgeCount; // للسلة
 
   const _NavSpec({
     required this.tab,
     required this.activeIcon,
     required this.inactiveIcon,
     this.showDot = false,
+    this.badgeCount = 0,
   });
 }
 
@@ -134,6 +144,7 @@ class _NavItem extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
   final bool showDot;
+  final int badgeCount; // > 0 => show numeric badge
   final Color activeColor;
   final Color inactiveColor;
 
@@ -142,6 +153,7 @@ class _NavItem extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.showDot = false,
+    this.badgeCount = 0,
     this.activeColor = AppColors.green,
     this.inactiveColor = const Color(0xFFB6BAB5),
   });
@@ -149,6 +161,9 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = selected ? activeColor : inactiveColor;
+    final showBadge = badgeCount > 0;
+    // نحد العداد إلى 99+ لعدم كسر التصميم
+    final badgeText = (badgeCount > 99) ? '99+' : badgeCount.toString();
 
     return InkWell(
       onTap: onTap,
@@ -159,6 +174,8 @@ class _NavItem extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               Icon(icon, size: 24, color: color),
+
+              // نقطة الإشعارات (صغيرة)
               if (showDot)
                 Positioned(
                   right: -2,
@@ -170,6 +187,40 @@ class _NavItem extends StatelessWidget {
                       color: Colors.redAccent,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 1.5),
+                    ),
+                  ),
+                ),
+
+              // شارة السلة الرقمية
+              if (showBadge)
+                Positioned(
+                  right: -8,
+                  top: -6,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 2,
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 18,
+                      minHeight: 18,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.white, width: 1.5),
+                    ),
+                    child: Center(
+                      child: Text(
+                        badgeText,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          height: 1.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),

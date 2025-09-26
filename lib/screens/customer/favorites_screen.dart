@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
+import 'package:provider/provider.dart';
+import '../../providers/cart_provider.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
 import '../../services/listing_services.dart';
@@ -61,8 +63,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = context.watch<CartProvider>();
+    final cart = cartProvider.cart;
     return AppScaffold(
       currentTab: AppTab.favorites,
+      cartPadgeCount: cart.items.length,
       appBar: AppBar(
         title: const Text('المفضلة'),
         actions: [

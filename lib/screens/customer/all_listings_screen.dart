@@ -5,16 +5,15 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_application_1/models/cart_model.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
-import 'package:flutter_application_1/widgets/bottom_nav.dart';
+import '../../widgets/app_scaffold.dart';
 
 import '../../providers/cart_provider.dart';
 import '../../services/listing_services.dart';
 import '../../widgets/product_listing_card.dart'; // ✅ الكارت الجديد
 import 'package:flutter_application_1/widgets/letters_bar.dart';
-import 'package:flutter_application_1/widgets/section_header.dart'; 
+import 'package:flutter_application_1/widgets/section_header.dart';
 
 class AllListingsScreen extends StatefulWidget {
-  
   const AllListingsScreen({super.key, this.categoryId});
   final String? categoryId; // ID of the selected category
 
@@ -23,25 +22,38 @@ class AllListingsScreen extends StatefulWidget {
 }
 
 class _AllListingsScreenState extends State<AllListingsScreen> {
-
   final ListingService _firebaseListingService = ListingService();
-  final String farmerImage ='https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
+  final String farmerImage =
+      'https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
 
   String _selectedLetter = defaultSelectedLetter;
 
-    late Future<List<FullListing>> _fullListingFuture;
-
+  late Future<List<FullListing>> _fullListingFuture;
 
   @override
   void initState() {
     super.initState();
-    _fullListingFuture = widget.categoryId == null ?  _firebaseListingService.getFullListings(): _firebaseListingService.getFullListingsByCategory(widget.categoryId!);
+    _fullListingFuture =
+        widget.categoryId == null
+            ? _firebaseListingService.getFullListings()
+            : _firebaseListingService.getFullListingsByCategory(
+              widget.categoryId!,
+            );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("كل المنتجات",style: TextStyle(color: AppColors.green),)),
+    final cartProvider = context.watch<CartProvider>();
+    final cart = cartProvider.cart;
+    return AppScaffold(
+      currentTab: null,
+      cartPadgeCount: cart.items.length,
+      appBar: AppBar(
+        title: const Text(
+          "كل المنتجات",
+          style: TextStyle(color: AppColors.green),
+        ),
+      ),
       body: FutureBuilder<List<FullListing>>(
         future: _fullListingFuture,
         builder: (context, snapshot) {
@@ -63,11 +75,11 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-
               // 🏷️ العنوان القابل لإعادة الاستخدام
               const SliverSectionHeader(
                 title: 'اختر منتجك بسهولة:',
-                subtitle: 'استخدم شريط الحروف لتصفية القائمة و الانتقال إلى المنتج الذي تريده بسرعة',
+                subtitle:
+                    'استخدم شريط الحروف لتصفية القائمة و الانتقال إلى المنتج الذي تريده بسرعة',
               ),
 
               // 🔠 شريط الحروف
@@ -76,7 +88,8 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                 sliver: SliverToBoxAdapter(
                   child: LettersBar(
                     selectedLetter: _selectedLetter,
-                    onLetterSelected: (letter) => setState(() => _selectedLetter = letter),
+                    onLetterSelected:
+                        (letter) => setState(() => _selectedLetter = letter),
                   ),
                 ),
               ),
@@ -94,55 +107,53 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   sliver: SliverGrid(
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 250,
-                      childAspectRatio: 0.9,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final listing = filtered[index];
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => ProductDetailScreen(),
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 250,
+                          childAspectRatio: 0.9,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                        ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final listing = filtered[index];
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ProductDetailScreen(),
+                            ),
+                          );
+                        },
+                        child: ProductListingCard(
+                          imageUrl: listing.productImageUrl,
+                          title: listing.productName,
+                          rating: listing.rating,
+                          price: listing.price,
+                          farmerName: listing.farmerName,
+                          distance:
+                              5.2, // replace with actual distance müss berechnet werden
+                          onAddToCart: () {
+                            context.read<CartProvider>().addItem(
+                              CartItem(
+                                listingId: listing.id,
+                                farmerId: listing.userId,
+                                price: listing.price,
+                                qty: 1,
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "${listing.productName} تمت إضافته إلى السلة",
+                                ),
                               ),
                             );
                           },
-                          child: ProductListingCard(
-                            imageUrl: listing.productImageUrl,
-                            title: listing.productName,
-                            rating: listing.rating,
-                            price: listing.price,
-                            farmerName: listing.farmerName,
-                            distance:
-                                5.2, // replace with actual distance müss berechnet werden
-                            onAddToCart: () {
-                              context.read<CartProvider>().addItem(
-                                CartItem(
-                                  listingId: listing.id,
-                                  farmerId: listing.userId,
-                                  price: listing.price,
-                                  qty: 1,
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    "${listing.productName} تمت إضافته إلى السلة",
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      childCount: filtered.length,
-                    ),
+                        ),
+                      );
+                    }, childCount: filtered.length),
                   ),
                 ),
 
@@ -151,8 +162,6 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
           );
         },
       ),
-
-      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }

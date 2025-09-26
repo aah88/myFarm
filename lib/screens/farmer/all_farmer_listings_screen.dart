@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
-import 'package:flutter_application_1/widgets/bottom_nav.dart';
 
+import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../services/listing_services.dart';
+import '../../widgets/app_scaffold.dart';
 import '../../widgets/product_listing_card.dart'; // ✅ الكارت الجديد
 
 class AllFarmerListingsScreen extends StatefulWidget {
@@ -36,7 +37,11 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final cartProvider = context.watch<CartProvider>();
+    final cart = cartProvider.cart;
+    return AppScaffold(
+      currentTab: null,
+      cartPadgeCount: cart.items.length,
       appBar: AppBar(
         title: const Text(
           'إدارة منتجاتك',
@@ -182,7 +187,6 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }

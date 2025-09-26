@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
+import 'package:flutter_application_1/widgets/app_scaffold.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_application_1/widgets/bottom_nav.dart';
 
+import '../../providers/cart_provider.dart';
 import '../../services/order_services.dart';
 import '../../models/order_model.dart';
 
@@ -21,7 +23,11 @@ class _AllNewOrdersFarmerScreenState extends State<AllNewOrdersFarmerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final cartProvider = context.watch<CartProvider>();
+    final cart = cartProvider.cart;
+    return AppScaffold(
+      currentTab: null,
+      cartPadgeCount: cart.items.length,
       appBar: AppBar(title: const Text("📦 All Orders")),
       body: FutureBuilder<List<Order>>(
         future: _orderService.getOnlyNewFarmerSellOrders(
@@ -85,7 +91,6 @@ class _AllNewOrdersFarmerScreenState extends State<AllNewOrdersFarmerScreen> {
           );
         },
       ),
-      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }

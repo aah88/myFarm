@@ -59,8 +59,11 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
   @override
   Widget build(BuildContext context) {
     final String? username = context.read<UserProvider>().userName;
+    final cartProvider = context.watch<CartProvider>();
+    final cart = cartProvider.cart;
     return AppScaffold(
       currentTab: AppTab.home,
+      cartPadgeCount: cart.items.length,
       body: ListView(
         padding: const EdgeInsets.all(Spacing.lg),
         children: [
@@ -167,7 +170,9 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                       title: category.name,
                       imageUrl: category.imageUrl,
                       onTap: () {
-                        context.read<ListingProvider>().setCategoryId(category.id);
+                        context.read<ListingProvider>().setCategoryId(
+                          category.id,
+                        );
                         context.read<ListingProvider>().setUserId(
                           context.read<UserProvider>().userId!,
                         );
@@ -175,7 +180,8 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                           context,
                           MaterialPageRoute(
                             builder:
-                                (_) => AllListingsScreen(categoryId: category.id),                                
+                                (_) =>
+                                    AllListingsScreen(categoryId: category.id),
                           ),
                         );
                       },

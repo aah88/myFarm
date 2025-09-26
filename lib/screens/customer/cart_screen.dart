@@ -56,6 +56,7 @@ class _CartScreenState extends State<CartScreen> {
 
     return AppScaffold(
       currentTab: AppTab.cart, // ✅ يفعّل تبويب السلة في BottomNav
+      cartPadgeCount: cart.items.length,
       appBar: AppBar(
         title: const Text(
           '🛒 سلة المشتريات',

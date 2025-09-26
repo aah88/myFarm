@@ -45,8 +45,11 @@ class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
   @override
   Widget build(BuildContext context) {
     final String? username = context.read<UserProvider>().userName;
+    final cartProvider = context.watch<CartProvider>();
+    final cart = cartProvider.cart;
     return AppScaffold(
       currentTab: AppTab.home,
+      cartPadgeCount: cart.items.length,
       body: ListView(
         padding: const EdgeInsets.all(Spacing.lg),
         children: [

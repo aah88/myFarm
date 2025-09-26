@@ -8,6 +8,8 @@ class AppScaffold extends StatelessWidget {
   /// لو null يعني لا تفعّل أي تبويب (مفيد للصفحات الفرعية)
   final AppTab? currentTab;
 
+  final int? cartPadgeCount; // أو أي مصدر للعدد
+
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
   final Color? backgroundColor;
@@ -22,6 +24,7 @@ class AppScaffold extends StatelessWidget {
     this.floatingActionButtonLocation,
     this.backgroundColor,
     this.extendBody = false,
+    this.cartPadgeCount,
   });
 
   @override
@@ -31,7 +34,10 @@ class AppScaffold extends StatelessWidget {
       appBar: appBar,
       backgroundColor: backgroundColor,
       body: body,
-      bottomNavigationBar: BottomNav(current: currentTab),
+      bottomNavigationBar: BottomNav(
+        current: currentTab,
+        cartPadgeCount: cartPadgeCount ?? 0,
+      ),
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
       extendBody: extendBody,

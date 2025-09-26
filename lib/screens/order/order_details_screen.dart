@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
+import 'package:provider/provider.dart';
+import '../../providers/cart_provider.dart';
 import '../../widgets/app_scaffold.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
@@ -11,9 +13,12 @@ class OrderDetailsScreen extends StatelessWidget {
     final customer = order['customer']?.toString() ?? 'غير معروف';
     final item = order['item']?.toString() ?? '—';
     final qty = int.tryParse('${order['qty']}') ?? 0;
+    final cartProvider = context.watch<CartProvider>();
+    final cart = cartProvider.cart;
 
     return AppScaffold(
       currentTab: null,
+      cartPadgeCount: cart.items.length,
       appBar: AppBar(title: const Text('تفاصيل الطلب')),
       body: Padding(
         padding: const EdgeInsets.all(16),

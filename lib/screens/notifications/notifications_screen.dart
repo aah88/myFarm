@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
+import 'package:provider/provider.dart';
+import '../../providers/cart_provider.dart';
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
 
@@ -95,9 +97,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     final grouped = _groupBySection(_items);
-
+    final cartProvider = context.watch<CartProvider>();
+    final cart = cartProvider.cart;
     return AppScaffold(
       currentTab: AppTab.notifications,
+      cartPadgeCount: cart.items.length,
       appBar: AppBar(
         title: const Text('الإشعارات'),
         actions: [

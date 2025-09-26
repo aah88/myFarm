@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/order/order_details_screen.dart';
+import 'package:provider/provider.dart';
+import '../../providers/cart_provider.dart';
 import '../../widgets/app_scaffold.dart';
 
 class OrderListScreen extends StatelessWidget {
@@ -11,9 +13,12 @@ class OrderListScreen extends StatelessWidget {
       {'customer': 'سارة', 'item': 'تفاح', 'qty': 4},
       {'customer': 'خالد', 'item': 'بطاطا', 'qty': 2},
     ];
+    final cartProvider = context.watch<CartProvider>();
+    final cart = cartProvider.cart;
 
     return AppScaffold(
       currentTab: null,
+      cartPadgeCount: cart.items.length,
       appBar: AppBar(title: const Text('الطلبات')),
       body: ListView.separated(
         itemCount: orders.length,
