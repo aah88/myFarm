@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_application_1/widgets/bottom_nav.dart';
-
+import '../../providers/cart_provider.dart';
 import '../../services/order_services.dart';
 import '../../models/order_model.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
+
+import '../../widgets/app_scaffold.dart';
 
 class AllOrdersFarmerScreen extends StatefulWidget {
   const AllOrdersFarmerScreen({super.key});
@@ -45,9 +46,13 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = context.watch<CartProvider>();
+    final cart = cartProvider.cart;
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
+      child: AppScaffold(
+        currentTab: null,
+        cartPadgeCount: cart.items.length,
         appBar: AppBar(title: const Text("📦 All Orders")),
         body: FutureBuilder<List<Order>>(
           future: _orderService.getAllFarmerSellOrders(
@@ -65,9 +70,16 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.inbox_outlined, size: 40, color: Color(0xFF9AA19A)),
+                    Icon(
+                      Icons.inbox_outlined,
+                      size: 40,
+                      color: Color(0xFF9AA19A),
+                    ),
                     SizedBox(height: 8),
-                    Text("No orders found", style: TextStyle(color: AppColors.gray600)),
+                    Text(
+                      "No orders found",
+                      style: TextStyle(color: AppColors.gray600),
+                    ),
                   ],
                 ),
               );
@@ -87,7 +99,10 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
 
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
                     child: Column(
                       children: [
                         for (final order in displayedOrders) ...[
@@ -106,7 +121,6 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
             );
           },
         ),
-        bottomNavigationBar: const BottomNav(current: null),
       ),
     );
   }
@@ -136,7 +150,7 @@ class _FilterTabs extends StatelessWidget {
             alignment: Alignment.center,
             margin: EdgeInsets.only(
               right: i == 0 ? 12 : 6,
-              left:  i == 2 ? 12 : 6,
+              left: i == 2 ? 12 : 6,
             ),
             decoration: BoxDecoration(
               color: selected ? AppColors.green : const Color(0xFFEAEDEA),
@@ -264,8 +278,10 @@ class _OrderTile extends StatelessWidget {
                       color: const Color(0xFFEAEDEA),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(Icons.receipt_long_rounded,
-                        color: AppColors.gray600),
+                    child: const Icon(
+                      Icons.receipt_long_rounded,
+                      color: AppColors.gray600,
+                    ),
                   ),
                   const SizedBox(width: 12),
 
@@ -281,7 +297,7 @@ class _OrderTile extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: AppColors.green,
                           ),
-                        ),                       
+                        ),
                         const SizedBox(height: 2),
                         Text(
                           "#${order.id}",
@@ -293,13 +309,13 @@ class _OrderTile extends StatelessWidget {
                           ),
                         ),
                         Text(
-                        "الإجمالي: ${total.toStringAsFixed(2)} ل.س",
-                        style: const TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.text,
+                          "الإجمالي: ${total.toStringAsFixed(2)} ل.س",
+                          style: const TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.text,
+                          ),
                         ),
-                      ),
                         const SizedBox(height: 10),
                         Text(
                           'التاريخ: $dateStr',
@@ -315,9 +331,7 @@ class _OrderTile extends StatelessWidget {
                   // السعر + الحالة
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      _PlainStatusChip(text: statusText),
-                    ],
+                    children: [_PlainStatusChip(text: statusText)],
                   ),
 
                   const SizedBox(width: 10),
@@ -336,7 +350,9 @@ class _OrderTile extends StatelessWidget {
           // -------- Body (يتوسع/ينكمش) --------
           AnimatedCrossFade(
             crossFadeState:
-                isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                isExpanded
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
             duration: const Duration(milliseconds: 200),
             firstChild: Padding(
               padding: const EdgeInsets.only(top: 8),
@@ -411,7 +427,6 @@ class _OrderTile extends StatelessWidget {
 
                     Row(
                       children: [
-
                         const SizedBox(width: 6),
                         Text(
                           'الإجمالي:',
