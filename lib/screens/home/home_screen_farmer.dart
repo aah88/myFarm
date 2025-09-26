@@ -38,7 +38,7 @@ class _HomeScreenFarmerState extends State<HomeScreenFarmer> {
       userProvider.setUserId('TeGmDtcdpChIKwJYGF3zTcD804o2');
 
       final cartProvider = context.read<CartProvider>();
-      cartProvider.loadCart('TeGmDtcpChIKwJYGF3zTcD804o2');
+      cartProvider.loadCart('TeGmDtcdpChIKwJYGF3zTcD804o2');
     });
   }
 
