@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:flutter_application_1/models/order_status.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
-import 'package:flutter_application_1/widgets/bottom_nav.dart';
+
 import 'package:provider/provider.dart';
 import '../../models/full_listing.dart';
 import '../../providers/cart_provider.dart';
 import '../../models/local_data.dart';
 import '../../providers/full_listing_provider.dart';
 import '../../services/order_services.dart';
+import '../../widgets/app_scaffold.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
   const OrderSummaryScreen({super.key});
@@ -36,7 +37,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     final listings = context.read<FullListingProvider>().listings;
     _listingMap = {for (var l in listings) l.id: l};
 
-    return Scaffold(
+    return AppScaffold(
+      currentTab: null,
+      cartPadgeCount: cart.items.length,
       appBar: AppBar(title: const Text("ملخص الطلب")),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -250,7 +253,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNav(current: null),
     );
   }
 }
