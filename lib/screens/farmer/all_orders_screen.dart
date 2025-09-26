@@ -33,12 +33,21 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
     return s.contains('approved') || s.contains('accept');
   }
 
+  void _toggleExpanded(String orderId) {
+    setState(() {
+      if (_expandedOrderIds.contains(orderId)) {
+        _expandedOrderIds.remove(orderId);
+      } else {
+        _expandedOrderIds.add(orderId);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        // أبقيت عنوانك كما هو
         appBar: AppBar(title: const Text("📦 All Orders")),
         body: FutureBuilder<List<Order>>(
           future: _orderService.getAllFarmerSellOrders(
@@ -58,24 +67,18 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
                   children: [
                     Icon(Icons.inbox_outlined, size: 40, color: Color(0xFF9AA19A)),
                     SizedBox(height: 8),
-                    Text(
-                      "No orders found",
-                      style: TextStyle(color: Color(0xFF6A6F6A)),
-                    ),
+                    Text("No orders found", style: TextStyle(color: AppColors.gray600)),
                   ],
                 ),
               );
             }
 
-            // منطقك الأصلي
             final orders = snapshot.data!;
-            // عرض بحسب التبويب فقط (من دون تغيير البيانات الأصلية)
             final displayedOrders = orders.where(_matchesTab).toList();
 
             return Column(
               children: [
                 const SizedBox(height: 8),
-                // تبويبات الفلترة (لا تغيّر المنطق)
                 _FilterTabs(
                   current: _tab,
                   onChanged: (i) => setState(() => _tab = i),
@@ -85,206 +88,17 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    child: ExpansionPanelList(
-                      expandedHeaderPadding: EdgeInsets.zero,
-                      elevation: 0,
-                      expansionCallback: (index, _) {
-                        setState(() {
-                          // نفس منطقك تمامًا لكن على القائمة المعروضة
-                          final orderId = displayedOrders[index].id;
-                          if (_expandedOrderIds.contains(orderId)) {
-                            _expandedOrderIds.remove(orderId);
-                          } else {
-                            _expandedOrderIds.add(orderId);
-                          }
-                        });
-                      },
-                      children: displayedOrders.map((order) {
-                        final isExpanded = _expandedOrderIds.contains(order.id);
-
-                        // نفس قيمك الأصلية
-                        final total = order.totalPrice();
-                        final dateStr = order.startDate.toDate().toString().split(' ').first;
-                        final statusText = order.status.name;
-
-                        return ExpansionPanel(
-                          canTapOnHeader: true,
-                          isExpanded: isExpanded,
-                          backgroundColor: Colors
-                              .transparent, // 🔧 كان لوناً أحمر؛ جعلناه شفافاً لانسجام الكارت
-                          headerBuilder: (context, _) {
-                            // تحسين مظهري فقط — القيم نفسها
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 6),
-                              child: Container(
-                                padding: const EdgeInsets.all(14), // 🔧 كان 12
-                                decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 255, 255, 255),
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 48,
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFEAEDEA),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: const Icon(Icons.receipt_long_rounded,
-                                          color: Color(0xFF5C6F5E)),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Order #${order.id}",
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w800,
-                                              color: Color(0xFF2D2D2D),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 6), // 🔧 كان 4
-                                          Text(
-                                            "التاريخ: $dateStr",
-                                            style: const TextStyle(
-                                              fontSize: 12.5,
-                                              color: Color(0xFF6A6F6A),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          "الإجمالي: ${total.toStringAsFixed(2)} ل.س",
-                                          style: const TextStyle(
-                                            fontSize: 14, // 🔧 كان 13.5
-                                            fontWeight: FontWeight.w900, // 🔧 إبراز السعر
-                                            color: Color(0xFF2D2D2D),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 6),
-                                        // شارة حالة بسيطة دون تغيير قيمة الحالة
-                                        _PlainStatusChip(text: statusText),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                          body: Padding(
-                            padding: const EdgeInsets.only(bottom: 8, right: 6, left: 6),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(14),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.04),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  // عناصر الطلب — نفس منطقك 100%
-                                  ...order.items.map((item) {
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                      child: Row(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(10),
-                                            child: Container(
-                                              width: 48,
-                                              height: 48,
-                                              color: const Color(0xFFEAEDEA),
-                                              child: const Icon(
-                                                Icons.local_grocery_store,
-                                                color: Color(0xFF506A56), // 🔧 درجة أوضح قليلاً
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  item.listingId,
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: const TextStyle(
-                                                    fontSize: 14.5,
-                                                    fontWeight: FontWeight.w700,
-                                                    color: Color(0xFF2D2D2D),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 2),
-                                                Text(
-                                                  "الكمية: ${item.qty}",
-                                                  style: const TextStyle(
-                                                    fontSize: 12.5,
-                                                    color: Color(0xFF6A6F6A),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Text(
-                                            "${item.totalItemPrice().toStringAsFixed(2)} ل.س",
-                                            style: const TextStyle(
-                                              fontSize: 13.5,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFF2D2D2D),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }).toList(),
-
-                                  const Divider(height: 22),
-
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.summarize_outlined,
-                                          color: Color(0xFF6A6F6A), size: 18),
-                                      const SizedBox(width: 6),
-                                      const Text(
-                                        'إجمالي الطلب',
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: Color(0xFF6A6F6A),
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      Text(
-                                        "${total.toStringAsFixed(2)} ل.س",
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFF2D2D2D),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
+                    child: Column(
+                      children: [
+                        for (final order in displayedOrders) ...[
+                          _OrderTile(
+                            order: order,
+                            isExpanded: _expandedOrderIds.contains(order.id),
+                            onToggle: () => _toggleExpanded(order.id),
                           ),
-                        );
-                      }).toList(),
+                          const SizedBox(height: 12),
+                        ],
+                      ],
                     ),
                   ),
                 ),
@@ -365,12 +179,10 @@ class _PlainStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ألوان خفيفة ثابتة دون افتراضات على النص
     Color border = const Color(0xFFE0E3DF);
     Color fg = const Color(0xFF3D5943);
     Color bg = const Color(0xFFF3F6F2);
 
-    // تلوين تقريبي إذا احتوى النص كلمات شائعة
     final t = text.toLowerCase();
     if (t.contains('pending') || t.contains('wait')) {
       fg = const Color(0xFF996C00);
@@ -387,19 +199,246 @@ class _PlainStatusChip extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5), // 🔧
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
         color: bg,
         border: Border.all(color: border),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 12.5, // 🔧
-          fontWeight: FontWeight.w800, // 🔧
+          fontSize: 12.5,
+          fontWeight: FontWeight.w800,
           color: fg,
         ),
+      ),
+    );
+  }
+}
+
+/// تايل مخصّص: السهم + النص داخل نفس الـ box وبحد واحد
+class _OrderTile extends StatelessWidget {
+  const _OrderTile({
+    required this.order,
+    required this.isExpanded,
+    required this.onToggle,
+  });
+
+  final Order order;
+  final bool isExpanded;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final total = order.totalPrice();
+    final dateStr = order.startDate.toDate().toString().split(' ').first;
+    final statusText = order.status.name;
+
+    // لون الحد والخلفية الخفيفة خلف البطاقة
+    const borderColor = Color(0xFFE6EAE4);
+    //const pageBg = Color.fromARGB(255, 88, 160, 51);
+
+    return Container(
+      //decoration: const BoxDecoration(color: pageBg),
+      child: Column(
+        children: [
+          // -------- Header (السهم + النص داخل نفس الصندوق) --------
+          InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: onToggle,
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: borderColor),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  // أيقونة يسار
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEAEDEA),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.receipt_long_rounded,
+                        color: AppColors.gray600),
+                  ),
+                  const SizedBox(width: 12),
+
+                  // النصوص
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Order",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.green,
+                          ),
+                        ),                       
+                        const SizedBox(height: 2),
+                        Text(
+                          "#${order.id}",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.gray600,
+                          ),
+                        ),
+                        Text(
+                        "الإجمالي: ${total.toStringAsFixed(2)} ل.س",
+                        style: const TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.text,
+                        ),
+                      ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'التاريخ: $dateStr',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.gray600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // السعر + الحالة
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      _PlainStatusChip(text: statusText),
+                    ],
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  // السهم داخل نفس الصندوق + دوران بحسب الحالة
+                  AnimatedRotation(
+                    turns: isExpanded ? 0.5 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(Icons.expand_more, color: AppColors.green),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // -------- Body (يتوسع/ينكمش) --------
+          AnimatedCrossFade(
+            crossFadeState:
+                isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: 200),
+            firstChild: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: borderColor),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    // عناصر الطلب — نفس منطقك
+                    ...order.items.map((item) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                width: 48,
+                                height: 48,
+                                color: const Color(0xFFEAEDEA),
+                                child: const Icon(
+                                  Icons.local_grocery_store,
+                                  color: Color(0xFF506A56),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.listingId,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 14.5,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.text,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    "الكمية: ${item.qty}",
+                                    style: const TextStyle(
+                                      fontSize: 12.5,
+                                      color: AppColors.gray600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              "${item.totalItemPrice().toStringAsFixed(2)} ل.س",
+                              style: const TextStyle(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.text,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+
+                    const Divider(height: 22),
+
+                    Row(
+                      children: [
+
+                        const SizedBox(width: 6),
+                        Text(
+                          'الإجمالي:',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.gray600,
+                          ),
+                        ),
+                        const Spacer(),
+                        const SizedBox(width: 6),
+                        Text(
+                          "${total.toStringAsFixed(2)} ل.س",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.text,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            secondChild: const SizedBox.shrink(),
+          ),
+        ],
       ),
     );
   }
