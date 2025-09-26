@@ -11,6 +11,7 @@ import '../../providers/cart_provider.dart';
 import '../../models/local_data.dart';
 import '../../providers/full_listing_provider.dart';
 import '../../services/order_services.dart';
+import '../../services/listing_services.dart';
 import '../../widgets/app_scaffold.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
@@ -232,7 +233,13 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
 
                           // If the widget got disposed while waiting, stop here
                           if (!mounted) return;
-
+                          //Reduce qty in all corresponding listing
+                          for (final cartItem in cart.items) {
+                            await ListingService().finalizeSingleListing(
+                              listingId: cartItem.listingId,
+                              qtyToBuy: cartItem.qty,
+                            );
+                          }
                           // 🔹 empty the cart after order confirmation
                           cartProvider.clearCart();
 

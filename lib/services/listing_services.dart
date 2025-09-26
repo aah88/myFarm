@@ -16,9 +16,54 @@ class ListingService {
         .toList();
   }
 
+  Future<void> finalizeSingleListing({
+    required String listingId,
+    required int qtyToBuy,
+  }) async {
+    if (qtyToBuy <= 0) throw ArgumentError('qtyToBuy must be > 0');
+
+    final ref = _db.collection('listing').doc(listingId);
+
+    await _db.runTransaction((tx) async {
+      final snap = await tx.get(ref);
+      if (!snap.exists) {
+        throw StateError('Listing not found: $listingId');
+      }
+
+      final data = snap.data() as Map<String, dynamic>;
+      final bool active = (data['active'] as bool?) ?? true;
+      final int available = (data['qty'] as int?) ?? 0;
+      final int minimumQty = (data['minimumQty'] as int?) ?? 0;
+
+      if (!active) {
+        throw StateError('Listing is inactive');
+      }
+
+      final int remaining = available - qtyToBuy;
+      bool stillActive = active;
+      if (remaining < 0) {
+        throw StateError(
+          'Not enough quantity. Have $available, need $qtyToBuy.',
+        );
+      }
+      if (remaining == 0) {
+        stillActive = false;
+      }
+      // if (remaining < minimumQty) {
+      //   stillActive = false;
+      //   throw StateError(
+      //     'Remaining qty ($remaining) would be below minimum ($minimumQty).',
+      //   );
+      // }
+
+      tx.update(ref, {'qty': remaining, 'active': stillActive});
+    });
+  }
+
   Future<List<FullListing>> getFullListings() async {
     // 1. Get all listings
-    final listingSnapshot = await _db.collection('listing').get();
+    final listingSnapshot =
+        await _db.collection('listing').where('active', isEqualTo: true).get();
 
     // 2. Extract all unique productIds and userIds
     final productIds =
@@ -221,10 +266,11 @@ class ListingService {
         await _db
             .collection('listing')
             .where('categoryId', isEqualTo: categoryId)
+            .where('active', isEqualTo: true)
             .get();
     if (listingSnapshot.docs.isEmpty) {
-    return const <FullListing>[];
-  }
+      return const <FullListing>[];
+    }
     // 2. Extract all unique productIds and userIds
     final productIds =
         listingSnapshot.docs
@@ -272,6 +318,5 @@ class ListingService {
         listingDoc.id,
       );
     }).toList();
-   }
-  
+  }
 }
