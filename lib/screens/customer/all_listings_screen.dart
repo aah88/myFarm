@@ -138,7 +138,7 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                             context.read<CartProvider>().addItem(
                               CartItem(
                                 listingId: listing.id,
-                                farmerId: listing.sellerId,
+                                sellerId: listing.sellerId,
                                 price: listing.price,
                                 qty: 1,
                               ),

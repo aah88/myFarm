@@ -7,7 +7,7 @@ class Order {
   final String id;
   final List<OrderItem> items;
   final String userId;
-  final String farmerId;
+  final String sellerId;
   final String paymentMeanId;
   final String deliveryMeanId;
   final OrderStatus status;
@@ -17,7 +17,7 @@ class Order {
     required this.id,
     required this.items,
     required this.userId,
-    required this.farmerId,
+    required this.sellerId,
     required this.paymentMeanId,
     required this.deliveryMeanId,
     required this.status,
@@ -36,7 +36,7 @@ class Order {
       id: id,
       items: itemsList,
       userId: data['userId'] ?? '',
-      farmerId: data['farmerId'] ?? '',
+      sellerId: data['sellerId'] ?? '',
       paymentMeanId: data['paymentMeanId'] ?? '',
       deliveryMeanId: data['deliveryMeanId'] ?? '',
       startDate: data['startDate'] ?? FieldValue.serverTimestamp(),
@@ -51,7 +51,7 @@ class Order {
     return {
       'items': items.map((item) => item.toMap()).toList(),
       'userId': userId,
-      'farmerId': farmerId,
+      'sellerId': sellerId,
       'paymentMeanId': paymentMeanId,
       'deliveryMeanId': deliveryMeanId,
       'status': status.name,
@@ -59,12 +59,12 @@ class Order {
     };
   }
 
-  factory Order.userOrder(String userId, String farmerId) {
+  factory Order.userOrder(String userId, String sellerId) {
     return Order(
       id: '',
       items: [],
       userId: userId,
-      farmerId: farmerId,
+      sellerId: sellerId,
       paymentMeanId: '',
       deliveryMeanId: '',
       status: OrderStatus.pending,
@@ -76,7 +76,7 @@ class Order {
       id: '',
       items: [],
       userId: '',
-      farmerId: '',
+      sellerId: '',
       paymentMeanId: '',
       deliveryMeanId: '',
       status: OrderStatus.pending,
@@ -88,7 +88,7 @@ class Order {
     String? id,
     List<OrderItem>? items,
     String? userId,
-    String? farmerId,
+    String? sellerId,
     String? paymentMeanId,
     String? deliveryMeanId,
     OrderStatus? status,
@@ -98,7 +98,7 @@ class Order {
       id: id ?? '',
       items: items ?? this.items,
       userId: userId ?? this.userId,
-      farmerId: farmerId ?? this.farmerId,
+      sellerId: sellerId ?? this.sellerId,
       paymentMeanId: paymentMeanId ?? this.paymentMeanId,
       deliveryMeanId: deliveryMeanId ?? this.deliveryMeanId,
       status: status ?? this.status,
@@ -162,13 +162,13 @@ extension CartToOrder on Cart {
     //the System will internally split this order into 2, one for each farmer.
     //the time of placing the order will be the same for all and it will be used to
     //
-    final Map<String, List<CartItem>> groupedByFarmer = {};
+    final Map<String, List<CartItem>> groupedBySeller = {};
     final List<Order> orders = [];
     for (final item in items) {
-      groupedByFarmer.putIfAbsent(item.farmerId, () => []).add(item);
+      groupedBySeller.putIfAbsent(item.sellerId, () => []).add(item);
     }
     final timeOfOrder = Timestamp.now();
-    groupedByFarmer.forEach((farmerId, cartItems) {
+    groupedBySeller.forEach((sellerId, cartItems) {
       orders.add(
         Order(
           id: '',
@@ -177,7 +177,7 @@ extension CartToOrder on Cart {
                   .map((cartItem) => OrderItem.fromCartItem(cartItem))
                   .toList(),
           userId: userId,
-          farmerId: farmerId,
+          sellerId: sellerId,
           paymentMeanId: paymentMeanId,
           deliveryMeanId: deliveryMeanId,
           status: status,

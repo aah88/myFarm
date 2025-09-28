@@ -49,7 +49,7 @@ class CartProvider extends ChangeNotifier {
         final current = updatedItems[index];
         updatedItems[index] = CartItem(
           listingId: current.listingId,
-          farmerId: current.farmerId,
+          sellerId: current.sellerId,
           price: current.price,
           qty: current.qty + item.qty,
         );
@@ -123,7 +123,7 @@ class CartProvider extends ChangeNotifier {
 
   Future<bool> updateQty(
     String listingId,
-    String farmerId,
+    String sellerId,
     double price,
     int qty,
   ) async {
@@ -140,7 +140,7 @@ class CartProvider extends ChangeNotifier {
       if (index != -1) {
         _cart.items[index] = CartItem(
           listingId: listingId,
-          farmerId: farmerId,
+          sellerId: sellerId,
           price: price,
           qty: qty,
         );

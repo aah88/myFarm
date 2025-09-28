@@ -199,7 +199,7 @@ class _CartScreenState extends State<CartScreen> {
                                           if (cartItem.qty > 1) {
                                             cartProvider.updateQty(
                                               cartItem.listingId,
-                                              cartItem.farmerId,
+                                              cartItem.sellerId,
                                               cartItem.price,
                                               cartItem.qty - 1,
                                             );
@@ -239,7 +239,7 @@ class _CartScreenState extends State<CartScreen> {
                                         onPressed:
                                             () => cartProvider.updateQty(
                                               cartItem.listingId,
-                                              cartItem.farmerId,
+                                              cartItem.sellerId,
                                               cartItem.price,
                                               cartItem.qty + 1,
                                             ),

@@ -288,7 +288,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                           context.read<CartProvider>().addItem(
                             CartItem(
                               listingId: listing.id,
-                              farmerId: listing.sellerId,
+                              sellerId: listing.sellerId,
                               price: listing.price,
                               qty: 1,
                             ),
