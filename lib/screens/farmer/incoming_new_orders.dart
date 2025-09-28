@@ -4,12 +4,12 @@ import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_application_1/widgets/app_scaffold.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_application_1/widgets/bottom_nav.dart'; // (غير مستخدم هنا لكن أبقيته كما هو)
-
 import '../../providers/cart_provider.dart';
 import '../../services/order_services.dart';
 import '../../models/order_model.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
+
+// TODO - أزرار "قبول" و"رفض" شكلية فقط (بدون وظائف) 
 
 class AllNewOrdersFarmerScreen extends StatefulWidget {
   const AllNewOrdersFarmerScreen({super.key});
@@ -43,6 +43,7 @@ class _AllNewOrdersFarmerScreenState extends State<AllNewOrdersFarmerScreen> {
         currentTab: null,
         cartPadgeCount: cart.items.length,
         appBar: AppBar(title: const Text("📦 الطلبات الجديدة")),
+        // نجلب الطلبات عبر FutureBuilder
         body: FutureBuilder<List<Order>>(
           future: _orderService.getOnlyNewFarmerSellOrders(
             context.read<UserProvider>().userId!,
@@ -67,7 +68,7 @@ class _AllNewOrdersFarmerScreenState extends State<AllNewOrdersFarmerScreen> {
               );
             }
 
-            // ✅ تصفية الطلبات إلى pending فقط
+            // ✅ تصفية الطلبات إلى pending
             final orders = snapshot.data!;
             final pendingOrders = orders
                 .where((o) => o.status.name.toLowerCase() == 'pending')
@@ -77,6 +78,7 @@ class _AllNewOrdersFarmerScreenState extends State<AllNewOrdersFarmerScreen> {
               return const Center(child: Text("No pending orders"));
             }
 
+            // عرض قائمة الطلبات 
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Column(
@@ -99,42 +101,26 @@ class _AllNewOrdersFarmerScreenState extends State<AllNewOrdersFarmerScreen> {
   }
 }
 
-/// شارة حالة بسيطة (نفس أسلوبنا السابق)
 class _PlainStatusChip extends StatelessWidget {
   const _PlainStatusChip({required this.text});
-  final String text;
+  final String text; //  النص  من البيانات (status.name)
 
   @override
   Widget build(BuildContext context) {
-    Color border = const Color(0xFFE0E3DF);
-    Color fg = const Color(0xFF3D5943);
-    Color bg = const Color(0xFFF3F6F2);
-
-    final t = text.toLowerCase();
-    if (t.contains('pending') || t.contains('wait') || t.contains('new')) {
-      fg = const Color(0xFF996C00);
-      bg = const Color(0xFFFFF3CD);
-      border = const Color(0xFFFFECB3);
-    } else if (t.contains('approved') || t.contains('accept')) {
-      fg = AppColors.green;
-      bg = const Color(0xFFE6F3EA);
-      border = const Color(0xFFC9E3D3);
-    } else if (t.contains('reject') || t.contains('cancel')) {
-      fg = const Color(0xFFD32F2F);
-      bg = const Color(0xFFFFEBEE);
-      border = const Color(0xFFF8BBD0);
-    }
+    const Color fg = Color(0xFF996C00);   // لون النص
+    const Color bg = Color(0xFFFFF3CD);   // خلفية الشارة
+    const Color br = Color(0xFFFFECB3);   // حد الشارة
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
         color: bg,
-        border: Border.all(color: border),
+        border: Border.all(color: br),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        text,
-        style: TextStyle(
+        text, 
+        style: const TextStyle(
           fontSize: 12.5,
           fontWeight: FontWeight.w800,
           color: fg,
@@ -144,7 +130,7 @@ class _PlainStatusChip extends StatelessWidget {
   }
 }
 
-/// بطاقة الطلب (نفس النمط السابق: السهم + النص داخل نفس الـ box، وبوردر متصل عند الفتح)
+/// بطاقة الطلب 
 class _NewOrderTile extends StatelessWidget {
   const _NewOrderTile({
     required this.order,
@@ -164,7 +150,7 @@ class _NewOrderTile extends StatelessWidget {
 
     return Column(
       children: [
-        // -------- Header (AnimatedContainer لتغيير الإطار عند الفتح) --------
+        // -------- Header --------
         InkWell(
           borderRadius: BorderRadius.circular(10),
           onTap: onToggle,
@@ -262,7 +248,8 @@ class _NewOrderTile extends StatelessWidget {
           ),
         ),
 
-        // -------- Body (AnimatedContainer بنفس لون الإطار عند الفتح) --------
+        // ---------------- Body ----------------
+        // تفاصيل الطلب: العناصر + الإجمالي + أزرار (شكل فقط)
         AnimatedCrossFade(
           crossFadeState:
               isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
