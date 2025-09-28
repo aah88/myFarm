@@ -5,7 +5,6 @@ import 'package:flutter_application_1/widgets/category_card.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import '../../models/category_model.dart';
-import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../services/product_services.dart';
 import 'choose_product_type_screen.dart';
@@ -42,8 +41,6 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen>
 
   @override
   Widget build(BuildContext context) {
-    final cartProvider = context.watch<CartProvider>();
-    final cart = cartProvider.cart;
     return Scaffold(
       // ليست تبويب رئيسي؛ صفحة فرعية ضمن تدفق إضافة منتج
       appBar: AppBar(

@@ -37,7 +37,7 @@ class ListingService {
         await _db
             .collection('listing')
             .where('categoryId', isEqualTo: categoryId)
-            .where('active', isEqualTo: false)
+            .where('active', isEqualTo: true)
             .get();
     return listingSnapshot.docs
         .map((doc) => Listing.fromMap(doc.data(), doc.id))
@@ -49,7 +49,7 @@ class ListingService {
         await _db
             .collection('listing')
             .where('sellerId', isEqualTo: sellerId)
-            .where('active', isEqualTo: false)
+            .where('active', isEqualTo: true)
             .get();
     return listingSnapshot.docs
         .map((doc) => Listing.fromMap(doc.data(), doc.id))

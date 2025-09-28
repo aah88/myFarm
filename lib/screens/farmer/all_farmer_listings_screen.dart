@@ -20,6 +20,16 @@ class AllFarmerListingsScreen extends StatefulWidget {
 class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
   final ListingService _firebaseListingService = ListingService();
 
+  late Future<List<Listing>> _allSellerListingFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _allSellerListingFuture = _firebaseListingService.getListingBySellerId(
+      context.read<UserProvider>().userId!,
+    );
+  }
+
   final String farmerImage =
       'https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
 
@@ -118,9 +128,7 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
             // 🛒 شبكة المنتجات
             Expanded(
               child: FutureBuilder<List<Listing>>(
-                future: _firebaseListingService.getListingBySellerId(
-                  context.read<UserProvider>().userId!,
-                ),
+                future: _allSellerListingFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());

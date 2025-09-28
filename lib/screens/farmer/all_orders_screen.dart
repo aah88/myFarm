@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/listing_model.dart';
 import '../../providers/cart_provider.dart';
+import '../../services/listing_services.dart';
 import '../../services/order_services.dart';
 import '../../models/order_model.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
@@ -19,7 +21,18 @@ class AllOrdersFarmerScreen extends StatefulWidget {
 
 class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
   final OrderService _orderService = OrderService();
+  //final ListingService _firebaseListingService = ListingService();
   final List<String> _expandedOrderIds = [];
+  //Map<String, Listing> _listingMap = {};
+  late Future<List<Order>> _allsellerOrderFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _allsellerOrderFuture = _orderService.getAllFarmerSellOrders(
+      context.read<UserProvider>().userId!,
+    );
+  }
 
   // تبويب الفلترة: 0 = الكل، 1 = بانتظار الموافقة، 2 = موافق عليها
   int _tab = 0;
@@ -55,9 +68,7 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
         cartPadgeCount: cart.items.length,
         appBar: AppBar(title: const Text("📦جميع الطلبات ")),
         body: FutureBuilder<List<Order>>(
-          future: _orderService.getAllFarmerSellOrders(
-            context.read<UserProvider>().userId!,
-          ),
+          future: _allsellerOrderFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -76,7 +87,10 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
                       color: Color(0xFF9AA19A),
                     ),
                     SizedBox(height: 8),
-                    Text("لا توجد طلبات جديدة", style: TextStyle(color: AppColors.gray600)),
+                    Text(
+                      "لا توجد طلبات جديدة",
+                      style: TextStyle(color: AppColors.gray600),
+                    ),
                   ],
                 ),
               );
@@ -155,7 +169,7 @@ class _FilterTabs extends StatelessWidget {
               boxShadow: [
                 if (selected)
                   BoxShadow(
-                    color: Colors.black.withOpacity(.08),
+                    color: Colors.black.withValues(alpha: .08),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -248,7 +262,8 @@ class _OrderTile extends StatelessWidget {
 
     // إظهار الأزرار فقط للحالات المعلّقة
     final st = statusText.toLowerCase();
-    final bool isPending = st.contains('pending') ||
+    final bool isPending =
+        st.contains('pending') ||
         st.contains('wait') ||
         st.contains('بانتظار') ||
         st.contains('انتظار') ||
@@ -269,11 +284,11 @@ class _OrderTile extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.vertical(
                 top: const Radius.circular(10),
-                bottom: Radius.circular(isExpanded ? 0 : 10), // يتصل مع البودي عند الفتح
+                bottom: Radius.circular(
+                  isExpanded ? 0 : 10,
+                ), // يتصل مع البودي عند الفتح
               ),
-              border: Border.all(
-                color:const Color(0xFFE6EAE4),    
-              ),
+              border: Border.all(color: const Color(0xFFE6EAE4)),
             ),
             child: Row(
               children: [
@@ -340,7 +355,7 @@ class _OrderTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [_PlainStatusChip(text: statusText)],
                 ),
-                
+
                 const SizedBox(width: 10),
                 // السهم داخل نفس الصندوق + دوران بحسب الحالة
                 AnimatedRotation(
@@ -360,7 +375,7 @@ class _OrderTile extends StatelessWidget {
           duration: const Duration(milliseconds: 200),
           firstChild: Container(
             width: double.infinity,
-            margin: const EdgeInsets.only(top: 0),        
+            margin: const EdgeInsets.only(top: 0),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
@@ -433,7 +448,7 @@ class _OrderTile extends StatelessWidget {
                         ],
                       ),
                     );
-                  }).toList(),
+                  }),
 
                   const Divider(height: 22),
 
@@ -481,7 +496,11 @@ class _OrderTile extends StatelessWidget {
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.check, size: 18, color: Colors.white),
+                                  Icon(
+                                    Icons.check,
+                                    size: 18,
+                                    color: Colors.white,
+                                  ),
                                   SizedBox(width: 6),
                                   Text(
                                     'تأكيد الطلب',
@@ -495,14 +514,16 @@ class _OrderTile extends StatelessWidget {
                             ),
                           ),
                         ),
-                              const SizedBox(width: 10),
-                              // رفض
+                        const SizedBox(width: 10),
+                        // رفض
                         Expanded(
                           child: SizedBox(
                             height: 42,
                             child: OutlinedButton(
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Color(0xFFE57373)),
+                                side: const BorderSide(
+                                  color: Color(0xFFE57373),
+                                ),
                                 foregroundColor: const Color(0xFFD32F2F),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -514,7 +535,12 @@ class _OrderTile extends StatelessWidget {
                                 children: [
                                   Icon(Icons.close, size: 18),
                                   SizedBox(width: 6),
-                                  Text('رفض', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(
+                                    'رفض',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
