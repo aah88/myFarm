@@ -76,10 +76,7 @@ class _AllOrdersFarmerScreenState extends State<AllOrdersFarmerScreen> {
                       color: Color(0xFF9AA19A),
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      "No orders found",
-                      style: TextStyle(color: AppColors.gray600),
-                    ),
+                    Text("لا توجد طلبات جديدة", style: TextStyle(color: AppColors.gray600)),
                   ],
                 ),
               );
@@ -263,21 +260,21 @@ class _OrderTile extends StatelessWidget {
       children: [
         // -------- Header (السهم + النص داخل نفس الصندوق) --------
         InkWell(
-  borderRadius: BorderRadius.circular(10),
-  onTap: onToggle,
-  child: AnimatedContainer(
-    duration: const Duration(milliseconds: 200),
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.vertical(
-        top: const Radius.circular(10),
-        bottom: Radius.circular(isExpanded ? 0 : 10), // يتصل مع البودي عند الفتح
-      ),
-      border: Border.all(
-        color:const Color(0xFFE6EAE4),    
-      ),
-    ),
+          borderRadius: BorderRadius.circular(10),
+          onTap: onToggle,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                top: const Radius.circular(10),
+                bottom: Radius.circular(isExpanded ? 0 : 10), // يتصل مع البودي عند الفتح
+              ),
+              border: Border.all(
+                color:const Color(0xFFE6EAE4),    
+              ),
+            ),
             child: Row(
               children: [
                 // أيقونة يسار
@@ -372,7 +369,7 @@ class _OrderTile extends StatelessWidget {
                 border: Border(
                   right: BorderSide(color: borderColor, width: 1),
                   left: BorderSide(color: borderColor, width: 1),
-                  bottom: BorderSide.none, // لا يوجد حد سفلي
+                  bottom: BorderSide(color: Color(0xFFE6EAE4), width: 1),
                 ),
                 borderRadius: const BorderRadius.only(
                   bottomRight: Radius.circular(10),
