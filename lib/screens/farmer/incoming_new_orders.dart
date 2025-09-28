@@ -67,13 +67,21 @@ class _AllNewOrdersFarmerScreenState extends State<AllNewOrdersFarmerScreen> {
               );
             }
 
+            // ✅ تصفية الطلبات إلى pending فقط
             final orders = snapshot.data!;
+            final pendingOrders = orders
+                .where((o) => o.status.name.toLowerCase() == 'pending')
+                .toList();
+
+            if (pendingOrders.isEmpty) {
+              return const Center(child: Text("No pending orders"));
+            }
 
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Column(
                 children: [
-                  for (final order in orders) ...[
+                  for (final order in pendingOrders) ...[
                     _NewOrderTile(
                       order: order,
                       isExpanded: _expandedOrderIds.contains(order.id),
@@ -154,7 +162,6 @@ class _NewOrderTile extends StatelessWidget {
     final dateStr = order.startDate.toDate().toString().split(' ').first;
     final statusText = order.status.name;
 
-
     return Column(
       children: [
         // -------- Header (AnimatedContainer لتغيير الإطار عند الفتح) --------
@@ -170,11 +177,9 @@ class _NewOrderTile extends StatelessWidget {
                 top: const Radius.circular(10),
                 bottom: Radius.circular(isExpanded ? 0 : 10),
               ),
-              // حدّ 3 جهات فقط؛ السفلي شفاف عند الفتح ليتصل مع البودي
               border: Border.all(
-                color:const Color(0xFFE6EAE4),    
+                color: const Color(0xFFE6EAE4),
               ),
-
             ),
             child: Row(
               children: [
@@ -266,14 +271,14 @@ class _NewOrderTile extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             width: double.infinity,
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               border: Border(
                 right: BorderSide(color: Color(0xFFE6EAE4), width: 1),
                 left: BorderSide(color: Color(0xFFE6EAE4), width: 1),
                 bottom: BorderSide(color: Color(0xFFE6EAE4), width: 1),
               ),
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 bottomRight: Radius.circular(10),
                 bottomLeft: Radius.circular(10),
               ),
@@ -362,7 +367,7 @@ class _NewOrderTile extends StatelessWidget {
                   ],
                 ),
 
-                // أزرار قبول/رفض — واجهة فقط (بما أن الصفحة لطلبات غير موافق عليها)
+                // أزرار قبول/رفض — واجهة فقط (هذه الصفحة pending فقط)
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -420,7 +425,6 @@ class _NewOrderTile extends StatelessWidget {
                         ),
                       ),
                     ),
-
                   ],
                 ),
               ],
