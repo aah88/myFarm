@@ -40,12 +40,10 @@ class _AllNewOrdersFarmerScreenState extends State<AllNewOrdersFarmerScreen> {
   }
 
   // نولّد الـ Future مرّة واحدة لكل مستخدم
-  Future<List<Order>> _buildPendingFuture(String userId) async {
-    final all = await _orderService.getOnlyNewFarmerSellOrders(userId);
+  Future<List<Order>> _buildPendingFuture(String sellerId) async {
+    final all = await _orderService.getPendingSellOrders(sellerId);
     // ✅ تصفية الطلبات إلى pending
-    return all
-        .where((o) => o.status.name.toLowerCase() == 'pending')
-        .toList(growable: false);
+    return all.toList(growable: false);
   }
 
   @override
@@ -86,9 +84,16 @@ class _AllNewOrdersFarmerScreenState extends State<AllNewOrdersFarmerScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.inbox_outlined, size: 40, color: Color(0xFF9AA19A)),
+                    Icon(
+                      Icons.inbox_outlined,
+                      size: 40,
+                      color: Color(0xFF9AA19A),
+                    ),
                     SizedBox(height: 8),
-                    Text("لا توجد طلبات جديدة", style: TextStyle(color: AppColors.gray600)),
+                    Text(
+                      "لا توجد طلبات جديدة",
+                      style: TextStyle(color: AppColors.gray600),
+                    ),
                   ],
                 ),
               );
@@ -126,9 +131,9 @@ class _PlainStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color fg = Color(0xFF996C00);   // لون النص
-    const Color bg = Color(0xFFFFF3CD);   // خلفية الشارة
-    const Color br = Color(0xFFFFECB3);   // حد الشارة
+    const Color fg = Color(0xFF996C00); // لون النص
+    const Color bg = Color(0xFFFFF3CD); // خلفية الشارة
+    const Color br = Color(0xFFFFECB3); // حد الشارة
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -138,7 +143,7 @@ class _PlainStatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        text, 
+        text,
         style: const TextStyle(
           fontSize: 12.5,
           fontWeight: FontWeight.w800,
@@ -149,7 +154,7 @@ class _PlainStatusChip extends StatelessWidget {
   }
 }
 
-/// بطاقة الطلب 
+/// بطاقة الطلب
 class _NewOrderTile extends StatelessWidget {
   const _NewOrderTile({
     required this.order,
@@ -245,9 +250,7 @@ class _NewOrderTile extends StatelessWidget {
             // شارة الحالة
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _PlainStatusChip(text: statusText),
-              ],
+              children: [_PlainStatusChip(text: statusText)],
             ),
 
             const SizedBox(width: 10),
@@ -345,10 +348,7 @@ class _NewOrderTile extends StatelessWidget {
               const SizedBox(width: 6),
               const Text(
                 'الإجمالي:',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppColors.gray600,
-                ),
+                style: TextStyle(fontSize: 13, color: AppColors.gray600),
               ),
               const Spacer(),
               const SizedBox(width: 6),
@@ -415,7 +415,10 @@ class _NewOrderTile extends StatelessWidget {
                       children: [
                         Icon(Icons.close, size: 18),
                         SizedBox(width: 6),
-                        Text('رفض', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                          'رفض',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ],
                     ),
                   ),

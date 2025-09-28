@@ -44,11 +44,11 @@ class OrderService {
         .toList();
   }
 
-  Future<List<Order>> getOnlyNewFarmerSellOrders(String farmerId) async {
+  Future<List<Order>> getOnlyNewFarmerSellOrders(String sellerId) async {
     final snapshot =
         await _db
             .collection('order')
-            .where('farmerId', isEqualTo: farmerId)
+            .where('sellerId', isEqualTo: sellerId)
             .get();
 
     return snapshot.docs
@@ -62,11 +62,24 @@ class OrderService {
         .toList();
   }
 
-  Future<List<Order>> getAllFarmerSellOrders(String farmerId) async {
+  Future<List<Order>> getPendingSellOrders(String sellerId) async {
     final snapshot =
         await _db
             .collection('order')
-            .where('farmerId', isEqualTo: farmerId)
+            .where('sellerId', isEqualTo: sellerId)
+            .get();
+
+    return snapshot.docs
+        .map((doc) => Order.fromMap(doc.data(), doc.id))
+        .where((order) => order.status == OrderStatus.pending)
+        .toList();
+  }
+
+  Future<List<Order>> getAllFarmerSellOrders(String sellerId) async {
+    final snapshot =
+        await _db
+            .collection('order')
+            .where('sellerId', isEqualTo: sellerId)
             .get();
     return snapshot.docs
         .map((doc) => Order.fromMap(doc.data(), doc.id))
