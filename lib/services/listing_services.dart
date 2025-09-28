@@ -57,6 +57,15 @@ class ListingService {
   }
 
   /// Fetch multiple listings by their IDs (for cart)
+  Future<Listing?> getListingById(String id) async {
+    final doc = await _db.collection('listing').doc(id).get();
+    if (doc.exists) {
+      return Listing.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+    }
+    return null;
+  }
+
+  /// Fetch multiple listings by their IDs (for cart)
   Future<List<Listing>> getListingsByIds(List<String> ids) async {
     if (ids.isEmpty) return [];
 

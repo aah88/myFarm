@@ -4,7 +4,9 @@ import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_application_1/widgets/app_scaffold.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/listing_model.dart';
 import '../../providers/cart_provider.dart';
+import '../../services/listing_services.dart';
 import '../../services/order_services.dart';
 import '../../models/order_model.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
@@ -168,6 +170,7 @@ class _NewOrderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ListingService firebaseListingService = ListingService();
     final total = order.totalPrice();
     final dateStr = order.startDate.toDate().toString().split(' ').first;
     final statusText = order.status.name;
@@ -286,58 +289,69 @@ class _NewOrderTile extends StatelessWidget {
         children: [
           // عناصر الطلب
           ...order.items.map((item) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6.0),
-              child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      color: const Color(0xFFEAEDEA),
-                      child: const Icon(
-                        Icons.local_grocery_store,
-                        color: Color(0xFF506A56),
+            return FutureBuilder<Listing?>(
+              future: firebaseListingService.getListingById(item.listingId),
+              builder: (context, snap) {
+                final listing = snap.data;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6.0),
+                  child: Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          color: const Color(0xFFEAEDEA),
+                          child: const Icon(
+                            Icons.local_grocery_store,
+                            color: Color(0xFF506A56),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.listingId,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 14.5,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.text,
-                          ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // show name when loaded, fallback while waiting
+                            Text(
+                              listing?.productName ??
+                                  (snap.connectionState ==
+                                          ConnectionState.waiting
+                                      ? '...'
+                                      : '—'),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.text,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              "الكمية: ${item.qty}",
+                              style: const TextStyle(
+                                fontSize: 12.5,
+                                color: AppColors.gray600,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          "الكمية: ${item.qty}",
-                          style: const TextStyle(
-                            fontSize: 12.5,
-                            color: AppColors.gray600,
-                          ),
+                      ),
+                      Text(
+                        "${item.totalItemPrice().toStringAsFixed(2)} ل.س",
+                        style: const TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.text,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    "${item.totalItemPrice().toStringAsFixed(2)} ل.س",
-                    style: const TextStyle(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.text,
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             );
           }).toList(),
 
