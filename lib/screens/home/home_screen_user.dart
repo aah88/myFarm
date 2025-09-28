@@ -39,11 +39,13 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
   final ProductService _firebaseProductService = ProductService();
   final ListingService _firebaseListingService = ListingService();
   late Future<List<ProductCategory>> _futureCategories;
+  late Future<List<FullListing>> _fullListingFuture;
 
   @override
   void initState() {
     super.initState();
     _futureCategories = _firebaseProductService.getCategory();
+    _fullListingFuture = _firebaseListingService.getFullListings();
 
     // تهيئة مزودي المستخدم والسلة
     Future.microtask(() {
@@ -238,7 +240,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
 
           // ====== شبكة المنتجات (مثل الصورة) ======
           FutureBuilder<List<FullListing>>(
-            future: _firebaseListingService.getFullListings(),
+            future: _fullListingFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
