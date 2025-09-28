@@ -4,6 +4,7 @@ import 'package:flutter_application_1/widgets/bottom_nav.dart';
 import '../../models/local_data.dart';
 import 'package:provider/provider.dart';
 import '../../providers/listing_provider.dart';
+import '../../providers/user_provider.dart';
 import '../../services/listing_services.dart';
 
 class ChooseUnitScreen extends StatefulWidget {
@@ -54,6 +55,9 @@ class _ChooseUnitScreenState extends State<ChooseUnitScreen> {
     context.read<ListingProvider>().setUnit(selectedUnit);
     context.read<ListingProvider>().setPrice(double.parse(price));
     context.read<ListingProvider>().setQty(int.parse(qty));
+    context.read<ListingProvider>().setSellerName(
+      context.read<UserProvider>().userName!,
+    );
 
     // Save to Firebase
     _addListing(context.read<ListingProvider>().listing);

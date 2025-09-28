@@ -1,39 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/full_listing.dart';
+import '../models/listing_model.dart';
 
-class FullListingProvider with ChangeNotifier {
+class ALLListingProvider with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  List<FullListing> _listings = [];
+  List<Listing> _listings = [];
 
-  List<FullListing> get listings => _listings;
+  List<Listing> get listings => _listings;
 
-
-  void setListings(List<FullListing> fullListings) {
+  void setListings(List<Listing> fullListings) {
     _listings = fullListings;
     notifyListeners();
   }
+
   /// 🔹 Fetch all listings
   Future<void> fetchListings() async {
     try {
       final snapshot = await _firestore.collection("listings").get();
-      _listings = snapshot.docs.map((doc) {
-        final data = doc.data();
-        return FullListing(
-          id: doc.id,
-          userId: data["userId"] ?? "",
-          productId: data["productId"] ?? "",
-          qty: (data["qty"] ?? 0).toInt(),
-          farmerName: data["farmerName"] ?? "",
-          unit: data["unit"] ?? "",
-          price: (data["price"] ?? 0).toDouble(),
-          rating: (data["rating"] ?? 0).toDouble(),
-          productName: data["productName"] ?? "",
-          productImageUrl: data["productImageUrl"] ?? "",
-          minimumQty: (data["minimumQty"] ?? 1).toInt(),
-        );
-      }).toList();
+      _listings =
+          snapshot.docs.map((doc) {
+            final data = doc.data();
+            return Listing(
+              id: doc.id,
+              sellerId: data["userId"] ?? "",
+              categoryId: data["categoryId"] ?? "",
+              active: data["active"] ?? false,
+              productId: data["productId"] ?? "",
+              qty: (data["qty"] ?? 0).toInt(),
+              sellerName: data["farmerName"] ?? "",
+              unit: data["unit"] ?? "",
+              price: (data["price"] ?? 0).toDouble(),
+              rating: (data["rating"] ?? 0).toDouble(),
+              productName: data["productName"] ?? "",
+              productImageUrl: data["productImageUrl"] ?? "",
+              minimumQty: (data["minimumQty"] ?? 1).toInt(),
+              startDate: data['startDate'] ?? FieldValue.serverTimestamp(),
+            );
+          }).toList();
 
       notifyListeners();
     } catch (e) {
@@ -42,7 +46,7 @@ class FullListingProvider with ChangeNotifier {
   }
 
   /// 🔹 Get listing by ID
-  FullListing? getListingById(String id) {
+  Listing? getListingById(String id) {
     try {
       return _listings.firstWhere((l) => l.id == id);
     } catch (_) {
@@ -51,19 +55,20 @@ class FullListingProvider with ChangeNotifier {
   }
 
   /// 🔹 Add new listing
-  Future<void> addListing(FullListing listing) async {
+  Future<void> addListing(Listing listing) async {
     try {
       final docRef = await _firestore.collection("listings").add({
-        "userId": listing.userId,
+        "userId": listing.sellerId,
         "productId": listing.productId,
         "qty": listing.qty,
-        "farmerName": listing.farmerName,
+        "sellerName": listing.sellerName,
         "unit": listing.unit,
         "price": listing.price,
         "rating": listing.rating,
         "productName": listing.productName,
         "productImageUrl": listing.productImageUrl,
         "minimumQty": listing.minimumQty,
+        "startDate": Timestamp.now(),
       });
 
       _listings.add(listing.copyWith(id: docRef.id));
@@ -74,19 +79,20 @@ class FullListingProvider with ChangeNotifier {
   }
 
   /// 🔹 Update listing
-  Future<void> updateListing(FullListing listing) async {
+  Future<void> updateListing(Listing listing) async {
     try {
       await _firestore.collection("listings").doc(listing.id).update({
-        "userId": listing.userId,
+        "userId": listing.sellerId,
         "productId": listing.productId,
         "qty": listing.qty,
-        "farmerName": listing.farmerName,
+        "farmerName": listing.sellerName,
         "unit": listing.unit,
         "price": listing.price,
         "rating": listing.rating,
         "productName": listing.productName,
         "productImageUrl": listing.productImageUrl,
         "minimumQty": listing.minimumQty,
+        "startDate": Timestamp.now(),
       });
 
       final index = _listings.indexWhere((l) => l.id == listing.id);

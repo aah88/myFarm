@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_application_1/models/full_listing.dart';
 import '../../models/cart_model.dart';
+import '../models/listing_model.dart';
 
 class CartProvider extends ChangeNotifier {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -153,7 +153,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  double totalPrice(Map<String, FullListing> listingMap) {
+  double totalPrice(Map<String, Listing> listingMap) {
     double total = 0;
     for (var item in _cart.items) {
       final listing = listingMap[item.listingId];
@@ -164,11 +164,7 @@ class CartProvider extends ChangeNotifier {
     return total;
   }
 
-  double itemTotal(
-    String listingId,
-    int qty,
-    Map<String, FullListing> listingMap,
-  ) {
+  double itemTotal(String listingId, int qty, Map<String, Listing> listingMap) {
     final listing = listingMap[listingId];
     if (listing == null) return 0;
     return listing.price * qty;

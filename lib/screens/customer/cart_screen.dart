@@ -1,10 +1,11 @@
 // lib/screens/cart/cart_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
-import 'package:flutter_application_1/providers/full_listing_provider.dart';
+import 'package:flutter_application_1/providers/all_listing_provider.dart';
 import 'package:flutter_application_1/screens/customer/all_listings_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/listing_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../services/listing_services.dart';
 
@@ -26,7 +27,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   final ListingService _firebaseListingService = ListingService();
   bool _loading = true;
-  Map<String, FullListing> _listingMap = {};
+  Map<String, Listing> _listingMap = {};
 
   @override
   void initState() {
@@ -37,15 +38,13 @@ class _CartScreenState extends State<CartScreen> {
   Future<void> _loadListingDetails() async {
     final cart = context.read<CartProvider>().cart;
     final listingIds = cart.items.map((item) => item.listingId).toList();
-    final listings = await _firebaseListingService.getFullListingsByIds(
-      listingIds,
-    );
+    final listings = await _firebaseListingService.getListingsByIds(listingIds);
 
     _listingMap = {for (var l in listings) l.id: l};
 
     if (mounted) {
       setState(() => _loading = false);
-      context.read<FullListingProvider>().setListings(listings);
+      context.read<ALLListingProvider>().setListings(listings);
     }
   }
 
@@ -163,7 +162,7 @@ class _CartScreenState extends State<CartScreen> {
                                           ),
                                         ),
                                         Text(
-                                          "المزارع: ${listing.farmerName}",
+                                          "المزارع: ${listing.sellerName}",
                                           style: const TextStyle(
                                             fontSize: 12,
                                             color: Colors.grey,

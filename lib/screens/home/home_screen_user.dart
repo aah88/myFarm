@@ -9,6 +9,7 @@ import 'package:flutter_application_1/models/full_listing.dart';
 import 'package:flutter_application_1/models/cart_model.dart';
 
 // Providers & services
+import '../../models/listing_model.dart';
 import '../../providers/user_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/listing_provider.dart';
@@ -39,13 +40,13 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
   final ProductService _firebaseProductService = ProductService();
   final ListingService _firebaseListingService = ListingService();
   late Future<List<ProductCategory>> _futureCategories;
-  late Future<List<FullListing>> _fullListingFuture;
+  late Future<List<Listing>> _fullListingFuture;
 
   @override
   void initState() {
     super.initState();
     _futureCategories = _firebaseProductService.getCategory();
-    _fullListingFuture = _firebaseListingService.getFullListings();
+    _fullListingFuture = _firebaseListingService.getActiveListing();
 
     // تهيئة مزودي المستخدم والسلة
     Future.microtask(() {
@@ -239,7 +240,7 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
           const SizedBox(height: Spacing.md),
 
           // ====== شبكة المنتجات (مثل الصورة) ======
-          FutureBuilder<List<FullListing>>(
+          FutureBuilder<List<Listing>>(
             future: _fullListingFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -283,14 +284,14 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
                         title: listing.productName,
                         rating: listing.rating,
                         price: listing.price,
-                        farmerName: listing.farmerName,
+                        farmerName: listing.sellerName,
                         distance:
                             5.2, // replace with actual distance müss berechnet werden
                         onAddToCart: () {
                           context.read<CartProvider>().addItem(
                             CartItem(
                               listingId: listing.id,
-                              farmerId: listing.userId,
+                              farmerId: listing.sellerId,
                               price: listing.price,
                               qty: 1,
                             ),

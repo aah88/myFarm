@@ -7,9 +7,11 @@ import 'package:flutter_application_1/providers/user_provider.dart';
 
 import 'package:provider/provider.dart';
 import '../../models/full_listing.dart';
+import '../../models/listing_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../models/local_data.dart';
-import '../../providers/full_listing_provider.dart';
+import '../../providers/all_listing_provider.dart';
+import '../../providers/listing_provider.dart';
 import '../../services/order_services.dart';
 import '../../services/listing_services.dart';
 import '../../widgets/app_scaffold.dart';
@@ -24,7 +26,7 @@ class OrderSummaryScreen extends StatefulWidget {
 class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   String? _selectedDelivery;
   String? _selectedPayment;
-  Map<String, FullListing> _listingMap = {};
+  Map<String, Listing> _listingMap = {};
   bool _isSubmitting = false;
 
   @override
@@ -36,7 +38,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   Widget build(BuildContext context) {
     final cartProvider = context.watch<CartProvider>();
     final cart = cartProvider.cart;
-    final listings = context.read<FullListingProvider>().listings;
+    final listings = context.read<ALLListingProvider>().listings;
     _listingMap = {for (var l in listings) l.id: l};
 
     return AppScaffold(

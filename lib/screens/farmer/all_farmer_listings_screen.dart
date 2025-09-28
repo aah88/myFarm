@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_application_1/models/full_listing.dart';
 
+import '../../models/listing_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../services/listing_services.dart';
@@ -117,8 +117,8 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
 
             // 🛒 شبكة المنتجات
             Expanded(
-              child: FutureBuilder<List<FullListing>>(
-                future: _firebaseListingService.getFarmerFullListings(
+              child: FutureBuilder<List<Listing>>(
+                future: _firebaseListingService.getListingBySellerId(
                   context.read<UserProvider>().userId!,
                 ),
                 builder: (context, snapshot) {
@@ -155,7 +155,7 @@ class _AllFarmerListingsScreenState extends State<AllFarmerListingsScreen> {
                           title: listing.productName,
                           rating: listing.rating,
                           price: listing.price,
-                          farmerName: listing.farmerName,
+                          farmerName: listing.sellerName,
                           distance: 0,
                           action:
                               ListingCardAction

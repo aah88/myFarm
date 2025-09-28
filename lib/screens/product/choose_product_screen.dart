@@ -44,7 +44,7 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
     );
   }
 
-  /// Optional: Pull-to-refresh handler (re-fetch the same future)
+  /// AAH Optional: Pull-to-refresh handler (re-fetch the same future)
   Future<void> _refresh() async {
     setState(() {
       _futureProducts = _firebaseProductService.getProductsByProductParent(
@@ -98,6 +98,10 @@ class _ChooseProductScreenState extends State<ChooseProductScreen> {
                 onTapProduct: (product) {
                   // NOTE: If your listing requires the *sub-product id*, prefer product.id.
                   context.read<ListingProvider>().setProductId(product.id);
+                  context.read<ListingProvider>().setProductName(product.name);
+                  context.read<ListingProvider>().setProductImageUrl(
+                    product.imageUrl ?? 'lib/assets/images/placeholder.webp',
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const ChooseUnitScreen()),

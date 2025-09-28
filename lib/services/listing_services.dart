@@ -9,11 +9,80 @@ class ListingService {
     await _db.collection('listing').add(listing.toMap());
   }
 
-  Future<List<Listing>> getListing() async {
-    final snapshot = await _db.collection('listing').get();
-    return snapshot.docs
+  Future<List<Listing>> getActiveListing() async {
+    final listingSnapshot =
+        await _db.collection('listing').where('active', isEqualTo: true).get();
+    return listingSnapshot.docs
         .map((doc) => Listing.fromMap(doc.data(), doc.id))
         .toList();
+  }
+
+  Future<List<Listing>> getInactiveListing() async {
+    final listingSnapshot =
+        await _db.collection('listing').where('active', isEqualTo: false).get();
+    return listingSnapshot.docs
+        .map((doc) => Listing.fromMap(doc.data(), doc.id))
+        .toList();
+  }
+
+  Future<List<Listing>> getAllListing() async {
+    final listingSnapshot = await _db.collection('listing').get();
+    return listingSnapshot.docs
+        .map((doc) => Listing.fromMap(doc.data(), doc.id))
+        .toList();
+  }
+
+  Future<List<Listing>> getListingByCategoryId(String categoryId) async {
+    final listingSnapshot =
+        await _db
+            .collection('listing')
+            .where('categoryId', isEqualTo: categoryId)
+            .where('active', isEqualTo: false)
+            .get();
+    return listingSnapshot.docs
+        .map((doc) => Listing.fromMap(doc.data(), doc.id))
+        .toList();
+  }
+
+  Future<List<Listing>> getListingBySellerId(String sellerId) async {
+    final listingSnapshot =
+        await _db
+            .collection('listing')
+            .where('sellerId', isEqualTo: sellerId)
+            .where('active', isEqualTo: false)
+            .get();
+    return listingSnapshot.docs
+        .map((doc) => Listing.fromMap(doc.data(), doc.id))
+        .toList();
+  }
+
+  /// Fetch multiple listings by their IDs (for cart)
+  Future<List<Listing>> getListingsByIds(List<String> ids) async {
+    if (ids.isEmpty) return [];
+
+    // Firestore limits whereIn queries to 10 items per query
+    List<Listing> allListings = [];
+    const batchSize = 10;
+    for (var i = 0; i < ids.length; i += batchSize) {
+      final batchIds = ids.sublist(
+        i,
+        (i + batchSize > ids.length) ? ids.length : i + batchSize,
+      );
+
+      final snapshot =
+          await _db
+              .collection('listing')
+              .where(FieldPath.documentId, whereIn: batchIds)
+              .get();
+
+      allListings.addAll(
+        snapshot.docs
+            .map((doc) => Listing.fromMap(doc.data(), doc.id))
+            .toList(),
+      );
+    }
+
+    return allListings;
   }
 
   Future<void> finalizeSingleListing({
@@ -112,35 +181,6 @@ class ListingService {
         listingDoc.id,
       );
     }).toList();
-  }
-
-  /// Fetch multiple listings by their IDs (for cart)
-  Future<List<Listing>> getListingsByIds(List<String> ids) async {
-    if (ids.isEmpty) return [];
-
-    // Firestore limits whereIn queries to 10 items per query
-    List<Listing> allListings = [];
-    const batchSize = 10;
-    for (var i = 0; i < ids.length; i += batchSize) {
-      final batchIds = ids.sublist(
-        i,
-        (i + batchSize > ids.length) ? ids.length : i + batchSize,
-      );
-
-      final snapshot =
-          await _db
-              .collection('listing')
-              .where(FieldPath.documentId, whereIn: batchIds)
-              .get();
-
-      allListings.addAll(
-        snapshot.docs
-            .map((doc) => Listing.fromMap(doc.data(), doc.id))
-            .toList(),
-      );
-    }
-
-    return allListings;
   }
 
   /// Fetch multiple listings by their IDs (for cart)

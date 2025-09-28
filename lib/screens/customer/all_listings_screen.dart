@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_application_1/models/cart_model.dart';
 import 'package:flutter_application_1/models/full_listing.dart';
+import '../../models/listing_model.dart';
 import '../../widgets/app_scaffold.dart';
 
 import '../../providers/cart_provider.dart';
@@ -28,15 +29,15 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
 
   String _selectedLetter = defaultSelectedLetter;
 
-  late Future<List<FullListing>> _fullListingFuture;
+  late Future<List<Listing>> _fullListingFuture;
 
   @override
   void initState() {
     super.initState();
     _fullListingFuture =
         widget.categoryId == null
-            ? _firebaseListingService.getFullListings()
-            : _firebaseListingService.getFullListingsByCategory(
+            ? _firebaseListingService.getActiveListing()
+            : _firebaseListingService.getListingByCategoryId(
               widget.categoryId!,
             );
   }
@@ -54,7 +55,7 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
           style: TextStyle(color: AppColors.green),
         ),
       ),
-      body: FutureBuilder<List<FullListing>>(
+      body: FutureBuilder<List<Listing>>(
         future: _fullListingFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -66,7 +67,7 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
           }
 
           final listings = snapshot.data!;
-          final filtered = filterBySelectedLetter<FullListing>(
+          final filtered = filterBySelectedLetter<Listing>(
             listings,
             (l) => l.productName,
             _selectedLetter,
@@ -131,14 +132,14 @@ class _AllListingsScreenState extends State<AllListingsScreen> {
                           title: listing.productName,
                           rating: listing.rating,
                           price: listing.price,
-                          farmerName: listing.farmerName,
+                          farmerName: listing.sellerName,
                           distance:
                               5.2, // replace with actual distance müss berechnet werden
                           onAddToCart: () {
                             context.read<CartProvider>().addItem(
                               CartItem(
                                 listingId: listing.id,
-                                farmerId: listing.userId,
+                                farmerId: listing.sellerId,
                                 price: listing.price,
                                 qty: 1,
                               ),
