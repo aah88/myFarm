@@ -6,12 +6,10 @@ import 'package:flutter_application_1/models/order_status.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
 
 import 'package:provider/provider.dart';
-import '../../models/full_listing.dart';
 import '../../models/listing_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../models/local_data.dart';
 import '../../providers/all_listing_provider.dart';
-import '../../providers/listing_provider.dart';
 import '../../services/order_services.dart';
 import '../../services/listing_services.dart';
 import '../../widgets/app_scaffold.dart';

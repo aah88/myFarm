@@ -101,7 +101,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                     labelText: 'الفئة',
                     hintText: "اختر من القائمة",
                   ),
-                  value: selectedCategory,
+                  initialValue: selectedCategory,
                   items:
                       categories.map((cat) {
                         return DropdownMenuItem<ProductCategory>(
@@ -135,7 +135,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                   decoration: const InputDecoration(
                     labelText: 'المنتج الأب (اختياري)',
                   ),
-                  value: selectedProduct,
+                  initialValue: selectedProduct,
                   items:
                       products.map((prod) {
                         return DropdownMenuItem<Product>(

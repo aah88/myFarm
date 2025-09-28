@@ -4,7 +4,6 @@ import 'package:flutter_application_1/theme/design_tokens.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_application_1/models/cart_model.dart';
-import 'package:flutter_application_1/models/full_listing.dart';
 import '../../models/listing_model.dart';
 import '../../widgets/app_scaffold.dart';
 

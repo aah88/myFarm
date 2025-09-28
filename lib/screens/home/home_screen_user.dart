@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 // Models
 import 'package:flutter_application_1/models/category_model.dart';
-import 'package:flutter_application_1/models/full_listing.dart';
 import 'package:flutter_application_1/models/cart_model.dart';
 
 // Providers & services
@@ -19,8 +18,6 @@ import '../../services/listing_services.dart';
 // UI & routing
 import '../../widgets/app_scaffold.dart';
 import '../../widgets/bottom_nav.dart';
-import '../product/choose_product_category_screen.dart';
-import '../product/choose_product_type_screen.dart';
 import '../customer/listing_detail_screen.dart';
 import '../customer/all_listings_screen.dart';
 import '../../widgets/product_listing_card.dart';
