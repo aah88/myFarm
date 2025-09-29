@@ -1,5 +1,6 @@
 // lib/screens/orders/all_new_orders_farmer_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/order_status.dart';
 import 'package:flutter_application_1/providers/user_provider.dart';
 import 'package:flutter_application_1/widgets/app_scaffold.dart';
 import 'package:provider/provider.dart';
@@ -171,6 +172,7 @@ class _NewOrderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ListingService firebaseListingService = ListingService();
+    final OrderService orderService = OrderService();
     final total = order.totalPrice();
     final dateStr = order.startDate.toDate().toString().split(' ').first;
     final statusText = order.status.name;
@@ -354,7 +356,7 @@ class _NewOrderTile extends StatelessWidget {
                 );
               },
             );
-          }).toList(),
+          }),
 
           const Divider(height: 22),
 
@@ -393,7 +395,12 @@ class _NewOrderTile extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () {}, // UI فقط
+                    onPressed: () {
+                      orderService.updateOrderStatus(
+                        order.id,
+                        OrderStatus.confirmed,
+                      );
+                    }, // UI فقط
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -424,7 +431,12 @@ class _NewOrderTile extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () {}, // UI فقط
+                    onPressed: () {
+                      orderService.updateOrderStatus(
+                        order.id,
+                        OrderStatus.cancelled,
+                      );
+                    }, // UI فقط
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
