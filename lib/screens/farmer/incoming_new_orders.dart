@@ -303,9 +303,10 @@ class _NewOrderTile extends StatelessWidget {
                           width: 48,
                           height: 48,
                           color: const Color(0xFFEAEDEA),
-                          child: const Icon(
-                            Icons.local_grocery_store,
-                            color: Color(0xFF506A56),
+                          child: Image.asset(
+                            listing?.productImageUrl ?? '',
+                            height: 70,
+                            fit: BoxFit.contain,
                           ),
                         ),
                       ),
